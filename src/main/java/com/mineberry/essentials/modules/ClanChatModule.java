@@ -49,7 +49,7 @@ public class ClanChatModule extends MineBerryModule {
             while (toggleKey.consumeClick()) {
                 if (!enabled() || client.player == null) continue;
                 clanMode = !clanMode;
-                if (clanMode) AdminChatModule.forceOff();
+                if (clanMode) { AdminChatModule.forceOff(); PartyChatModule.forceOff(); }
                 announce(client);
             }
         });

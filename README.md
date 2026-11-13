@@ -1,175 +1,59 @@
 # MineBerry - Essentials
 
-**The all-in-one control center for MineBerry and MinePeak.**
-Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate converter, all in one clean dashboard.
+A modern MineBerry control center for quick chat controls, safety tools, evidence reports, and Overworld/Nether coordinate conversion.
 
-![Minecraft](https://img.shields.io/badge/Minecraft-26.2-62b47a)
-![Loader](https://img.shields.io/badge/Fabric-0.20.1%2B-dbd0b4)
-![Java](https://img.shields.io/badge/Java-25%2B-e76f00)
-![License](https://img.shields.io/badge/License-MIT-blue)
+Open the refreshed **Control Center** with Right Control (rebindable under Options > Controls > Key Binds). It keeps every essential in one clean dashboard: module switches, keybind reminders, coordinate conversion, and evidence export.
 
-[![Watch the trailer](https://img.youtube.com/vi/Cxq_ilGEqrs/maxresdefault.jpg)](https://www.youtube.com/watch?v=Cxq_ilGEqrs)
+## Setup
 
-> Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
+For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
 
-## Screenshots
+## License
 
-**Control Center** (Midnight and Rose themes)
+This project is licensed under the MIT License.
 
-| Midnight | Rose |
-|---|---|
-| ![Midnight theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png) |
+## Abuse alert
 
-**Waypoints and WorldEditCUI settings**
+After you accept a /tpahere, if the server announces that PvP mode was entered, a red box appears
+top-left: **POSSIBLE TP KILL / RG ABUSE DETECTED**. Press `-` to confirm (screenshot + report zip
+immediately) or `=` to skip. Both keys are rebindable under Options > Controls > Key Binds.
+The panel opens with Right Control by default. The chat line the alert listens for is the
+`pvpModePattern` regex in `config/mineberry_essentials.json`.
 
-| Waypoints | WorldEditCUI settings |
-|---|---|
-| ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s2.png) | ![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s3.png) |
+## Evidence reports
 
-**Evidence folders**
+Testimony screenshots (cannot-PvP, kill, confirmed) and `log.txt` are saved in
+`.minecraft/screenshots/testimony/`; tpahere screenshots go in `screenshots/tpaheres/`.
 
-![Evidence folders](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s5.png)
 
----
+When the Evidence Recorder captures a kill after a /tpahere, it bundles the incident into
+`.minecraft/screenshots/reports/<date>_<player>.zip` containing the screenshots, `evidence-log.txt`
+and `HOW_TO_REPORT.txt` (ticket instructions). The panel's **Export** button rebuilds the zip for the
+latest incident at any time.
 
-## Quick Start
+## Admin chat
 
-1. Install the mod (see [Installation](#installation)).
-2. Join MineBerry or MinePeak.
-3. Press **Right Control** to open the Control Center.
-4. Switch on the modules you want. Everything is optional.
+A toggleable **Admin Chat Toggle** module, just like Clan Chat. Press `K` (rebindable) to switch normal chat to
+`/ac <message>`; a red "ADMIN CHAT ENABLED" badge shows top-right while it is on. Clan and Admin chat are
+mutually exclusive (turning one on turns the other off). Change the command via `adminChatCommand` in
+`config/mineberry_essentials.json`.
 
----
+## WorldEdit CUI
 
-## Features
+The full [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) source (tag `26.2+03`, EPL-2.0, see
+`WORLDEDITCUI_LICENSE_EPL-2.0`) is built directly into this mod under `org/enginehub/worldeditcui`, so no separate
+WorldEditCUI mod is needed (and don't install one alongside - the ids would clash). Its CUI protocol library is
+bundled as jar-in-jar. The panel's **WorldEdit CUI** switch shows/hides the selection; the **Settings** button on that
+row opens the WorldEditCUI config (colours, etc.). Its key binds are under Options > Controls > WorldEditCUI
+(unbound by default). The optional Iris and ViaFabricPlus hooks were left out.
 
-### Control Center
-One panel with a switch for every module.
-- Built-in keybind reminders, coordinate converter and evidence export
-- Four themes: **Rose**, **Aurora**, **Ember** and **Midnight**
-- Smooth fade in/out animations
-- Optional auto-close when you take damage or PvP danger is detected
+## Waypoints
 
-### Clan Chat and Admin Chat
-Switch your normal chat into a channel with one key.
-- `J` toggles Clan Chat (`/cc <message>`)
-- `K` toggles Admin Chat (`/ac <message>`)
-- An on-screen badge shows which chat is active
-- The two channels are mutually exclusive, so you can never mix them up
-- Commands are configurable in the config file
+A toggleable **Waypoints** module. Waypoints are saved in `config/mineberry_essentials.json` and drawn as
+outlined boxes with a tall beam (also through walls). A small HUD list in the top-right shows an arrow and the
+distance to the nearest ones (hidden together with the rest of the HUD using `Y`).
 
-### Spawn Escape
-Get out of trouble instantly.
-- Press **Right Alt** to send `/spawn`
-- **Pit guard:** after a sudden large teleport, the mod detects whether you were dropped into a tight pit and escapes automatically
-- Ordinary caves and corners will not trigger it
-
-### TP Danger Escape
-Protection against `/tpahere` traps.
-- After you accept an incoming `/tpahere`, a nearby player lining up to hit you triggers an automatic `/spawn`
-- It only arms briefly after an accepted request, so it never interferes with normal play
-- Has its own separate toggle
-
-### Evidence Recorder and Abuse Alert
-Everything you need for a staff report, captured automatically.
-- If the server announces PvP mode after you accept a `/tpahere`, a red alert appears: **POSSIBLE TP KILL / RG ABUSE DETECTED**
-- Press `-` to confirm (screenshots and report are saved immediately) or `=` to skip
-- Screenshots and `log.txt` are saved automatically
-- Each incident is bundled into a **report zip** containing the screenshots, an evidence log and `HOW_TO_REPORT.txt`, ready to attach to a staff ticket
-- The panel's **Export** button rebuilds the latest report at any time
-- The chat line it listens for is editable via `pvpModePattern`
-
-### Waypoints
-- Waypoints are drawn as outlined boxes with a tall beam, **visible through walls**
-- A HUD list shows an arrow and the distance to your nearest waypoints
-- `B` adds a waypoint at your feet, `N` opens the waypoint list
-- Add by name and X/Y/Z, show, hide or delete from the list
-- Waypoints are saved per dimension
-
-### Overworld / Nether Converter
-Enter X/Z and convert with one click (÷8 or ×8).
-
-### WorldEdit CUI Built In
-- The full [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) is included, so you **do not need a separate mod**
-- Toggle the selection display from the panel, with a Settings button for colours and more
-- Key binds are under *Options > Controls > WorldEditCUI*
-
----
-
-## Default Keybinds
-
-| Action | Key |
-|---|---|
-| Open Control Center | `Right Control` |
-| Spawn Escape (`/spawn`) | `Right Alt` |
-| Toggle Clan Chat | `J` |
-| Toggle Admin Chat | `K` |
-| Show / Hide HUD | `Y` |
-| Add Waypoint Here | `B` |
-| Open Waypoint List | `N` |
-| Abuse Alert: Confirm / Skip | `-` / `=` |
-
-All keys can be rebound under *Options > Controls > Key Binds*.
-
----
-
-## Installation
-
-1. Install [Fabric Loader](https://fabricmc.net/use/) 0.20.1 or newer for Minecraft 26.2.
-2. Download [Fabric API](https://modrinth.com/mod/fabric-api) and make sure you are running Java 25 or newer.
-3. Put both Fabric API and **MineBerry - Essentials** into your `mods` folder.
-4. Launch the game and join the server.
-
-*Mod Menu* is supported if you want quick access to the settings.
-
-### Requirements
-
-| Requirement | Version |
-|---|---|
-| Minecraft | 26.2 |
-| Fabric Loader | 0.20.1 or newer |
-| Fabric API | Required |
-| Java | 25 or newer |
-| Mod Menu | Optional |
-
-> **Do not install the standalone WorldEditCUI mod alongside this one.** It is already built in and the two will conflict.
-
----
-
-## Configuration
-
-Settings are stored in `config/mineberry_essentials.json`. You can change:
-
-- Chat commands
-- The spawn command
-- The theme
-- The PvP detection pattern
-- Your waypoints
-
----
-
-## FAQ
-
-**Does it work on other servers?**
-The general tools (waypoints, converter, WorldEditCUI, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
-
-**Where are my evidence reports saved?**
-Screenshots, `log.txt` and the report zip are saved automatically inside your game's `screenshots` folder, in the `testimony`, `reports` and `tpaheres` subfolders. Use the **Export** button in the Control Center to rebuild the latest report.
-
-**A key does not work or clashes with another mod.**
-Rebind it under *Options > Controls > Key Binds*.
-
-**The game crashes or WorldEdit selections look broken.**
-Make sure the standalone WorldEditCUI mod is not installed.
-
----
-
-## Support and Feedback
-
-Questions, bug reports or ideas? Join our [Discord](https://discord.gg/ApRvuNsX3j).
-
-## Credits and License
-
-Made by **Agio12 (aerys_ex_)** and **Nice_EX (nice_ex.)**.
-Includes [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) (EPL-2.0).
-MineBerry - Essentials is licensed under the **MIT License**.
+- `B` adds a waypoint at your feet, `N` opens the waypoint list (both rebindable).
+- The panel's **List** button on the Waypoints row opens the same list: add by name and X/Y/Z,
+  show/hide, delete.
+- Waypoints belong to a dimension and only show in that dimension.

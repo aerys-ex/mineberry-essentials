@@ -24,6 +24,7 @@ public final class Config {
         Map<String, Boolean> modules = new HashMap<>();
         String clanCommand = "cc";
         String adminChatCommand = "ac";
+        String partyCommand = "pc";
         String spawnCommand = "spawn";
         boolean hudHidden = false;
         boolean autoClosePanelOnDanger = true;
@@ -61,6 +62,7 @@ public final class Config {
             if (data.modules == null) data.modules = new HashMap<>();
             if (data.clanCommand == null || data.clanCommand.isBlank()) data.clanCommand = "cc";
             if (data.adminChatCommand == null || data.adminChatCommand.isBlank()) data.adminChatCommand = "ac";
+            if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
             if (data.spawnCommand == null || data.spawnCommand.isBlank()) data.spawnCommand = "spawn";
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()) data.pvpModePattern = DEFAULT_PVP_MODE;
@@ -101,6 +103,11 @@ public final class Config {
     /** Command used for admin chat, without the slash. Edit in the config file to change it. */
     public static String adminChatCommand() {
         return data.adminChatCommand.startsWith("/") ? data.adminChatCommand.substring(1) : data.adminChatCommand;
+    }
+
+    /** Command used for party chat, without the slash. Edit in the config file to change it. */
+    public static String partyCommand() {
+        return data.partyCommand.startsWith("/") ? data.partyCommand.substring(1) : data.partyCommand;
     }
 
     /** Command used by Spawn Escape, without the slash. Edit in the config file to change it. */

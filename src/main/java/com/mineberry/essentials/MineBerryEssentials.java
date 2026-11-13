@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.modules.AdminChatModule;
 import com.mineberry.essentials.modules.ClanChatModule;
 import com.mineberry.essentials.modules.EvidenceModule;
+import com.mineberry.essentials.modules.PartyChatModule;
 import com.mineberry.essentials.modules.SpawnEscapeModule;
 import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
@@ -56,6 +57,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		// To add a new feature: create a MineBerryModule subclass and register it here.
 		register(new ClanChatModule());
 		register(new AdminChatModule());
+		register(new PartyChatModule());
 		register(new SpawnEscapeModule());
 		register(new TpDangerEscapeModule());
 		register(new EvidenceModule());
