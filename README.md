@@ -10,7 +10,7 @@ Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate conve
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-![Control Center (Midnight theme)](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/control-center-midnight.png)
+![Control Center (Midnight theme)](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/control-center-midnight.png)
 
 ---
 
@@ -18,7 +18,7 @@ Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate conve
 
 | Control Center (Rose) | Waypoints |
 |---|---|
-| ![Control Center, Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/control-center-rose.png) | ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/waypoints.png) |
+| ![Control Center, Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/control-center-rose.png) | ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/waypoints.png) |
 
 ---
 
