@@ -2,6 +2,7 @@ package com.mineberry.essentials;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.modules.AdminChatModule;
+import com.mineberry.essentials.modules.ChatExtrasModule;
 import com.mineberry.essentials.modules.ClanChatModule;
 import com.mineberry.essentials.modules.EvidenceModule;
 import com.mineberry.essentials.modules.PartyChatModule;
@@ -58,6 +59,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new ClanChatModule());
 		register(new AdminChatModule());
 		register(new PartyChatModule());
+		register(new ChatExtrasModule());
 		register(new SpawnEscapeModule());
 		register(new TpDangerEscapeModule());
 		register(new EvidenceModule());

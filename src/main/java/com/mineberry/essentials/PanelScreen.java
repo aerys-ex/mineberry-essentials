@@ -79,6 +79,13 @@ public class PanelScreen extends Screen {
                 add(Button.builder(Component.literal("List"), button -> this.minecraft.gui.setScreen(new WaypointScreen(this)))
                         .bounds(right - BTN_W - 4 - 36, y, 36, BTN_H).build());
             }
+            if (module.id().equals("chat_extras")) {
+                add(Button.builder(stampText(), button -> {
+                            Config.setChatTimestamps(!Config.chatTimestamps());
+                            button.setMessage(stampText());
+                        })
+                        .bounds(right - BTN_W - 4 - 70, y, 70, BTN_H).build());
+            }
             if (module.id().equals("worldeditcui")) {
                 add(Button.builder(Component.literal("Settings"), button -> {
                             var cui = org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI.getInstance();
@@ -112,6 +119,8 @@ public class PanelScreen extends Screen {
         // evidence
         add(Button.builder(Component.literal("Export"), button -> exportReport())
                 .bounds(right - BTN_W, py + evRowY + 4, BTN_W, BTN_H).build());
+        add(Button.builder(Component.literal("Copy"), button -> copyReport())
+                .bounds(right - BTN_W - 4 - 36, py + evRowY + 4, 36, BTN_H).build());
 
         // footer
         add(Button.builder(Component.literal("Theme: " + Ui.themeName()), button -> {
@@ -137,6 +146,17 @@ public class PanelScreen extends Screen {
             reportStatus = zip == null ? "No incident recorded yet" : "Saved: reports/" + zip.getFileName();
             return;
         }
+    }
+
+    private void copyReport() {
+        for (MineBerryModule module : MineBerryEssentials.modules()) if (module instanceof EvidenceModule evidence) {
+            reportStatus = evidence.copyLatestReport() ? "Report text copied to clipboard" : "No incident recorded yet";
+            return;
+        }
+    }
+
+    private static Component stampText() {
+        return Component.literal("Stamps: " + (Config.chatTimestamps() ? "ON" : "OFF"));
     }
 
     private void convert(double multiplier, String target) {
@@ -207,7 +227,7 @@ public class PanelScreen extends Screen {
         // evidence
         Ui.section(g, this.font, left, right, py + evLabelY, "EVIDENCE");
         Ui.txt(g, this.font, "Export latest incident (.zip)", left, py + evRowY + 5, Ui.TEXT, false);
-        Ui.txt(g, this.font, this.font.plainSubstrByWidth(reportStatus, pw - 2 * MARGIN - BTN_W - 12), left, py + evRowY + 16, Ui.MUTED, false);
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(reportStatus, pw - 2 * MARGIN - BTN_W - 4 - 36 - 12), left, py + evRowY + 16, Ui.MUTED, false);
 
         // footer
         Ui.footerLine(g, left, right, py + footerY);

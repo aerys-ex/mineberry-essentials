@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,6 +71,8 @@ public class EvidenceModule extends MineBerryModule {
     private static final long ALERT_MS = 30_000;            // the HUD prompt disappears by itself after 30s
     private static final Pattern PVP_MODE_END = Pattern.compile("\\b(left|ended|expired|disabled|no longer)\\b", Pattern.CASE_INSENSITIVE);
     private static final DateTimeFormatter STAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss");
+    /** Human-readable time (with time zone) written in the evidence log. */
+    private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
     private String requester = null;
     private long requestTime = 0;
@@ -107,6 +110,8 @@ public class EvidenceModule extends MineBerryModule {
     private static class Incident {
         final String suspect;               // who sent the tpahere
         final String stamp = LocalDateTime.now().format(STAMP);
+        final String startedAt = ZonedDateTime.now().format(TIME_FMT);
+        volatile String lastWhere = null;   // player position at the latest capture
         volatile String killer = null;      // set when the kill message arrives
         final List<Path> files = new ArrayList<>();
         final List<String> lines = new ArrayList<>();
@@ -238,6 +243,7 @@ public class EvidenceModule extends MineBerryModule {
         Matcher k = KILLED.matcher(s);
         if (k.find()) {
             if (latest != null) latest.killer = k.group(1);
+            copyName(Minecraft.getInstance(), k.group(1));
             shoot(TESTIMONY_DIR, "KILL_by_" + k.group(1), "KILLED by " + k.group(1) + " (tpahere from " + acceptedFrom + ") | " + s, true);
             acceptedFrom = null; // case closed
             alertSuspect = null;
@@ -263,6 +269,7 @@ public class EvidenceModule extends MineBerryModule {
     private void confirmAlert(Minecraft mc) {
         String who = alertSuspect;
         Incident inc = alertIncident;
+        copyName(mc, who);
         alertSuspect = null;
         alertIncident = null;
         // screenshot now + bundle the report zip (finalShot = true)
@@ -275,6 +282,24 @@ public class EvidenceModule extends MineBerryModule {
         alertSuspect = null;
         alertIncident = null;
         say(mc, "Alert skipped.", ChatFormatting.GRAY);
+    }
+
+    /** Copies the reported player's name to the clipboard so it can be pasted straight into a ticket. */
+    private static void copyName(Minecraft mc, String name) {
+        if (name == null || !Config.autoCopyReportedName()) return;
+        mc.execute(() -> {
+            mc.keyboardHandler.setClipboard(name);
+            say(mc, "Copied \"" + name + "\" to your clipboard", ChatFormatting.GRAY);
+        });
+    }
+
+    /** Player position + dimension, e.g. "X 120 Y 64 Z -33 (overworld)". */
+    private static String where(Minecraft mc) {
+        if (mc.player == null) return "unknown";
+        return "X " + (int) Math.floor(mc.player.getX())
+                + " Y " + (int) Math.floor(mc.player.getY())
+                + " Z " + (int) Math.floor(mc.player.getZ())
+                + " (" + WaypointsModule.shortDimension(WaypointsModule.dimensionId(mc)) + ")";
     }
 
     private static void say(Minecraft mc, String text, ChatFormatting color) {
@@ -321,13 +346,15 @@ public class EvidenceModule extends MineBerryModule {
         Path dir = root.resolve(p.folder);
         String stamp = LocalDateTime.now().format(STAMP);
         File file = dir.resolve(stamp + "_" + p.label + ".png").toFile();
+        String logEntry = "[" + ZonedDateTime.now().format(TIME_FMT) + "] " + p.logLine + " | at " + where(mc);
         try {
             Files.createDirectories(dir);
             Files.createDirectories(root.resolve(TESTIMONY_DIR));
             if (p.incident != null) {
                 synchronized (p.incident) {
                     p.incident.files.add(file.toPath());
-                    p.incident.lines.add("[" + stamp + "] " + p.logLine);
+                    p.incident.lines.add(logEntry);
+                    p.incident.lastWhere = where(mc);
                 }
             }
             Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), (NativeImage img) -> {
@@ -339,7 +366,7 @@ public class EvidenceModule extends MineBerryModule {
                 t.start();
             });
             Files.writeString(root.resolve(TESTIMONY_DIR).resolve("log.txt"),
-                    "[" + stamp + "] " + p.logLine + System.lineSeparator(),
+                    logEntry + System.lineSeparator(),
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (Exception e) {
             e.printStackTrace();
@@ -352,6 +379,33 @@ public class EvidenceModule extends MineBerryModule {
     public Path exportLatest() {
         Incident inc = latest;
         return inc == null ? null : buildReport(inc);
+    }
+
+    /** Plain-text summary of the latest incident, ready to paste into a staff ticket. Null if nothing is recorded. */
+    public String latestReportText() {
+        Incident inc = latest;
+        if (inc == null) return null;
+        List<String> lines;
+        synchronized (inc) { lines = new ArrayList<>(inc.lines); }
+        if (lines.isEmpty()) return null;
+        String nl = System.lineSeparator();
+        StringBuilder b = new StringBuilder();
+        b.append("Reported player: ").append(inc.killer != null ? inc.killer : inc.suspect).append(nl);
+        b.append("tpahere from: ").append(inc.suspect).append(nl);
+        b.append("Killed by: ").append(inc.killer != null ? inc.killer : "(no kill recorded)").append(nl);
+        b.append("Started: ").append(inc.startedAt).append(nl);
+        if (inc.lastWhere != null) b.append("Last position: ").append(inc.lastWhere).append(nl);
+        b.append(nl).append("Evidence log:").append(nl);
+        for (String l : lines) b.append(l).append(nl);
+        return b.toString();
+    }
+
+    /** Copies latestReportText() to the clipboard. Returns false when there is no incident yet. */
+    public boolean copyLatestReport() {
+        String text = latestReportText();
+        if (text == null) return false;
+        Minecraft.getInstance().keyboardHandler.setClipboard(text);
+        return true;
     }
 
     /** Called from the screenshot writer thread once the kill screenshot is on disk. */
@@ -413,6 +467,8 @@ public class EvidenceModule extends MineBerryModule {
         b.append("MINEBERRY - HOW TO REPORT THIS INCIDENT").append(NL);
         b.append("======================================").append(NL).append(NL);
         b.append("Incident:        ").append(inc.stamp).append(NL);
+        b.append("Started:         ").append(inc.startedAt).append(NL);
+        b.append("Last position:   ").append(inc.lastWhere != null ? inc.lastWhere : "(unknown)").append(NL);
         b.append("tpahere from:    ").append(inc.suspect).append(NL);
         b.append("Killed by:       ").append(inc.killer != null ? inc.killer : "(no kill recorded)").append(NL);
         b.append("Screenshots:     ").append(shots.size()).append(NL).append(NL);

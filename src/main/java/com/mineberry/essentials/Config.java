@@ -28,6 +28,10 @@ public final class Config {
         String spawnCommand = "spawn";
         boolean hudHidden = false;
         boolean autoClosePanelOnDanger = true;
+        boolean chatTimestamps = false;
+        boolean mentionSound = true;
+        List<String> mentionNames = new ArrayList<>();
+        boolean autoCopyReportedName = true;
         String panelTheme = "rose";
         String pvpModePattern = DEFAULT_PVP_MODE;
         List<Waypoint> waypoints = new ArrayList<>();
@@ -65,6 +69,7 @@ public final class Config {
             if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
             if (data.spawnCommand == null || data.spawnCommand.isBlank()) data.spawnCommand = "spawn";
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
+            if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()) data.pvpModePattern = DEFAULT_PVP_MODE;
             if (data.panelTheme == null || !data.panelTheme.matches("rose|aurora|ember|midnight")) data.panelTheme = "rose";
             save(); // writes any newly added keys so they can be edited
@@ -133,6 +138,31 @@ public final class Config {
     public static void setAutoClosePanelOnDanger(boolean enabled) {
         data.autoClosePanelOnDanger = enabled;
         save();
+    }
+
+    /** Whether chat lines get a [HH:mm] prefix (Chat Extras module). */
+    public static boolean chatTimestamps() {
+        return data.chatTimestamps;
+    }
+
+    public static void setChatTimestamps(boolean enabled) {
+        data.chatTimestamps = enabled;
+        save();
+    }
+
+    /** Whether a sound plays when someone says your name (Chat Extras module). */
+    public static boolean mentionSound() {
+        return data.mentionSound;
+    }
+
+    /** Extra names/words that count as a mention besides your own username. Edit in the config file. */
+    public static List<String> mentionNames() {
+        return data.mentionNames;
+    }
+
+    /** Whether the reported player's name is copied to the clipboard when evidence is confirmed. */
+    public static boolean autoCopyReportedName() {
+        return data.autoCopyReportedName;
     }
 
     /** Visual theme used by the MineBerry - Essentials Control Center. */
