@@ -8,6 +8,8 @@ Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate conve
 ![Java](https://img.shields.io/badge/Java-25%2B-e76f00)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
+[![Watch the trailer](https://img.youtube.com/vi/Cxq_ilGEqrs/maxresdefault.jpg)](https://www.youtube.com/watch?v=Cxq_ilGEqrs)
+
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
 ## Screenshots
