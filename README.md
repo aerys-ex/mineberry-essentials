@@ -10,15 +10,23 @@ Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate conve
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-![Control Center (Midnight theme)](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/control-center-midnight.png)
-
----
-
 ## Screenshots
 
-| Control Center (Rose) | Waypoints |
+**Control Center** (Midnight and Rose themes)
+
+| Midnight | Rose |
 |---|---|
-| ![Control Center, Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/control-center-rose.png) | ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/waypoints.png) |
+| ![Midnight theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s1.png) | ![Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s4.png) |
+
+**Waypoints and WorldEditCUI settings**
+
+| Waypoints | WorldEditCUI settings |
+|---|---|
+| ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s2.png) | ![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s3.png) |
+
+**Evidence folders**
+
+![Evidence folders](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s5.png)
 
 ---
 
@@ -144,7 +152,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 The general tools (waypoints, converter, WorldEditCUI, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
 
 **Where are my evidence reports saved?**
-Screenshots, `log.txt` and the report zip are saved automatically. Use the **Export** button in the Control Center to rebuild the latest report.
+Screenshots, `log.txt` and the report zip are saved automatically inside your game's `screenshots` folder, in the `testimony`, `reports` and `tpaheres` subfolders. Use the **Export** button in the Control Center to rebuild the latest report.
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
