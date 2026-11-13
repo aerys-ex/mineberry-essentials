@@ -1,0 +1,12 @@
+{
+  "key.category.mineberry_essentials.main": "MineBerry - Essentials",
+  "key.mineberry_essentials.toggle_clan": "Toggle Clan Chat",
+  "key.mineberry_essentials.toggle_admin": "Toggle Admin Chat",
+  "key.mineberry_essentials.open_panel": "Open MineBerry Panel",
+  "key.mineberry_essentials.toggle_hud": "Show/Hide MineBerry HUD",
+  "key.mineberry_essentials.spawn_escape": "Spawn Escape (/spawn)",
+  "key.mineberry_essentials.confirm_abuse": "Abuse Alert: Yes, Confirm",
+  "key.mineberry_essentials.skip_abuse": "Abuse Alert: Skip",
+  "key.mineberry_essentials.add_waypoint": "Add Waypoint Here",
+  "key.mineberry_essentials.waypoint_menu": "Open Waypoint List"
+}
