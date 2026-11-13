@@ -31,12 +31,19 @@ When the Evidence Recorder captures a kill after a /tpahere, it bundles the inci
 and `HOW_TO_REPORT.txt` (ticket instructions). The panel's **Export** button rebuilds the zip for the
 latest incident at any time.
 
-## Admin chat
+## Chat modes (Clan, Admin, Party)
 
-A toggleable **Admin Chat Toggle** module, just like Clan Chat. Press `K` (rebindable) to switch normal chat to
-`/ac <message>`; a red "ADMIN CHAT ENABLED" badge shows top-right while it is on. Clan and Admin chat are
-mutually exclusive (turning one on turns the other off). Change the command via `adminChatCommand` in
-`config/mineberry_essentials.json`.
+Three toggleable chat modules. Each one switches your normal chat to a command, and a badge shows
+top-right while it is on. Commands you type yourself (starting with `/`) are never touched.
+Only one chat mode can be active at a time (turning one on turns the others off).
+
+| Module | Key (rebindable) | Sends as | Badge | Config setting |
+| --- | --- | --- | --- | --- |
+| Clan Chat | `J` | `/cc <message>` | green | `clanCommand` |
+| Admin Chat | `K` | `/ac <message>` | red | `adminChatCommand` |
+| Party Chat | `X` | `/pc <message>` | blue | `partyCommand` |
+
+Party chat is meant for mini games. Change any command in `config/mineberry_essentials.json`.
 
 ## WorldEdit CUI
 
