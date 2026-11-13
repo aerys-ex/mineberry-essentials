@@ -16,17 +16,17 @@ Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate conve
 
 | Midnight | Rose |
 |---|---|
-| ![Midnight theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s1.png) | ![Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s4.png) |
+| ![Midnight theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png) |
 
 **Waypoints and WorldEditCUI settings**
 
 | Waypoints | WorldEditCUI settings |
 |---|---|
-| ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s2.png) | ![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s3.png) |
+| ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s2.png) | ![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s3.png) |
 
 **Evidence folders**
 
-![Evidence folders](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots1/s5.png)
+![Evidence folders](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s5.png)
 
 ---
 
