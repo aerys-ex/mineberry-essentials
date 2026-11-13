@@ -11,25 +11,26 @@ import net.minecraft.network.chat.Component;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.BooleanSupplier;
 
-/** The MineBerry Essentials control panel: flat sections of divider-separated rows. */
+/** The MineBerry Essentials control panel, Lunar style: a grid of module cards with toggle switches, plus two small tools. */
 public class PanelScreen extends Screen {
 
-    private static final int PANEL_W = 380, HEADER_H = 20, MARGIN = 14, ROW_H = 28;
-    private static final int BTN_W = 50, BTN_H = 20;
-    private static final long FADE_IN_MS = 180, FADE_OUT_MS = 140;
+    private static final int PANEL_W = 372, HEADER_H = 20, MARGIN = 14, GAP = 6;
+    private static final int CARD_H = 24, CARD_STEP = 28, BTN_H = 20;
 
     private final Screen parent;
-    private final long openedAt = System.currentTimeMillis();
-    private boolean closing = false;
-    private long closeStart = 0;
-    private final List<AbstractWidget> fadeWidgets = new ArrayList<>();
+    private final List<AbstractWidget> widgets = new ArrayList<>();
+    private final Map<AbstractWidget, Ui.Card> cards = new HashMap<>();
+    private final Map<AbstractWidget, String> hints = new HashMap<>();
 
     // all y values are relative to py
     private int px, py, pw, ph;
-    private int modLabelY, rowsY, safeLabelY, safeRowY, convLabelY, convY, evLabelY, evRowY, footerY;
+    private int modLabelY, gridY, hintY, optLabelY, optY, convLabelY, convY, evLabelY, evY, footerY;
 
     private String reportStatus = "No report exported this session";
     private String conversionResult = "Enter X and Z, then pick a direction";
@@ -44,100 +45,122 @@ public class PanelScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
-        fadeWidgets.clear();
+        widgets.clear(); cards.clear(); hints.clear();
         List<MineBerryModule> modules = MineBerryEssentials.modules();
 
         pw = Math.min(PANEL_W, this.width - 20);
+        int rows = (modules.size() + 1) / 2;
         modLabelY = HEADER_H + 10;
-        rowsY = modLabelY + 14;
-        safeLabelY = rowsY + modules.size() * ROW_H + 12;
-        safeRowY = safeLabelY + 14;
-        convLabelY = safeRowY + ROW_H + 12;
+        gridY = modLabelY + 14;
+        hintY = gridY + rows * CARD_STEP - (CARD_STEP - CARD_H) + 5;
+        optLabelY = hintY + 16;
+        optY = optLabelY + 14;
+        convLabelY = optY + CARD_H + 10;
         convY = convLabelY + 14;
-        evLabelY = convY + 44 + 12;
-        evRowY = evLabelY + 14;
-        footerY = evRowY + ROW_H + 12;
-        ph = footerY + 36;
+        evLabelY = convY + BTN_H + 4 + 16 + 10;
+        evY = evLabelY + 14;
+        footerY = evY + 28 + 6;
+        ph = footerY + 32;
         px = (this.width - pw) / 2;
         py = Math.max(6, (this.height - ph) / 2);
 
-        this.addRenderableOnly((g, mouseX, mouseY, delta) -> {
-            Ui.fadeAmt = Ui.fadeValue(closing, openedAt, closeStart, FADE_IN_MS, FADE_OUT_MS);
-            for (AbstractWidget w : fadeWidgets) w.setAlpha(Ui.fadeAmt);
-            drawDecor(g);
-        });
+        this.addRenderableOnly((g, mouseX, mouseY, delta) -> drawDecor(g, mouseX, mouseY));
 
-        int right = px + pw - MARGIN;
+        int left = px + MARGIN, right = px + pw - MARGIN;
+        int cardW = (right - left - GAP) / 2;
 
-        // modules
+        // module cards (click the card to toggle; small "..." button for extra settings)
         for (int i = 0; i < modules.size(); i++) {
             MineBerryModule module = modules.get(i);
-            int y = py + rowsY + i * ROW_H + 4;
-            add(Button.builder(stateText(module.enabled()), button -> { module.toggle(); button.setMessage(stateText(module.enabled())); })
-                    .bounds(right - BTN_W, y, BTN_W, BTN_H).build());
+            int cx = left + (i % 2) * (cardW + GAP), cy = py + gridY + (i / 2) * CARD_STEP;
+            boolean gear = module.id().equals("waypoints") || module.id().equals("worldeditcui");
+            addCard(cx, cy, cardW, module.name(), module.description(), module.enabled(), () -> { module.toggle(); return module.enabled(); }, gear);
             if (module.id().equals("waypoints")) {
-                add(Button.builder(Component.literal("List"), button -> this.minecraft.gui.setScreen(new WaypointScreen(this)))
-                        .bounds(right - BTN_W - 4 - 36, y, 36, BTN_H).build());
-            }
-            if (module.id().equals("chat_extras")) {
-                add(Button.builder(stampText(), button -> {
-                            Config.setChatTimestamps(!Config.chatTimestamps());
-                            button.setMessage(stampText());
-                        })
-                        .bounds(right - BTN_W - 4 - 70, y, 70, BTN_H).build());
+                addGear(cx, cy, cardW, "Open the waypoint list", button -> this.minecraft.gui.setScreen(new WaypointScreen(this)));
             }
             if (module.id().equals("worldeditcui")) {
-                add(Button.builder(Component.literal("Settings"), button -> {
-                            var cui = org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI.getInstance();
-                            if (cui != null && cui.getController() != null) {
-                                this.minecraft.gui.setScreen(new org.enginehub.worldeditcui.gui.CUIConfigPanel(this, cui.getController().getConfiguration()));
-                            }
-                        })
-                        .bounds(right - BTN_W - 4 - 52, y, 52, BTN_H).build());
+                addGear(cx, cy, cardW, "WorldEdit CUI settings", button -> {
+                    var cui = org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI.getInstance();
+                    if (cui != null && cui.getController() != null) {
+                        this.minecraft.gui.setScreen(new org.enginehub.worldeditcui.gui.CUIConfigPanel(this, cui.getController().getConfiguration()));
+                    }
+                });
             }
         }
 
-        // safety
-        add(Button.builder(stateText(Config.autoClosePanelOnDanger()), button -> {
-            Config.setAutoClosePanelOnDanger(!Config.autoClosePanelOnDanger());
-            button.setMessage(stateText(Config.autoClosePanelOnDanger()));
-        }).bounds(right - BTN_W, py + safeRowY + 4, BTN_W, BTN_H).build());
+        // options
+        int oy = py + optY;
+        addCard(left, oy, cardW, "Close on danger", "Close this panel when a PvP alert fires or you take damage",
+                Config.autoClosePanelOnDanger(), () -> {
+                    Config.setAutoClosePanelOnDanger(!Config.autoClosePanelOnDanger());
+                    return Config.autoClosePanelOnDanger();
+                }, false);
+        addCard(left + cardW + GAP, oy, cardW, "Chat timestamps", "Add a timestamp to chat messages",
+                Config.chatTimestamps(), () -> {
+                    Config.setChatTimestamps(!Config.chatTimestamps());
+                    return Config.chatTimestamps();
+                }, false);
 
         // converter
         int cy = py + convY;
         // borderless fields, padded inside the rounded boxes that drawDecor() paints behind them
-        xInput = new EditBox(this.font, px + MARGIN + 12 + 4, cy + 6, 62, 12, Component.literal("X coordinate"));
-        zInput = new EditBox(this.font, px + MARGIN + 104 + 4, cy + 6, 62, 12, Component.literal("Z coordinate"));
+        xInput = new EditBox(this.font, left + 12 + 4, cy + 6, 62, 12, Component.literal("X coordinate"));
+        zInput = new EditBox(this.font, left + 104 + 4, cy + 6, 62, 12, Component.literal("Z coordinate"));
         xInput.setBordered(false); zInput.setBordered(false);
         xInput.setMaxLength(18); zInput.setMaxLength(18);
         add(xInput); add(zInput);
         add(Button.builder(Component.literal("To Overworld"), button -> convert(8.0, "Overworld"))
-                .bounds(right - 82 - 4 - 82, cy, 82, BTN_H).build());
+                .bounds(right - 78 - 4 - 78, cy, 78, BTN_H).build());
         add(Button.builder(Component.literal("To Nether"), button -> convert(0.125, "Nether"))
-                .bounds(right - 82, cy, 82, BTN_H).build());
+                .bounds(right - 78, cy, 78, BTN_H).build());
 
         // evidence
         add(Button.builder(Component.literal("Export"), button -> exportReport())
-                .bounds(right - BTN_W, py + evRowY + 4, BTN_W, BTN_H).build());
+                .bounds(right - 50, py + evY + 4, 50, BTN_H).build());
         add(Button.builder(Component.literal("Copy"), button -> copyReport())
-                .bounds(right - BTN_W - 4 - 36, py + evRowY + 4, 36, BTN_H).build());
+                .bounds(right - 50 - 4 - 36, py + evY + 4, 36, BTN_H).build());
 
         // footer
         add(Button.builder(Component.literal("Theme: " + Ui.themeName()), button -> {
             Config.setPanelTheme(Ui.nextTheme());
             Ui.applyTheme();
             button.setMessage(Component.literal("Theme: " + Ui.themeName()));
-        }).bounds(px + MARGIN, py + footerY + 8, 110, BTN_H).build());
+        }).bounds(left, py + footerY + 6, 100, BTN_H).build());
+        add(Button.builder(Component.literal("Gradient"), button -> this.minecraft.gui.setScreen(new GradientScreen(this)))
+                .bounds(left + 100 + 4, py + footerY + 6, 80, BTN_H).build());
         add(Button.builder(Component.literal("Close"), button -> onClose())
-                .bounds(right - 60, py + footerY + 8, 60, BTN_H).build());
+                .bounds(right - 60, py + footerY + 6, 60, BTN_H).build());
 
-        // rounded outlined button look, drawn over the vanilla buttons (added last so it renders on top)
-        this.addRenderableOnly((g, mouseX, mouseY, delta) -> Ui.buttons(g, this.font, fadeWidgets, mouseX, mouseY));
+        // update checker: a button appears between Gradient and Close when a newer release exists
+        UpdateChecker.check();   // no-op if already started or disabled
+        UpdateChecker.Result update = UpdateChecker.result();
+        if (update != null && update.updateAvailable()) {
+            int btnX = left + 100 + 4 + 80 + 4, btnW = (right - 60 - 4) - btnX;
+            add(Button.builder(Component.literal("Update: v" + update.latest()), button ->
+                            net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(update.url())))
+                    .bounds(btnX, py + footerY + 6, btnW, BTN_H).build());
+        }
+
+        // Lunar look drawn over the vanilla buttons (added last so it renders on top)
+        this.addRenderableOnly((g, mouseX, mouseY, delta) -> Ui.buttons(g, this.font, widgets, cards, mouseX, mouseY));
     }
 
     private <T extends AbstractWidget> T add(T widget) {
-        fadeWidgets.add(widget);
+        widgets.add(widget);
         return this.addRenderableWidget(widget);
+    }
+
+    /** A clickable module card. With gear = true the right 24px stay free for a small side button. */
+    private void addCard(int x, int y, int w, String name, String hint, boolean on, BooleanSupplier flip, boolean gear) {
+        Button b = add(Button.builder(stateText(on), button -> button.setMessage(stateText(flip.getAsBoolean())))
+                .bounds(x, y, gear ? w - 24 : w, CARD_H).build());
+        cards.put(b, new Ui.Card(name, w, gear));
+        hints.put(b, hint);
+    }
+
+    private void addGear(int cardX, int y, int cardW, String hint, Button.OnPress action) {
+        Button b = add(Button.builder(Component.literal("..."), action).bounds(cardX + cardW - 22, y + 4, 18, 16).build());
+        hints.put(b, hint);
     }
 
     private void exportReport() {
@@ -153,10 +176,6 @@ public class PanelScreen extends Screen {
             reportStatus = evidence.copyLatestReport() ? "Report text copied to clipboard" : "No incident recorded yet";
             return;
         }
-    }
-
-    private static Component stampText() {
-        return Component.literal("Stamps: " + (Config.chatTimestamps() ? "ON" : "OFF"));
     }
 
     private void convert(double multiplier, String target) {
@@ -181,7 +200,7 @@ public class PanelScreen extends Screen {
 
     // ---------------------------------------------------------------- drawing
 
-    private void drawDecor(GuiGraphicsExtractor g) {
+    private void drawDecor(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         int left = px + MARGIN, right = px + pw - MARGIN;
         List<MineBerryModule> modules = MineBerryEssentials.modules();
 
@@ -194,23 +213,22 @@ public class PanelScreen extends Screen {
         Ui.txt(g, this.font, "Essentials", left + this.font.width("MineBerry") + 6, headerTextY, Ui.MUTED, false);
         int on = 0;
         for (MineBerryModule module : modules) if (module.enabled()) on++;
-        Ui.headerRight(g, this.font, right, headerTextY, on + " of " + modules.size() + " modules on");
+        Ui.headerRight(g, this.font, right, headerTextY, on + " / " + modules.size() + " on");
 
-        // modules
+        // modules + hint line (shows what the hovered card does)
         Ui.section(g, this.font, left, right, py + modLabelY, "MODULES");
-        int descW = pw - 2 * MARGIN - BTN_W - 4 - 36 - 8;
-        for (int i = 0; i < modules.size(); i++) {
-            MineBerryModule module = modules.get(i);
-            int y = py + rowsY + i * ROW_H;
-            Ui.txt(g, this.font, module.name(), left, y + 5, Ui.TEXT, false);
-            Ui.txt(g, this.font, this.font.plainSubstrByWidth(module.description(), descW), left, y + 16, Ui.MUTED, false);
-            if (i < modules.size() - 1) Ui.divider(g, left, right, y + ROW_H - 1);
+        String hint = "Click a module to switch it on or off";
+        for (Map.Entry<AbstractWidget, String> e : hints.entrySet()) {
+            AbstractWidget w = e.getKey();
+            if (mouseX >= w.getX() && mouseX < w.getX() + w.getWidth() && mouseY >= w.getY() && mouseY < w.getY() + w.getHeight()) {
+                hint = e.getValue();
+                break;
+            }
         }
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(hint, right - left), left, py + hintY, Ui.MUTED, false);
 
-        // safety
-        Ui.section(g, this.font, left, right, py + safeLabelY, "SAFETY");
-        Ui.txt(g, this.font, "Close panel on danger", left, py + safeRowY + 5, Ui.TEXT, false);
-        Ui.txt(g, this.font, "When a PvP alert fires or you take damage", left, py + safeRowY + 16, Ui.MUTED, false);
+        // options
+        Ui.section(g, this.font, left, right, py + optLabelY, "OPTIONS");
 
         // converter
         Ui.section(g, this.font, left, right, py + convLabelY, "COORDINATE CONVERTER");
@@ -219,32 +237,24 @@ public class PanelScreen extends Screen {
         Ui.txt(g, this.font, "Z", left + 92, cy + 6, Ui.MUTED, false);
         Ui.inputBox(g, xInput);
         Ui.inputBox(g, zInput);
-        int barY = cy + 26;
-        Ui.fill(g, left, barY, right, barY + 18, Ui.INSET);
-        Ui.txt(g, this.font, this.font.plainSubstrByWidth(conversionResult, right - left - 12), left + 6, barY + 5,
+        int barY = cy + BTN_H + 4;
+        Ui.fill(g, left, barY, right, barY + 16, Ui.INSET);
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(conversionResult, right - left - 12), left + 6, barY + 4,
                 conversionOk ? Ui.ACCENT : Ui.MUTED, false);
 
         // evidence
         Ui.section(g, this.font, left, right, py + evLabelY, "EVIDENCE");
-        Ui.txt(g, this.font, "Export latest incident (.zip)", left, py + evRowY + 5, Ui.TEXT, false);
-        Ui.txt(g, this.font, this.font.plainSubstrByWidth(reportStatus, pw - 2 * MARGIN - BTN_W - 4 - 36 - 12), left, py + evRowY + 16, Ui.MUTED, false);
+        Ui.txt(g, this.font, "Export latest incident (.zip)", left, py + evY + 5, Ui.TEXT, false);
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(reportStatus, pw - 2 * MARGIN - 50 - 4 - 36 - 12), left, py + evY + 16, Ui.MUTED, false);
 
         // footer
         Ui.footerLine(g, left, right, py + footerY);
     }
 
-    // ---------------------------------------------------------------- closing (fade out first)
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (closing && System.currentTimeMillis() - closeStart >= FADE_OUT_MS) this.minecraft.gui.setScreen(parent);
-    }
+    // ---------------------------------------------------------------- closing (instant)
 
     @Override
     public void onClose() {
-        if (closing) return;
-        closing = true;
-        closeStart = System.currentTimeMillis();
+        this.minecraft.gui.setScreen(parent);
     }
 }

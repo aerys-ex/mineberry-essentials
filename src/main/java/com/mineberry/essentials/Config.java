@@ -32,7 +32,11 @@ public final class Config {
         boolean mentionSound = true;
         List<String> mentionNames = new ArrayList<>();
         boolean autoCopyReportedName = true;
-        String panelTheme = "rose";
+        boolean checkForUpdates = true;
+        String panelTheme = "lunar";
+        List<String> gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
+        int gradientFormat = 0;
+        int gradientStyles = 0;
         String pvpModePattern = DEFAULT_PVP_MODE;
         List<Waypoint> waypoints = new ArrayList<>();
     }
@@ -71,7 +75,9 @@ public final class Config {
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()) data.pvpModePattern = DEFAULT_PVP_MODE;
-            if (data.panelTheme == null || !data.panelTheme.matches("rose|aurora|ember|midnight")) data.panelTheme = "rose";
+            if (data.gradientColors == null || data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
+            if (data.gradientFormat < 0 || data.gradientFormat > 3) data.gradientFormat = 0;
+            if (data.panelTheme == null || !data.panelTheme.matches("lunar|aurora|ember|midnight")) data.panelTheme = "lunar";
             save(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,16 +171,43 @@ public final class Config {
         return data.autoCopyReportedName;
     }
 
+    /** Whether the mod looks for a newer release on GitHub at startup. Edit in the config file to turn it off. */
+    public static boolean checkForUpdates() {
+        return data.checkForUpdates;
+    }
+
     /** Visual theme used by the MineBerry - Essentials Control Center. */
     public static String panelTheme() {
         return data.panelTheme;
     }
 
     public static void setPanelTheme(String theme) {
-        if (theme.matches("rose|aurora|ember|midnight")) {
+        if (theme.matches("lunar|aurora|ember|midnight")) {
             data.panelTheme = theme;
             save();
         }
+    }
+
+    /** Hex colors of the gradient generator (2 to 6 entries like "#E65B93"). */
+    public static List<String> gradientColors() {
+        return data.gradientColors;
+    }
+
+    /** Output format index of the gradient generator (see GradientScreen.FORMATS). */
+    public static int gradientFormat() {
+        return data.gradientFormat;
+    }
+
+    /** Bit mask of the gradient generator's text styles: 1 bold, 2 italic, 4 underline, 8 strikethrough. */
+    public static int gradientStyles() {
+        return data.gradientStyles;
+    }
+
+    public static void setGradient(List<String> colors, int format, int styles) {
+        data.gradientColors = new ArrayList<>(colors);
+        data.gradientFormat = format;
+        data.gradientStyles = styles;
+        save();
     }
 
     /** The saved waypoints (live list). Call save() after changing it. */

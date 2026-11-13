@@ -6,24 +6,24 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * Shared look of the MineBerry screens: dark flat surfaces, a 1px coloured outline with rounded corners,
- * a lighter header strip, dim divider lines and outlined rounded buttons. No shadows, gradients or glows.
- * Every colour goes through fade() so screens can fade in and out.
+ * Shared look of the MineBerry screens, Lunar-client style: dark flat surfaces, one thin outline, module cards
+ * with a toggle switch. No shadows, gradients or animations, so screens open and close instantly.
  */
 final class Ui {
-    static final int DIM = 0x80000000;
-    static final String[] THEME_IDS = {"rose", "aurora", "ember", "midnight"};
+    static final int DIM = 0x70000000;
 
     // Palette (set by applyTheme)
     static int BG, HEADER, BORDER, ACCENT, TEXT, MUTED;
-    static int ON = 0xFF5FD38A;
     // Derived
-    static int DIVIDER, INSET, FOOT, BTN, BTN_HOVER, BTN_BORDER, BTN_BORDER_HOVER;
+    static int DIVIDER, INSET, FOOT, BTN, BTN_HOVER, BTN_BORDER, BTN_BORDER_HOVER, TRACK_ON, TRACK_ON_EDGE, TRACK_OFF;
 
-    /** 0 = invisible, 1 = fully shown. Set by the screen each frame before drawing. */
-    static float fadeAmt = 1f;
+    /** A module card: a wide clickable button drawn as "name ........ [toggle]" (+ room for a small side button). */
+    record Card(String name, int fullW, boolean gear) {}
+
+    private static final int TOGGLE_W = 26, TOGGLE_H = 12;
 
     private Ui() {}
 
@@ -32,16 +32,19 @@ final class Ui {
             case "aurora" -> set(0xF50B1317, 0xFF11242B, 0xFF2FA9BA, 0xFF9BE6F2, 0xFFEFFAFC, 0xFF86A5AD);
             case "ember" -> set(0xF5130D09, 0xFF251810, 0xFFE08A2E, 0xFFFFC98A, 0xFFFFF4E8, 0xFFAB9580);
             case "midnight" -> set(0xF5090B14, 0xFF141934, 0xFF5C7CF0, 0xFFB3C4FF, 0xFFF0F3FF, 0xFF8A91B0);
-            default -> set(0xF5140C12, 0xFF241326, 0xFFD14D73, 0xFFFFA3C0, 0xFFFFF0F5, 0xFFA98896);
+            default -> set(0xF50E1015, 0xFF151922, 0xFF2A4F8F, 0xFF6FB1FF, 0xFFEDF1F7, 0xFF7F8794);   // lunar
         }
         int solid = BG | 0xFF000000;
-        DIVIDER = lerp(solid, TEXT, 0.10f);
+        DIVIDER = lerp(solid, TEXT, 0.08f);
         INSET = lerp(solid, 0xFF000000, 0.35f);
         FOOT = lerp(solid, BORDER, 0.375f);
-        BTN = lerp(solid, 0xFFFFFFFF, 0.085f);
-        BTN_HOVER = lerp(solid, 0xFFFFFFFF, 0.16f);
+        BTN = lerp(solid, 0xFFFFFFFF, 0.06f);
+        BTN_HOVER = lerp(solid, 0xFFFFFFFF, 0.12f);
         BTN_BORDER = lerp(BTN, BORDER, 0.30f);
         BTN_BORDER_HOVER = lerp(BTN, BORDER, 0.80f);
+        TRACK_ON = lerp(BORDER, ACCENT, 0.45f);
+        TRACK_ON_EDGE = lerp(BORDER, ACCENT, 0.70f);
+        TRACK_OFF = lerp(solid, 0xFFFFFFFF, 0.14f);
     }
 
     private static void set(int bg, int header, int border, int accent, int text, int muted) {
@@ -53,50 +56,34 @@ final class Ui {
             case "aurora" -> "Aurora";
             case "ember" -> "Ember";
             case "midnight" -> "Midnight";
-            default -> "Rose";
+            default -> "Lunar";
         };
     }
 
     static String nextTheme() {
         return switch (Config.panelTheme()) {
-            case "rose" -> "aurora";
+            case "lunar" -> "aurora";
             case "aurora" -> "ember";
             case "ember" -> "midnight";
-            default -> "rose";
+            default -> "lunar";
         };
-    }
-
-    // ---------------------------------------------------------------- fade
-
-    static float fadeValue(boolean closing, long openedAt, long closeStart, long inMs, long outMs) {
-        long t = System.currentTimeMillis();
-        float f = closing ? 1f - (t - closeStart) / (float) outMs : (t - openedAt) / (float) inMs;
-        f = Math.max(0f, Math.min(1f, f));
-        return f * f * (3f - 2f * f);
-    }
-
-    static int fade(int color) {
-        int a = Math.round((color >>> 24) * fadeAmt);
-        return (a << 24) | (color & 0xFFFFFF);
     }
 
     // ---------------------------------------------------------------- primitives
 
     static void fill(GuiGraphicsExtractor g, int x1, int y1, int x2, int y2, int color) {
-        int c = fade(color);
-        if ((c >>> 24) == 0) return;
-        g.fill(x1, y1, x2, y2, c);
+        if ((color >>> 24) == 0) return;
+        g.fill(x1, y1, x2, y2, color);
     }
 
     static void txt(GuiGraphicsExtractor g, Font font, String text, int x, int y, int color, boolean shadow) {
-        int c = fade(color);
-        if ((c >>> 24) < 4) return;   // vanilla draws text with alpha < 4 as fully opaque
-        g.text(font, text, x, y, c, shadow);
+        if ((color >>> 24) < 4) return;   // vanilla draws text with alpha < 4 as fully opaque
+        g.text(font, text, x, y, color, shadow);
     }
 
     /**
-     * Rounded box: 1px border, corners cut in three steps (like the reference panel). Pieces never overlap, so
-     * translucent fills stay clean. With headerH > 0 the first headerH rows inside the border use headerFill.
+     * Rounded box: 1px border, corners cut in three steps. Pieces never overlap, so translucent fills stay clean.
+     * With headerH > 0 the first headerH rows inside the border use headerFill.
      */
     static void box(GuiGraphicsExtractor g, int x, int y, int w, int h, int border, int fill, int headerFill, int headerH) {
         int x2 = x + w, y2 = y + h;
@@ -129,7 +116,7 @@ final class Ui {
         box(g, x, y, w, h, BORDER, BG, HEADER, headerH);
     }
 
-    /** Header text on the right edge, muted (like "No mutes recorded"). */
+    /** Header text on the right edge, muted. */
     static void headerRight(GuiGraphicsExtractor g, Font font, int right, int y, String text) {
         txt(g, font, text, right - font.width(text), y, MUTED, false);
     }
@@ -145,16 +132,41 @@ final class Ui {
         box(g, x, y, w, h, box.isFocused() ? BTN_BORDER_HOVER : BTN_BORDER, INSET, 0, 0);
     }
 
+    // ---------------------------------------------------------------- toggle + cards
+
+    /** Small pill switch: knob on the left when off, on the right (accent track) when on. */
+    static void toggle(GuiGraphicsExtractor g, int x, int y, boolean on) {
+        box(g, x, y, TOGGLE_W, TOGGLE_H, on ? TRACK_ON_EDGE : BTN_BORDER, on ? TRACK_ON : TRACK_OFF, 0, 0);
+        int kx = on ? x + TOGGLE_W - 10 : x + 2;
+        fill(g, kx, y + 2, kx + 8, y + TOGGLE_H - 2, on ? TEXT : MUTED);
+    }
+
+    static void card(GuiGraphicsExtractor g, Font font, int x, int y, int h, Card card, boolean on, boolean hover) {
+        int w = card.fullW();
+        box(g, x, y, w, h, hover ? BTN_BORDER_HOVER : BTN_BORDER, hover ? BTN_HOVER : BTN, 0, 0);
+        int toggleX = x + w - (card.gear() ? 26 : 8) - TOGGLE_W;
+        String name = font.plainSubstrByWidth(card.name(), toggleX - 4 - (x + 8));
+        txt(g, font, name, x + 8, y + (h - 8) / 2 + 1, on ? TEXT : MUTED, false);
+        toggle(g, toggleX, y + (h - TOGGLE_H) / 2, on);
+    }
+
     /**
-     * Draws the rounded outlined look over the vanilla buttons. Call it from a renderable that was added
-     * AFTER the widgets, so it lands on top. Corners are covered with the panel colour first.
+     * Draws the Lunar look over the vanilla buttons. Call it from a renderable that was added AFTER the widgets,
+     * so it lands on top. Widgets listed in cards become module cards; everything else a rounded outlined button.
      */
-    static void buttons(GuiGraphicsExtractor g, Font font, List<AbstractWidget> widgets, int mouseX, int mouseY) {
+    static void buttons(GuiGraphicsExtractor g, Font font, List<AbstractWidget> widgets, Map<AbstractWidget, Card> cards,
+                        int mouseX, int mouseY) {
         int solid = BG | 0xFF000000;
         for (AbstractWidget w : widgets) {
             if (w instanceof EditBox) continue;
             int x = w.getX(), y = w.getY(), bw = w.getWidth(), bh = w.getHeight();
             boolean hover = w.active && mouseX >= x && mouseX < x + bw && mouseY >= y && mouseY < y + bh;
+            Card card = cards.get(w);
+            if (card != null) {
+                fill(g, x, y, x + bw, y + bh, solid);   // hide the vanilla button completely
+                card(g, font, x, y, bh, card, w.getMessage().getString().equals("ON"), hover);
+                continue;
+            }
             // hide the square corners of the vanilla button underneath
             fill(g, x, y, x + 3, y + 3, solid);
             fill(g, x + bw - 3, y, x + bw, y + 3, solid);
@@ -164,8 +176,7 @@ final class Ui {
             if (!w.active) { fillC = lerp(solid, BTN, 0.5f); borderC = lerp(solid, BTN_BORDER, 0.5f); }
             box(g, x, y, bw, bh, borderC, fillC, 0, 0);
             String label = w.getMessage().getString();
-            int color = !w.active ? MUTED : label.equals("ON") ? ON : label.equals("OFF") ? MUTED : TEXT;
-            txt(g, font, label, x + (bw - font.width(label)) / 2, y + (bh - 8) / 2 + 1, color, false);
+            txt(g, font, label, x + (bw - font.width(label)) / 2, y + (bh - 8) / 2 + 1, w.active ? TEXT : MUTED, false);
         }
     }
 

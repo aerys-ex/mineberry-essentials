@@ -11,18 +11,15 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-/** Add, show/hide and delete waypoints. Same flat look as the main panel. */
+/** Add, show/hide and delete waypoints. Same flat Lunar look as the main panel. */
 public class WaypointScreen extends Screen {
 
     private static final int PANEL_W = 340, HEADER_H = 20, MARGIN = 14, ROW_H = 28, PER_PAGE = 4, BTN_H = 20;
-    private static final long FADE_IN_MS = 180, FADE_OUT_MS = 140;
 
     private final Screen parent;
-    private final long openedAt = System.currentTimeMillis();
-    private boolean closing = false;
-    private long closeStart = 0;
-    private final List<AbstractWidget> fadeWidgets = new ArrayList<>();
+    private final List<AbstractWidget> widgets = new ArrayList<>();
 
     // y values relative to py
     private int px, py, pw, ph, addLabelY, inputsY, buttonsY, listLabelY, rowsY, pagerY, footerY;
@@ -39,7 +36,7 @@ public class WaypointScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
-        fadeWidgets.clear();
+        widgets.clear();
 
         pw = Math.min(PANEL_W, this.width - 20);
         addLabelY = HEADER_H + 10;
@@ -53,11 +50,7 @@ public class WaypointScreen extends Screen {
         px = (this.width - pw) / 2;
         py = Math.max(6, (this.height - ph) / 2);
 
-        this.addRenderableOnly((g, mouseX, mouseY, delta) -> {
-            Ui.fadeAmt = Ui.fadeValue(closing, openedAt, closeStart, FADE_IN_MS, FADE_OUT_MS);
-            for (AbstractWidget w : fadeWidgets) w.setAlpha(Ui.fadeAmt);
-            drawDecor(g);
-        });
+        this.addRenderableOnly((g, mouseX, mouseY, delta) -> drawDecor(g));
 
         int left = px + MARGIN, right = px + pw - MARGIN;
 
@@ -110,11 +103,11 @@ public class WaypointScreen extends Screen {
                 .bounds(right - 60, py + footerY + 8, 60, BTN_H).build());
 
         // rounded outlined button look, drawn over the vanilla buttons (added last so it renders on top)
-        this.addRenderableOnly((g, mouseX, mouseY, delta) -> Ui.buttons(g, this.font, fadeWidgets, mouseX, mouseY));
+        this.addRenderableOnly((g, mouseX, mouseY, delta) -> Ui.buttons(g, this.font, widgets, Map.of(), mouseX, mouseY));
     }
 
     private <T extends AbstractWidget> T add(T widget) {
-        fadeWidgets.add(widget);
+        widgets.add(widget);
         return this.addRenderableWidget(widget);
     }
 
@@ -214,18 +207,10 @@ public class WaypointScreen extends Screen {
         Ui.footerLine(g, left, right, py + footerY);
     }
 
-    // ---------------------------------------------------------------- closing (fade out first)
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (closing && System.currentTimeMillis() - closeStart >= FADE_OUT_MS) this.minecraft.gui.setScreen(parent);
-    }
+    // ---------------------------------------------------------------- closing (instant)
 
     @Override
     public void onClose() {
-        if (closing) return;
-        closing = true;
-        closeStart = System.currentTimeMillis();
+        this.minecraft.gui.setScreen(parent);
     }
 }
