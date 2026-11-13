@@ -1,7 +1,7 @@
 # MineBerry - Essentials
 
 **The all-in-one control center for MineBerry and MinePeak.**
-Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate converter, all in one clean dashboard.
+Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator and a coordinate converter, all in one clean dashboard.
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-26.2-62b47a)
 ![Loader](https://img.shields.io/badge/Fabric-0.20.1%2B-dbd0b4)
@@ -11,6 +11,12 @@ Chat shortcuts, safety tools, evidence reports, waypoints and a coordinate conve
 [![Watch the trailer](https://img.youtube.com/vi/Cxq_ilGEqrs/maxresdefault.jpg)](https://www.youtube.com/watch?v=Cxq_ilGEqrs)
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
+
+## What's New in 1.2.0
+
+- **Gradient Generator:** type some text, pick 2 to 6 colors, see a live preview and copy it ready for chat (see [Gradient Generator](#gradient-generator))
+- **Update Checker:** get told when a newer release is out, with a link to download it (see [Update Checker](#update-checker))
+- New **Gradient** button in the Control Center
 
 ## Screenshots
 
@@ -49,6 +55,33 @@ One panel with a switch for every module.
 - Four themes: **Rose**, **Aurora**, **Ember** and **Midnight**
 - Smooth fade in/out animations
 - Optional auto-close when you take damage or PvP danger is detected
+- **Gradient** button opens the gradient generator
+- An **Update** button appears when a newer release is available
+
+### Gradient Generator
+Make colorful chat text without hand-writing color codes. Open it from the **Gradient** button in the Control Center.
+- Type your text (up to 64 characters) and pick **2 to 6 colors** as hex codes (`#RRGGBB`)
+- **Live preview** shows the text colored letter by letter, exactly as it will look
+- Six built-in presets to cycle through: **MineBerry**, **Sunset**, **Ocean**, **Mint**, **Fire** and **Rainbow**
+- Add or remove color stops with the **+ Color** and **- Color** buttons
+- Text styles: **Bold**, **Italic**, **Underline** and **Strikethrough**
+- Four output formats, cycled with the **Format** button:
+  - `&#RRGGBB`
+  - `<#RRGGBB>`
+  - `&x&R&R&G&G&B&B`
+  - MiniMessage
+- A counter shows the length of the result against the 256 character chat limit, and warns you when it is too long
+- **Copy** puts the result on your clipboard, ready to paste into chat
+- Your colors, format and styles are remembered between sessions
+
+> Which format works depends on the server. Try the formats until one shows colors in chat.
+
+### Update Checker
+Know when there is a new version without checking GitHub yourself.
+- Checks the latest [GitHub release](https://github.com/aerys-ex/mineberry-essentials/releases) when the game starts
+- If a newer version exists, you get a popup on the title screen, one chat message with a **[Download]** link when you join a world, and an **Update** button in the Control Center
+- Nothing is downloaded or installed automatically, you only get a link
+- Turn it off any time with `"checkForUpdates": false` in the config file
 
 ### Clan, Admin and Party Chat
 Switch your normal chat into a channel with one key.
@@ -123,7 +156,7 @@ Enter X/Z and convert with one click (÷8 or ×8).
 | Open Waypoint List | `N` |
 | Abuse Alert: Confirm / Skip | `-` / `=` |
 
-All keys can be rebound under *Options > Controls > Key Binds*.
+All keys can be rebound under *Options > Controls > Key Binds*. The Gradient Generator is opened from the Control Center.
 
 ---
 
@@ -160,6 +193,8 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - The spawn command
 - The theme
 - The PvP detection pattern
+- Update checking (`checkForUpdates`, on by default)
+- Gradient generator colors, format and styles (saved automatically when you use it)
 - Your waypoints
 
 ---
@@ -167,10 +202,19 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 ## FAQ
 
 **Does it work on other servers?**
-The general tools (waypoints, converter, WorldEditCUI, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
+The general tools (waypoints, converter, gradient generator, WorldEditCUI, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
 
 **Where are my evidence reports saved?**
 Screenshots, `log.txt` and the report zip are saved automatically inside your game's `screenshots` folder, in the `testimony`, `reports` and `tpaheres` subfolders. Use the **Export** button in the Control Center to rebuild the latest report.
+
+**The gradient shows up as plain text like `&#E65B93M` in chat.**
+That server does not understand the selected format. Press **Format** in the generator and try another one.
+
+**My gradient message is too long.**
+Chat is limited to 256 characters and every colored letter adds a color code. Use shorter text or fewer colors, or pick a shorter format. The counter turns red when you are over the limit.
+
+**I do not want update notifications.**
+Set `"checkForUpdates": false` in `config/mineberry_essentials.json`.
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
