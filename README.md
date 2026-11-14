@@ -37,7 +37,7 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 **MineBerry Client (HUD)**
 
-![MineBerry Client HUD menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png)
+![MineBerry Client HUD menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/hud.png)
 
 ---
 
