@@ -12,6 +12,11 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
+## What's New in 1.3.1
+
+- **Manual update check:** a new **Check for updates** button in the Tools tab, under Updates. It works even if automatic checking is turned off, and you can press it again if a check fails
+- **More reliable update checker:** it no longer depends on GitHub's rate-limited API, so it keeps working on shared networks. The API is only a fallback
+
 ## What's New in 1.3.0
 
 - **Control Center redesign:** a new flat look with an orange accent. Modules are now cards in a grid, each with an icon and an Enabled / Disabled button (see [Control Center](#control-center))
@@ -98,6 +103,7 @@ Make colorful chat text without hand-writing color codes. Open it from the **Gra
 ### Update Checker
 Know when there is a new version without checking GitHub yourself.
 - Checks the latest [GitHub release](https://github.com/aerys-ex/mineberry-essentials/releases) when the game starts
+- Press **Check for updates** in the Tools tab to check any time. It shows "Checking...", then "You're up to date" or the new version, and "Couldn't reach GitHub. Try again" if the check failed
 - If a newer version exists, you get a popup on the title screen, one chat message with a **[Download]** link when you join a world, and an **Update** button in the Tools tab
 - Nothing is downloaded or installed automatically, you only get a link
 - Turn it off any time with `"checkForUpdates": false` in the config file
@@ -245,7 +251,10 @@ That server does not understand the selected format. Press **Format** in the gen
 Chat is limited to 256 characters and every colored letter adds a color code. Use shorter text or fewer colors, or pick a shorter format. The counter turns red when you are over the limit.
 
 **I do not want update notifications.**
-Set `"checkForUpdates": false` in `config/mineberry_essentials.json`.
+Set `"checkForUpdates": false` in `config/mineberry_essentials.json`. You can still check by hand with the **Check for updates** button in the Tools tab.
+
+**The update check says "Couldn't reach GitHub".**
+You are offline, or GitHub is blocked on your network. Press **Check for updates** again later. You can always look at the [releases page](https://github.com/aerys-ex/mineberry-essentials/releases) yourself.
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.

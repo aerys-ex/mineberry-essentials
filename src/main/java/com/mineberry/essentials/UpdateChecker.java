@@ -15,6 +15,8 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -37,12 +39,16 @@ public final class UpdateChecker {
     private static final String API_URL = "https://api.github.com/repos/" + REPO + "/releases/latest";
     private static final String RELEASES_URL = "https://github.com/" + REPO + "/releases/latest";
     /** The "id" in fabric.mod.json. If yours differs, the fallback below still finds a mod whose id contains "mineberry". */
-    private static final String MOD_ID = "mineberry_essentials";
+    private static final String MOD_ID = "mineberry-essentials";
 
     /** Outcome of a finished check. */
     public record Result(String current, String latest, String url, boolean updateAvailable) {}
 
+    /** Where the check currently stands. The Tools tab shows this next to the "Check for updates" button. */
+    public enum State { IDLE, CHECKING, UP_TO_DATE, UPDATE, FAILED }
+
     private static final AtomicBoolean started = new AtomicBoolean(false);
+    private static volatile State state = State.IDLE;
     private static volatile Result result;      // null until the check has finished (or if it failed)
     private static volatile boolean announced, popupShown;
     private static volatile Screen title;       // the title screen currently open, if any
@@ -80,40 +86,110 @@ public final class UpdateChecker {
         return result;
     }
 
-    /** Starts the background check (once). Does nothing when disabled in the config. */
+    public static State state() {
+        return state;
+    }
+
+    /** The installed version, without a leading "v". */
+    public static String installed() {
+        return currentVersion();
+    }
+
+    /** Starts the automatic background check (once per launch). Does nothing when disabled in the config. */
     public static void check() {
         if (!Config.checkForUpdates() || !started.compareAndSet(false, true)) return;
+        run(true);
+    }
+
+    /**
+     * Manual check, for the "Check for updates" button. Works even when automatic checking is turned off,
+     * and can be repeated, so a failed check (offline, rate limited) can simply be tried again.
+     */
+    public static void checkNow() {
+        if (state == State.CHECKING) return;
+        started.set(true);
+        run(false);
+    }
+
+    private static void run(boolean automatic) {
+        state = State.CHECKING;
         String current = currentVersion();
+        Thread thread = new Thread(() -> {
+            try {
+                String[] found = fetchLatest(current);          // {tag without "v", url}, or null
+                if (found == null) {
+                    state = State.FAILED;
+                    return;
+                }
+                boolean newer = isNewer(found[0], current);
+                result = new Result(current, found[0], found[1], newer);
+                state = newer ? State.UPDATE : State.UP_TO_DATE;
+                if (automatic && newer) {
+                    Minecraft mc = Minecraft.getInstance();
+                    mc.execute(() -> announce(mc));             // already in a world when the answer arrives
+                }
+            } catch (Exception e) {
+                state = State.FAILED;                           // never let an update check break the game
+            }
+        }, "MineBerry-UpdateCheck");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    /**
+     * Finds the newest release. First the plain github.com "latest" link, which redirects to the newest release's page:
+     * it has no API rate limit, so it keeps working on shared networks. If that fails, the GitHub API is tried.
+     */
+    private static String[] fetchLatest(String current) {
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(6))
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
+        String[] viaRedirect = null;
         try {
-            HttpClient client = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(5))
-                    .followRedirects(HttpClient.Redirect.NORMAL)
-                    .build();
-            HttpRequest request = HttpRequest.newBuilder(URI.create(API_URL))
-                    .timeout(Duration.ofSeconds(8))
-                    .header("Accept", "application/vnd.github+json")
-                    .header("User-Agent", "MineBerry-Essentials/" + current)   // GitHub rejects requests without a User-Agent
-                    .GET().build();
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenAccept(response -> handle(response, current))
-                    .exceptionally(error -> null);                              // offline etc.: stay silent
+            viaRedirect = latestFromRedirect(client, current);
         } catch (Exception ignored) {
-            // never let an update check break the game
+        }
+        if (viaRedirect != null) return viaRedirect;
+        try {
+            return latestFromApi(client, current);
+        } catch (Exception ignored) {
+            return null;
         }
     }
 
-    private static void handle(HttpResponse<String> response, String current) {
-        if (response.statusCode() != 200) return;                               // 404 = no releases yet, 403 = rate limited
-        try {
-            JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
-            String latest = stripV(json.get("tag_name").getAsString());
-            String url = json.has("html_url") ? json.get("html_url").getAsString() : RELEASES_URL;
-            if (!url.startsWith("https://github.com/")) url = RELEASES_URL;
-            result = new Result(current, latest, url, isNewer(latest, current));
-            Minecraft mc = Minecraft.getInstance();
-            mc.execute(() -> announce(mc));                                     // already in a world when the answer arrives
-        } catch (Exception ignored) {
-        }
+    private static String[] latestFromRedirect(HttpClient client, String current) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(RELEASES_URL))
+                .timeout(Duration.ofSeconds(8))
+                .header("User-Agent", "MineBerry-Essentials/" + current)
+                .GET().build();
+        HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+        int code = response.statusCode();
+        if (code < 300 || code > 399) return null;                              // 404 = no releases yet
+        String location = response.headers().firstValue("location").orElse(null);
+        if (location == null) return null;
+        String absolute = URI.create(RELEASES_URL).resolve(location).toString();
+        int at = absolute.indexOf("/releases/tag/");
+        if (!absolute.startsWith("https://github.com/") || at < 0) return null;
+        String rawTag = absolute.substring(at + "/releases/tag/".length());
+        String tag = URLDecoder.decode(rawTag, StandardCharsets.UTF_8);
+        if (tag.isBlank()) return null;
+        return new String[]{stripV(tag), absolute};
+    }
+
+    private static String[] latestFromApi(HttpClient client, String current) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(API_URL))
+                .timeout(Duration.ofSeconds(8))
+                .header("Accept", "application/vnd.github+json")
+                .header("User-Agent", "MineBerry-Essentials/" + current)       // GitHub rejects requests without a User-Agent
+                .GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) return null;                          // 404 = no releases yet, 403 = rate limited
+        JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+        String latest = stripV(json.get("tag_name").getAsString());
+        String url = json.has("html_url") ? json.get("html_url").getAsString() : RELEASES_URL;
+        if (!url.startsWith("https://github.com/")) url = RELEASES_URL;
+        return new String[]{latest, url};
     }
 
     /** Chat fallback: only when the popup was not shown (e.g. the answer arrived after the player was already in a world). */

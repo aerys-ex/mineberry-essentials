@@ -31,7 +31,8 @@ public class PanelScreen extends Screen {
     private static final int CONV_LABEL_Y = PAD, CONV_Y = CONV_LABEL_Y + 14, CONV_BAR_Y = CONV_Y + BTN_H + 4;
     private static final int EV_LABEL_Y = CONV_BAR_Y + 16 + 10, EV_Y = EV_LABEL_Y + 14;
     private static final int APP_LABEL_Y = EV_Y + 28 + 10, APP_Y = APP_LABEL_Y + 14;
-    private static final int TOOLS_H = APP_Y + BTN_H + PAD + 2;
+    private static final int UPD_LABEL_Y = APP_Y + BTN_H + 10, UPD_Y = UPD_LABEL_Y + 14;
+    private static final int TOOLS_H = UPD_Y + BTN_H + PAD + 2;
 
     private static final int GREEN_FILL = 0xFF1B5E2C, GREEN_EDGE = 0xFF2C7D42, GREEN_TEXT = 0xFF6EE08C;
 
@@ -62,7 +63,7 @@ public class PanelScreen extends Screen {
     private final List<Button> pageTabs = new ArrayList<>();
     private final List<Button> catTabs = new ArrayList<>();
     private final List<Button> plain = new ArrayList<>();     // buttons painted in the normal outlined style
-    private Button closeBtn;
+    private Button closeBtn, checkBtn, updateBtn;
     private EditBox searchBox, xInput, zInput;
 
     private int page = 0;                // 0 = MODULES, 1 = TOOLS
@@ -93,7 +94,7 @@ public class PanelScreen extends Screen {
         if (zInput != null) zText = zInput.getValue();
         if (searchBox != null) search = searchBox.getValue();
         entries.clear(); shown.clear(); pageTabs.clear(); catTabs.clear(); plain.clear();
-        closeBtn = null; searchBox = null; xInput = null; zInput = null;
+        closeBtn = null; checkBtn = null; updateBtn = null; searchBox = null; xInput = null; zInput = null;
 
         buildEntries();
 
@@ -254,13 +255,15 @@ public class PanelScreen extends Screen {
         }).bounds(left, py + APP_Y, 100, BTN_H).build());
         addPlain(Button.builder(Component.literal("Gradient"), button -> this.minecraft.gui.setScreen(new GradientScreen(this)))
                 .bounds(left + 104, py + APP_Y, 80, BTN_H).build());
-        UpdateChecker.Result update = UpdateChecker.result();
-        if (update != null && update.updateAvailable()) {
-            int btnX = left + 104 + 80 + 4, btnW = Math.min(150, right - btnX);
-            addPlain(Button.builder(Component.literal("Update: v" + update.latest()), button ->
-                            net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(update.url())))
-                    .bounds(btnX, py + APP_Y, btnW, BTN_H).build());
-        }
+        // updates: manual check, plus the download button once a newer version is known
+        int uy = py + UPD_Y;
+        checkBtn = addPlain(Button.builder(Component.literal("Check for updates"), button -> UpdateChecker.checkNow())
+                .bounds(left, uy, 120, BTN_H).build());
+        updateBtn = addPlain(Button.builder(Component.literal("Update"), button -> {
+            UpdateChecker.Result r = UpdateChecker.result();
+            if (r != null) net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(r.url()));
+        }).bounds(right - 140, uy, 140, BTN_H).build());
+        updateBtn.visible = false;
     }
 
     // ---------------------------------------------------------------- grid + filter
@@ -435,6 +438,29 @@ public class PanelScreen extends Screen {
 
         // appearance
         Ui.section(g, this.font, left, right, py + APP_LABEL_Y, "APPEARANCE");
+
+        // updates
+        Ui.section(g, this.font, left, right, py + UPD_LABEL_Y, "UPDATES");
+        UpdateChecker.State state = UpdateChecker.state();
+        UpdateChecker.Result update = UpdateChecker.result();
+        boolean hasUpdate = updateAvailable();
+        if (checkBtn != null) checkBtn.active = state != UpdateChecker.State.CHECKING;
+        if (updateBtn != null) {
+            updateBtn.visible = hasUpdate;
+            if (hasUpdate) updateBtn.setMessage(Component.literal("Update: v" + update.latest()));
+        }
+        String status;
+        int statusColor = Ui.MUTED;
+        switch (state) {
+            case CHECKING -> status = "Checking...";
+            case UP_TO_DATE -> { status = "You're up to date (v" + UpdateChecker.installed() + ")"; statusColor = Ui.ACCENT; }
+            case UPDATE -> { status = "New version: v" + update.latest() + " (you have v" + update.current() + ")"; statusColor = Ui.ACCENT; }
+            case FAILED -> status = "Couldn't reach GitHub. Try again";
+            default -> status = "You have v" + UpdateChecker.installed();
+        }
+        int statusX = left + 120 + 8;
+        int statusMax = (hasUpdate ? right - 140 - 8 : right) - statusX;
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(status, Math.max(0, statusMax)), statusX, py + UPD_Y + 6, statusColor, false);
     }
 
     /** Dark square field behind a borderless EditBox. */
@@ -466,7 +492,9 @@ public class PanelScreen extends Screen {
                 if (entry.card.visible) paintCard(g, entry, mouseX, mouseY, solid);
             }
         }
-        for (Button button : plain) paintButton(g, button, mouseX, mouseY, solid);
+        for (Button button : plain) {
+            if (button.visible) paintButton(g, button, mouseX, mouseY, solid);
+        }
     }
 
     /** Tab: the selected one is filled with the accent color, the others are outlined. */
