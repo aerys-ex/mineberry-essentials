@@ -9,7 +9,9 @@
 		"Nice_EX (nice_ex.)"
 	],
 	"contact": {
-		"homepage": "https://github.com/aerys-ex/mineberry-essentials"
+		"homepage": "https://modrinth.com/mod/mineberry-essentials",
+		"sources": "https://github.com/aerys-ex/mineberry-essentials",
+		"discord": "https://discord.com/invite/ApRvuNsX3j"
 	},
 	"license": "MIT",
 	"icon": "assets/mineberry-essentials/icon.png",
@@ -32,5 +34,12 @@
 		"minecraft": "~26.2",
 		"java": ">=25",
 		"fabric-api": "*"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.com/invite/ApRvuNsX3j"
+			}
+		}
 	}
 }
