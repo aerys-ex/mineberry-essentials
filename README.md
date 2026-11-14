@@ -18,6 +18,7 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 - **Modules and Tools tabs:** the coordinate converter, evidence export, Theme, Gradient and Update buttons now live in the Tools tab
 - **Category tabs, search and reset** to find a module fast
 - **Quick Reply (`/r`) is now its own module,** separate from Chat Extras (see [Quick Reply](#quick-reply))
+- **MineBerry Client (HUD):** a new menu with HUD modules, profiles and a layout editor, opened with **Right Shift** (see [MineBerry Client (HUD)](#mineberry-client-hud))
 - New default theme: dark grey with orange
 - The Website button in Mod Menu now opens this GitHub page
 
@@ -66,6 +67,15 @@ One panel with a card for every module.
 - Adapts to your window size and GUI scale
 - Smooth fade in/out animations
 - Optional auto-close when you take damage or PvP danger is detected
+
+### MineBerry Client (HUD)
+A separate menu for the on-screen HUD. Press **Right Shift** to open it.
+- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status** and **Clock**
+- Filter the list with **All**, **New** and **HUD**, or use the search box
+- **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**
+- **Edit HUD Layout** lets you move the modules around on screen
+- **Settings** and **Waypoints** tabs are also in this menu
+- Show or hide the whole HUD with `Y`
 
 ### Gradient Generator
 Make colorful chat text without hand-writing color codes. Open it from the **Gradient** button in the **Tools** tab.
@@ -160,6 +170,7 @@ Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 | Action | Key |
 |---|---|
 | Open Control Center | `Right Control` |
+| Open MineBerry Client (HUD) | `Right Shift` |
 | Spawn Escape (`/spawn`) | `Right Alt` |
 | Toggle Clan Chat | `J` |
 | Toggle Admin Chat | `K` |
