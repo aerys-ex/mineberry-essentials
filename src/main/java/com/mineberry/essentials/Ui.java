@@ -16,7 +16,7 @@ final class Ui {
     static final int DIM = 0x70000000;
 
     // Palette (set by applyTheme)
-    static int BG, HEADER, BORDER, ACCENT, TEXT, MUTED;
+    static int BG, HEADER, BORDER, ACCENT, TEXT, MUTED, STRONG;
     // Derived
     static int DIVIDER, INSET, FOOT, BTN, BTN_HOVER, BTN_BORDER, BTN_BORDER_HOVER, TRACK_ON, TRACK_ON_EDGE, TRACK_OFF;
 
@@ -29,10 +29,11 @@ final class Ui {
 
     static void applyTheme() {
         switch (Config.panelTheme()) {
-            case "aurora" -> set(0xF50B1317, 0xFF11242B, 0xFF2FA9BA, 0xFF9BE6F2, 0xFFEFFAFC, 0xFF86A5AD);
-            case "ember" -> set(0xF5130D09, 0xFF251810, 0xFFE08A2E, 0xFFFFC98A, 0xFFFFF4E8, 0xFFAB9580);
-            case "midnight" -> set(0xF5090B14, 0xFF141934, 0xFF5C7CF0, 0xFFB3C4FF, 0xFFF0F3FF, 0xFF8A91B0);
-            default -> set(0xF50E1015, 0xFF151922, 0xFF2A4F8F, 0xFF6FB1FF, 0xFFEDF1F7, 0xFF7F8794);   // lunar
+            case "aurora" -> set(0xF50B1317, 0xFF11242B, 0xFF2FA9BA, 0xFF9BE6F2, 0xFFEFFAFC, 0xFF86A5AD, 0xFF2FA9BA);
+            case "ember" -> set(0xF5130D09, 0xFF251810, 0xFFE08A2E, 0xFFFFC98A, 0xFFFFF4E8, 0xFFAB9580, 0xFFE08A2E);
+            case "midnight" -> set(0xF5090B14, 0xFF141934, 0xFF5C7CF0, 0xFFB3C4FF, 0xFFF0F3FF, 0xFF8A91B0, 0xFF5C7CF0);
+            // default (config id "lunar"): neutral dark surfaces with an orange accent
+            default -> set(0xF2111111, 0xFF171717, 0xFF2D2D2D, 0xFFE8943A, 0xFFE8E8E8, 0xFF8E8E8E, 0xFFD9822B);
         }
         int solid = BG | 0xFF000000;
         DIVIDER = lerp(solid, TEXT, 0.08f);
@@ -47,8 +48,8 @@ final class Ui {
         TRACK_OFF = lerp(solid, 0xFFFFFFFF, 0.14f);
     }
 
-    private static void set(int bg, int header, int border, int accent, int text, int muted) {
-        BG = bg; HEADER = header; BORDER = border; ACCENT = accent; TEXT = text; MUTED = muted;
+    private static void set(int bg, int header, int border, int accent, int text, int muted, int strong) {
+        BG = bg; HEADER = header; BORDER = border; ACCENT = accent; TEXT = text; MUTED = muted; STRONG = strong;
     }
 
     static String themeName() {
@@ -56,7 +57,7 @@ final class Ui {
             case "aurora" -> "Aurora";
             case "ember" -> "Ember";
             case "midnight" -> "Midnight";
-            default -> "Lunar";
+            default -> "Default";
         };
     }
 
@@ -109,6 +110,16 @@ final class Ui {
             fill(g, x + 1, y + 2, x2 - 1, y2 - 2, fill);
         }
         fill(g, x + 3, y2 - 2, x2 - 3, y2 - 1, fill);
+    }
+
+    /** Square box: 1px border, flat fill. Pieces never overlap, so translucent fills stay clean. */
+    static void rect(GuiGraphicsExtractor g, int x, int y, int w, int h, int border, int fill) {
+        int x2 = x + w, y2 = y + h;
+        fill(g, x, y, x2, y + 1, border);
+        fill(g, x, y2 - 1, x2, y2, border);
+        fill(g, x, y + 1, x + 1, y2 - 1, border);
+        fill(g, x2 - 1, y + 1, x2, y2 - 1, border);
+        fill(g, x + 1, y + 1, x2 - 1, y2 - 1, fill);
     }
 
     /** Window frame: rounded outline, flat body, lighter header strip (no line under it). */

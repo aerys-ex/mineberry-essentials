@@ -112,13 +112,7 @@ public class GradientScreen extends Screen {
             box.setBordered(false);
             box.setMaxLength(7);
             box.setValue(hex[i]);
-            box.setResponder(value -> {
-                if (value.matches("#?[0-9a-fA-F]{0,6}")) {
-                    hex[index] = value;
-                } else if (!value.equals(hex[index])) {
-                    box.setValue(hex[index]);   // reject invalid input, restore last valid text
-                }
-            });
+            box.setResponder(value -> hex[index] = value);
             hexBoxes[i] = box;
             add(box);
         }

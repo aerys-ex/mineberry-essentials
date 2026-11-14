@@ -6,6 +6,7 @@ import com.mineberry.essentials.modules.ChatExtrasModule;
 import com.mineberry.essentials.modules.ClanChatModule;
 import com.mineberry.essentials.modules.EvidenceModule;
 import com.mineberry.essentials.modules.PartyChatModule;
+import com.mineberry.essentials.modules.QuickReplyModule;
 import com.mineberry.essentials.modules.SpawnEscapeModule;
 import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
@@ -29,7 +30,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	/** Shown on the credits card in the panel. */
-	public static final String CREDITS = "Agio12 (aerys_ex_) & Nice_EX (nice_ex.)";
+	public static final String CREDITS = "Agio12 (ex.aerys) & Nice_EX (nice_ex.)";
 
 	/** Key bind category (lang key: key.category.mineberry_essentials.main). */
 	public static final KeyMapping.Category CATEGORY =
@@ -60,6 +61,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new AdminChatModule());
 		register(new PartyChatModule());
 		register(new ChatExtrasModule());
+		register(new QuickReplyModule());
 		register(new SpawnEscapeModule());
 		register(new TpDangerEscapeModule());
 		register(new EvidenceModule());

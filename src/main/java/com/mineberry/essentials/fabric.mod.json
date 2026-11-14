@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "mineberry-essentials",
+	"version": "${version}",
+	"name": "MineBerry - Essentials",
+	"description": "A polished MineBerry control center with chat tools, evidence capture, coordinate conversion, and danger-aware safety controls.",
+	"authors": [
+		"Agio12 (ex.aerys)",
+		"Nice_EX (nice_ex.)"
+	],
+	"contact": {
+		"homepage": "https://github.com/aerys-ex/mineberry-essentials"
+	},
+	"license": "MIT",
+	"icon": "assets/mineberry-essentials/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"com.mineberry.essentials.MineBerryEssentials",
+			"org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI"
+		],
+		"modmenu": [
+			"com.mineberry.essentials.ModMenuIntegration"
+		]
+	},
+	"accessWidener": "mineberry-essentials.accesswidener",
+	"mixins": [
+		"mineberry-essentials.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

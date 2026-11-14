@@ -37,6 +37,9 @@ public final class Config {
         List<String> gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
         int gradientFormat = 0;
         int gradientStyles = 0;
+        Map<String, Integer> hudCorner = new HashMap<>();
+        Map<String, Map<String, Integer>> profiles = new java.util.LinkedHashMap<>();
+        String activeProfile = "Default";
         String pvpModePattern = DEFAULT_PVP_MODE;
         List<Waypoint> waypoints = new ArrayList<>();
     }
@@ -58,6 +61,7 @@ public final class Config {
     private Config() {}
 
     public static void load() {
+        LunarHud.init();   // makes sure the HUD and keybinds register even without a client entrypoint
         // one-time migration of settings saved under the old name
         Path old = FILE.resolveSibling("peakberry_essentials.json");
         if (!Files.exists(FILE) && Files.exists(old)) {
@@ -72,6 +76,9 @@ public final class Config {
             if (data.adminChatCommand == null || data.adminChatCommand.isBlank()) data.adminChatCommand = "ac";
             if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
             if (data.spawnCommand == null || data.spawnCommand.isBlank()) data.spawnCommand = "spawn";
+            if (data.profiles == null) data.profiles = new java.util.LinkedHashMap<>();
+            if (data.activeProfile == null) data.activeProfile = "Default";
+            if (data.hudCorner == null) data.hudCorner = new HashMap<>();
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()) data.pvpModePattern = DEFAULT_PVP_MODE;
@@ -213,5 +220,29 @@ public final class Config {
     /** The saved waypoints (live list). Call save() after changing it. */
     public static List<Waypoint> waypoints() {
         return data.waypoints;
+    }
+
+    /** Screen corner of a HUD mod: 0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right. */
+    public static int hudCorner(String id, int fallback) {
+        return data.hudCorner.getOrDefault(id, fallback);
+    }
+
+    public static void setHudCorner(String id, int corner) {
+        data.hudCorner.put(id, corner);
+        save();
+    }
+
+    /** HUD profiles: name -> saved state ("on_<id>" 0/1 and "c_<id>" corner). */
+    public static Map<String, Map<String, Integer>> profiles() {
+        return data.profiles;
+    }
+
+    public static String activeProfile() {
+        return data.activeProfile;
+    }
+
+    public static void setActiveProfile(String name) {
+        data.activeProfile = name;
+        save();
     }
 }

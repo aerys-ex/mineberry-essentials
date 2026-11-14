@@ -1,22 +1,15 @@
 package com.mineberry.essentials.modules;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.Config;
-import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.MineBerryModule;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
-import org.lwjgl.glfw.GLFW;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +23,6 @@ import java.util.regex.Pattern;
  * Chat extras, all in one module:
  *  - mention highlight + sound when someone says your name (extra words: "mentionNames" in the config)
  *  - optional [HH:mm] timestamps (the Timestamps button in the panel, or "chatTimestamps" in the config)
- *  - a quick reply key (default R) that opens chat with "/r " already typed
  *
  * Highlight and timestamps change messages the server sends as system/game messages (what most chat
  * plugins use). The sound also works for normal player chat.
@@ -40,7 +32,6 @@ public class ChatExtrasModule extends MineBerryModule {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm");
     private static final long DUPLICATE_MSG_MS = 300;
 
-    private KeyMapping quickReplyKey;
     private String lastText = null;
     private long lastTextTime = 0;
 
@@ -48,24 +39,11 @@ public class ChatExtrasModule extends MineBerryModule {
     private String mentionSource = null;
 
     public ChatExtrasModule() {
-        super("chat_extras", "Chat Extras", "Mentions + sound, timestamps, R to reply");
+        super("chat_extras", "Chat Extras", "Mentions with sound, and chat timestamps");
     }
 
     @Override
     public void init() {
-        quickReplyKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-                "key.mineberry_essentials.quick_reply",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_R,
-                MineBerryEssentials.CATEGORY));
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (quickReplyKey.consumeClick()) {
-                if (!enabled() || client.player == null || client.gui.screen() != null) continue;
-                client.gui.setScreen(new ChatScreen("/r ", false));
-            }
-        });
-
         // sound for mentions (both system messages and normal player chat)
         ClientReceiveMessageEvents.GAME.register((msg, overlay) -> { if (!overlay) onMessage(msg); });
         ClientReceiveMessageEvents.CHAT.register((msg, signed, sender, params, ts) -> onMessage(msg));
