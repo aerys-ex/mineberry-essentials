@@ -12,13 +12,18 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.2.0
+## What's New in 1.3.0
 
-- **Gradient Generator:** type some text, pick 2 to 6 colors, see a live preview and copy it ready for chat (see [Gradient Generator](#gradient-generator))
-- **Update Checker:** get told when a newer release is out, with a link to download it (see [Update Checker](#update-checker))
-- New **Gradient** button in the Control Center
+- **Control Center redesign:** a new flat look with an orange accent. Modules are now cards in a grid, each with an icon and an Enabled / Disabled button (see [Control Center](#control-center))
+- **Modules and Tools tabs:** the coordinate converter, evidence export, Theme, Gradient and Update buttons now live in the Tools tab
+- **Category tabs, search and reset** to find a module fast
+- **Quick Reply (`/r`) is now its own module,** separate from Chat Extras (see [Quick Reply](#quick-reply))
+- New default theme: dark grey with orange
+- The Website button in Mod Menu now opens this GitHub page
 
 ## Screenshots
+
+> These screenshots show the older look of the Control Center and will be updated.
 
 **Control Center** (Midnight and Rose themes)
 
@@ -50,16 +55,22 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 ## Features
 
 ### Control Center
-One panel with a switch for every module.
-- Built-in keybind reminders, coordinate converter and evidence export
-- Four themes: **Rose**, **Aurora**, **Ember** and **Midnight**
+One panel with a card for every module.
+- **Modules tab:** cards in a grid, each with an icon and an **Enabled / Disabled** button. Enabled cards get an orange line on top
+- **Category tabs:** All, Chat, Safety and Tools
+- **Search box** to find a module by name, and a **Reset** button to clear the category and search
+- **Hover** a card to see what it does
+- **Settings gear** on cards that have settings (Waypoints, WorldEdit CUI)
+- Scrollbar and mouse wheel scrolling when there are more modules than fit on screen
+- **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons. A small orange dot on the tab shows when an update is available
+- **Close on danger** and **Chat timestamps** are regular cards in the grid
+- Themes: the default **dark grey with orange**, plus **Aurora**, **Ember** and **Midnight**
+- Adapts to your window size and GUI scale
 - Smooth fade in/out animations
 - Optional auto-close when you take damage or PvP danger is detected
-- **Gradient** button opens the gradient generator
-- An **Update** button appears when a newer release is available
 
 ### Gradient Generator
-Make colorful chat text without hand-writing color codes. Open it from the **Gradient** button in the Control Center.
+Make colorful chat text without hand-writing color codes. Open it from the **Gradient** button in the **Tools** tab.
 - Type your text (up to 64 characters) and pick **2 to 6 colors** as hex codes (`#RRGGBB`)
 - **Live preview** shows the text colored letter by letter, exactly as it will look
 - Six built-in presets to cycle through: **MineBerry**, **Sunset**, **Ocean**, **Mint**, **Fire** and **Rainbow**
@@ -79,7 +90,7 @@ Make colorful chat text without hand-writing color codes. Open it from the **Gra
 ### Update Checker
 Know when there is a new version without checking GitHub yourself.
 - Checks the latest [GitHub release](https://github.com/aerys-ex/mineberry-essentials/releases) when the game starts
-- If a newer version exists, you get a popup on the title screen, one chat message with a **[Download]** link when you join a world, and an **Update** button in the Control Center
+- If a newer version exists, you get a popup on the title screen, one chat message with a **[Download]** link when you join a world, and an **Update** button in the Tools tab
 - Nothing is downloaded or installed automatically, you only get a link
 - Turn it off any time with `"checkForUpdates": false` in the config file
 
@@ -96,9 +107,14 @@ Switch your normal chat into a channel with one key.
 ### Chat Extras
 - **Mention highlight and sound:** when someone says your name, it is shown in bold gold and a sound plays
 - Add extra words that count as a mention with `mentionNames` in the config
-- **Timestamps:** optional `[HH:mm]` before chat lines, switched with the **Stamps** button in the panel
-- **Quick reply:** press `R` to open chat with `/r ` already typed
+- **Timestamps:** optional `[HH:mm]` before chat lines, switched with the **Chat timestamps** card in the panel
 - Highlight and timestamps apply to messages the server sends as system messages, which is what most chat plugins use
+
+### Quick Reply
+Reply to private messages faster. This is its own module with its own card in the Chat category, so you can switch it on or off without touching Chat Extras.
+- Press `R` to open chat with `/r ` already typed
+- On by default, and your existing `R` keybind carries over
+- Rebind it under *Options > Controls > Key Binds*
 
 ### Spawn Escape
 Get out of trouble instantly.
@@ -119,9 +135,9 @@ Everything you need for a staff report, captured automatically.
 - Screenshots and `log.txt` are saved automatically
 - Every log line includes the **time** and your **coordinates and dimension**
 - When you confirm abuse (or a kill is recorded) the **reported player's name is copied** to your clipboard
-- The panel's **Copy** button copies the incident summary as text, ready to paste into a staff ticket
+- The **Copy** button copies the incident summary as text, ready to paste into a staff ticket
 - Each incident is bundled into a **report zip** containing the screenshots, an evidence log and `HOW_TO_REPORT.txt`, ready to attach to a staff ticket
-- The panel's **Export** button rebuilds the latest report at any time
+- The **Export** button in the Tools tab rebuilds the latest report at any time
 - The chat line it listens for is editable via `pvpModePattern`
 
 ### Waypoints
@@ -132,11 +148,11 @@ Everything you need for a staff report, captured automatically.
 - Waypoints are saved per dimension
 
 ### Overworld / Nether Converter
-Enter X/Z and convert with one click (÷8 or ×8).
+Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 
 ### WorldEdit CUI Built In
 - The full [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) is included, so you **do not need a separate mod**
-- Toggle the selection display from the panel, with a Settings button for colours and more
+- Toggle the selection display from the panel, with a settings gear for colours and more
 - Key binds are under *Options > Controls > WorldEditCUI*
 
 ---
@@ -156,7 +172,7 @@ Enter X/Z and convert with one click (÷8 or ×8).
 | Open Waypoint List | `N` |
 | Abuse Alert: Confirm / Skip | `-` / `=` |
 
-All keys can be rebound under *Options > Controls > Key Binds*. The Gradient Generator is opened from the Control Center.
+All keys can be rebound under *Options > Controls > Key Binds*. The Gradient Generator is opened from the Tools tab in the Control Center.
 
 ---
 
@@ -205,7 +221,13 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 The general tools (waypoints, converter, gradient generator, WorldEditCUI, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
 
 **Where are my evidence reports saved?**
-Screenshots, `log.txt` and the report zip are saved automatically inside your game's `screenshots` folder, in the `testimony`, `reports` and `tpaheres` subfolders. Use the **Export** button in the Control Center to rebuild the latest report.
+Screenshots, `log.txt` and the report zip are saved automatically inside your game's `screenshots` folder, in the `testimony`, `reports` and `tpaheres` subfolders. Use the **Export** button in the Tools tab to rebuild the latest report.
+
+**Where did the Gradient, Theme and Export buttons go?**
+They moved to the **Tools** tab at the top of the Control Center.
+
+**Can I turn off Quick Reply (`/r`) without losing mentions and timestamps?**
+Yes. Quick Reply is its own module now. Switch off its card and Chat Extras keeps working.
 
 **The gradient shows up as plain text like `&#E65B93M` in chat.**
 That server does not understand the selected format. Press **Format** in the generator and try another one.
@@ -230,6 +252,6 @@ Questions, bug reports or ideas? Join our [Discord](https://discord.gg/ApRvuNsX3
 
 ## Credits and License
 
-Made by **Agio12 (aerys_ex_)** and **Nice_EX (nice_ex.)**.
+Made by **Agio12 (ex.aerys)** and **Nice_EX (nice_ex.)**.
 Includes [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) (EPL-2.0).
 MineBerry - Essentials is licensed under the **MIT License**.
