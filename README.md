@@ -35,9 +35,9 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 |---|---|
 | ![Gradient Generator](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s3.png) | ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s5.png) |
 
-**WorldEditCUI settings**
+**MineBerry Client (HUD)**
 
-![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png)
+![MineBerry Client HUD menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png)
 
 ---
 
