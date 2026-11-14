@@ -23,23 +23,21 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 ## Screenshots
 
-> These screenshots show the older look of the Control Center and will be updated.
+**Control Center**
 
-**Control Center** (Midnight and Rose themes)
-
-| Midnight | Rose |
+| Modules | Tools |
 |---|---|
-| ![Midnight theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Rose theme](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png) |
+| ![Modules tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Tools tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s2.png) |
 
-**Waypoints and WorldEditCUI settings**
+**Gradient Generator and Waypoints**
 
-| Waypoints | WorldEditCUI settings |
+| Gradient Generator | Waypoints |
 |---|---|
-| ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s2.png) | ![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s3.png) |
+| ![Gradient Generator](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s3.png) | ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s5.png) |
 
-**Evidence folders**
+**WorldEditCUI settings**
 
-![Evidence folders](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s5.png)
+![WorldEditCUI settings](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s4.png)
 
 ---
 
