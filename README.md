@@ -33,7 +33,7 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 | Modules | Tools |
 |---|---|
-| ![Modules tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Tools tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s2.png) |
+| ![Modules tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Tools tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/tools.png) |
 
 **Gradient Generator and Waypoints**
 
