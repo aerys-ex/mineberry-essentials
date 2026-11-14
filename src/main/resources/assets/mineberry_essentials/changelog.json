@@ -1,0 +1,17 @@
+{
+  "versions": [
+    {
+      "version": "1.3.0",
+      "title": "What's New popup",
+      "sections": {
+        "New": [
+          "A What's New popup now opens once on the title screen after you update the mod.",
+          "Control Center > Tools has a What's New button to read the notes again any time."
+        ],
+        "Improved": [
+          "If you skipped a few versions, the notes of every version you missed are listed together."
+        ]
+      }
+    }
+  ]
+}

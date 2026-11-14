@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-/** The simple Lunar-style HUD mods (FPS, Ping, Coordinates, Sprint, Clock), drawn as small boxes in the screen corners. */
+/** The Lunar-style HUD mods (FPS, Ping, Coordinates, Sprint, Clock, Keystrokes, Armor, Potions, Compass, Biome/Time), drawn as small boxes in the screen corners. */
 public final class LunarHud {
 
     static final String[] CORNERS = {"Top left", "Top right", "Bottom left", "Bottom right"};
@@ -33,7 +33,12 @@ public final class LunarHud {
                 if (mc.player.isShiftKeyDown()) return "[Sneaking]";
                 return mc.player.isSprinting() ? "[Sprinting]" : null;
             }),
-            new HudMod("clock", "Clock", 1, true, mc -> LocalTime.now().format(CLOCK)));
+            new HudMod("clock", "Clock", 1, true, mc -> LocalTime.now().format(CLOCK)),
+            HudMod.ofWidget("keys", "Keystrokes", 2, new HudWidgets.Keystrokes()),
+            HudMod.ofWidget("armor", "Armor Status", 3, new HudWidgets.Armor()),
+            HudMod.ofWidget("potions", "Potion Effects", 0, new HudWidgets.Potions()),
+            HudMod.ofWidget("compass", "Compass", 3, new HudWidgets.Compass()),
+            HudMod.ofWidget("biome", "Biome / Time", 1, new HudWidgets.BiomeTime()));
 
     private static final int PAD = 4, GAP = 3, EDGE = 6;
 
@@ -58,18 +63,40 @@ public final class LunarHud {
         Ui.applyTheme();
         Font font = mc.font;
         int sw = mc.getWindow().getGuiScaledWidth(), sh = mc.getWindow().getGuiScaledHeight();
-        int[] used = new int[4];   // height already taken in each corner
+        int[] used = new int[4];    // height already taken in the current column of each corner
+        int[] shift = new int[4];   // width of the columns already filled in each corner
+        int[] wide = new int[4];    // widest box of the current column
         for (HudMod mod : MODS) {
             if (!mod.enabled()) continue;
-            String text = mod.text().apply(mc);
-            if (text == null) continue;
-            int corner = mod.corner(), w = font.width(text) + PAD * 2, h = 9 + PAD * 2;
-            int x = corner % 2 == 0 ? EDGE : sw - EDGE - w;
+            HudWidget widget = mod.widget();
+            String text = null;
+            int cw, ch;
+            if (widget != null) {
+                int[] size = widget.size(mc, font);
+                if (size == null) continue;
+                cw = size[0];
+                ch = size[1];
+            } else {
+                text = mod.text().apply(mc);
+                if (text == null) continue;
+                cw = font.width(text);
+                ch = 9;
+            }
+            int corner = mod.corner(), w = cw + PAD * 2, h = ch + PAD * 2;
+            if (used[corner] > 0 && used[corner] + h > sh - EDGE * 2) {   // column is full: start the next one beside it
+                shift[corner] += wide[corner] + GAP;
+                used[corner] = 0;
+                wide[corner] = 0;
+            }
+            int x = corner % 2 == 0 ? EDGE + shift[corner] : sw - EDGE - w - shift[corner];
             int y = corner < 2 ? EDGE + used[corner] : sh - EDGE - h - used[corner];
+            if (x < 0 || y < 0 || x + w > sw || y + h > sh) continue;   // does not fit on this screen
             used[corner] += h + GAP;
+            wide[corner] = Math.max(wide[corner], w);
             Ui.fill(g, x, y, x + w, y + h, 0x90000000);
             Ui.fill(g, x, y, x + 1, y + h, Ui.ACCENT);
-            Ui.txt(g, font, text, x + PAD, y + PAD + 1, 0xFFFFFFFF, true);
+            if (widget != null) widget.draw(g, mc, font, x + PAD, y + PAD);
+            else Ui.txt(g, font, text, x + PAD, y + PAD + 1, 0xFFFFFFFF, true);
         }
     }
 
@@ -96,7 +123,7 @@ public final class LunarHud {
         java.util.Map<String, Integer> p = Config.profiles().get(name);
         if (p == null) return;
         for (HudMod m : MODS) {
-            m.setEnabled(p.getOrDefault("on_" + m.id(), 1) == 1);
+            m.setEnabled(p.getOrDefault("on_" + m.id(), m.defaultOn() ? 1 : 0) == 1);
             Config.setHudCorner(m.id(), p.getOrDefault("c_" + m.id(), m.defaultCorner()));
         }
         Config.setActiveProfile(name);

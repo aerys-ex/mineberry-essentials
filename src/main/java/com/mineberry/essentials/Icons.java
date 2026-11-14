@@ -72,6 +72,19 @@ final class Icons {
             "..#......#..",
             ".##########.",
             "............"};
+    private static final String[] EXIT = {
+            "............",
+            "..#####.....",
+            "..#.........",
+            "..#.....#...",
+            "..#......#..",
+            "..#.#######.",
+            "..#......#..",
+            "..#.....#...",
+            "..#.........",
+            "..#####.....",
+            "............",
+            "............"};
     private static final String[] WARNING = {
             "............",
             ".....##.....",
@@ -196,6 +209,7 @@ final class Icons {
             Map.entry("quick_reply", REPLY),
             Map.entry("spawn_escape", DOOR),
             Map.entry("tp_danger_escape", WARNING),
+            Map.entry("safe_logout", EXIT),
             Map.entry("evidence", CAMERA),
             Map.entry("worldeditcui", SELECTION),
             Map.entry("waypoints", PIN),

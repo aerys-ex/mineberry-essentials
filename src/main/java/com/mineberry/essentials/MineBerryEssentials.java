@@ -7,6 +7,7 @@ import com.mineberry.essentials.modules.ClanChatModule;
 import com.mineberry.essentials.modules.EvidenceModule;
 import com.mineberry.essentials.modules.PartyChatModule;
 import com.mineberry.essentials.modules.QuickReplyModule;
+import com.mineberry.essentials.modules.SafeLogoutModule;
 import com.mineberry.essentials.modules.SpawnEscapeModule;
 import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
@@ -44,6 +45,8 @@ public class MineBerryEssentials implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Config.load();
+		Changelog.init();        // "What's New" popup after an update; before the update checker so it opens first
+		UpdateChecker.init();    // "new version available" popup + chat message
 
 		openPanelKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.mineberry_essentials.open_panel",
@@ -64,6 +67,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new QuickReplyModule());
 		register(new SpawnEscapeModule());
 		register(new TpDangerEscapeModule());
+		register(new SafeLogoutModule());
 		register(new EvidenceModule());
 		register(new WorldEditCuiModule());
 		register(new WaypointsModule());

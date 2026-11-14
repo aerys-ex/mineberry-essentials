@@ -33,6 +33,8 @@ public final class Config {
         List<String> mentionNames = new ArrayList<>();
         boolean autoCopyReportedName = true;
         boolean checkForUpdates = true;
+        boolean showChangelog = true;
+        String lastSeenVersion = "";
         String panelTheme = "lunar";
         List<String> gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
         int gradientFormat = 0;
@@ -41,6 +43,9 @@ public final class Config {
         Map<String, Map<String, Integer>> profiles = new java.util.LinkedHashMap<>();
         String activeProfile = "Default";
         String pvpModePattern = DEFAULT_PVP_MODE;
+        String combatEndPattern = DEFAULT_COMBAT_END;
+        String safeLogoutMode = "warn";
+        int combatSeconds = 30;
         List<Waypoint> waypoints = new ArrayList<>();
     }
 
@@ -56,7 +61,12 @@ public final class Config {
     /** Regex (case-insensitive) for the server's "you entered PvP mode" chat line. Editable in the config file. */
     public static final String DEFAULT_PVP_MODE = "pvp mode|combat mode|combat tag|entered combat";
 
+    /** Regex (case-insensitive) for the server's "you left combat" chat line. Editable in the config file. */
+    public static final String DEFAULT_COMBAT_END = "no longer in combat|combat (mode )?(is )?(over|ended)|you can (now )?log ?out|safe to log ?out";
+
     private static Data data = new Data();
+    /** True when no config file existed at startup, i.e. the mod was never run before. */
+    private static boolean freshInstall;
 
     private Config() {}
 
@@ -67,7 +77,7 @@ public final class Config {
         if (!Files.exists(FILE) && Files.exists(old)) {
             try { Files.copy(old, FILE); } catch (Exception e) { e.printStackTrace(); }
         }
-        if (!Files.exists(FILE)) { save(); return; }
+        if (!Files.exists(FILE)) { freshInstall = true; save(); return; }
         try (Reader r = Files.newBufferedReader(FILE, StandardCharsets.UTF_8)) {
             Data loaded = GSON.fromJson(r, Data.class);
             if (loaded != null) data = loaded;
@@ -76,11 +86,15 @@ public final class Config {
             if (data.adminChatCommand == null || data.adminChatCommand.isBlank()) data.adminChatCommand = "ac";
             if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
             if (data.spawnCommand == null || data.spawnCommand.isBlank()) data.spawnCommand = "spawn";
+            if (data.lastSeenVersion == null) data.lastSeenVersion = "";
             if (data.profiles == null) data.profiles = new java.util.LinkedHashMap<>();
             if (data.activeProfile == null) data.activeProfile = "Default";
             if (data.hudCorner == null) data.hudCorner = new HashMap<>();
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
+            if (data.combatEndPattern == null || data.combatEndPattern.isBlank()) data.combatEndPattern = DEFAULT_COMBAT_END;
+            if (data.safeLogoutMode == null || !data.safeLogoutMode.matches("warn|block")) data.safeLogoutMode = "warn";
+            data.combatSeconds = data.combatSeconds <= 0 ? 30 : Math.max(3, Math.min(120, data.combatSeconds));
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()) data.pvpModePattern = DEFAULT_PVP_MODE;
             if (data.gradientColors == null || data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
             if (data.gradientFormat < 0 || data.gradientFormat > 3) data.gradientFormat = 0;
@@ -104,6 +118,11 @@ public final class Config {
         return data.modules.getOrDefault(moduleId, true);
     }
 
+    /** Like isEnabled(id), but with the value to use until the player has flipped the switch. */
+    public static boolean isEnabled(String moduleId, boolean fallback) {
+        return data.modules.getOrDefault(moduleId, fallback);
+    }
+
     public static void setEnabled(String moduleId, boolean enabled) {
         data.modules.put(moduleId, enabled);
         save();
@@ -111,6 +130,28 @@ public final class Config {
 
     public static String pvpModePattern() {
         return data.pvpModePattern;
+    }
+
+    /** Regex for the server's "combat is over" line (Safe Logout module). */
+    public static String combatEndPattern() {
+        return data.combatEndPattern;
+    }
+
+    /** "warn" = quitting needs a second click while in combat, "block" = quitting is refused until combat ends. */
+    public static String safeLogoutMode() {
+        return data.safeLogoutMode;
+    }
+
+    public static void setSafeLogoutMode(String mode) {
+        if (mode.matches("warn|block")) {
+            data.safeLogoutMode = mode;
+            save();
+        }
+    }
+
+    /** How long (seconds) you count as "in combat" after the last hit. Edit in the config file. */
+    public static int combatSeconds() {
+        return data.combatSeconds;
     }
 
     /** Command used for clan chat, without the slash. Edit in the config file to change it. */
@@ -181,6 +222,26 @@ public final class Config {
     /** Whether the mod looks for a newer release on GitHub at startup. Edit in the config file to turn it off. */
     public static boolean checkForUpdates() {
         return data.checkForUpdates;
+    }
+
+    /** Whether the "What's New" popup opens once after the mod was updated. Edit in the config file to turn it off. */
+    public static boolean showChangelog() {
+        return data.showChangelog;
+    }
+
+    /** The mod version whose "What's New" the player has already been shown (empty = never). */
+    public static String lastSeenVersion() {
+        return data.lastSeenVersion == null ? "" : data.lastSeenVersion;
+    }
+
+    public static void setLastSeenVersion(String version) {
+        data.lastSeenVersion = version;
+        save();
+    }
+
+    /** True on the very first launch of the mod (no config file existed yet). */
+    public static boolean freshInstall() {
+        return freshInstall;
     }
 
     /** Visual theme used by the MineBerry - Essentials Control Center. */

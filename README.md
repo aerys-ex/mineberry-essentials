@@ -12,6 +12,13 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
+## What's New in 1.4.0
+
+- **Five new HUD modules:** **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time** (see [MineBerry Client (HUD)](#mineberry-client-hud))
+- **HUD menu pages:** the Mods tab now has `<` `>` page buttons (or use the mouse wheel) when there are more modules than fit
+- **Smarter HUD layout:** when a screen corner is full, the next modules start a second column instead of going off screen
+- Fixes for Minecraft 26.2 (Safe Logout and the pause menu guard)
+
 ## What's New in 1.3.1
 
 - **Manual update check:** a new **Check for updates** button in the Tools tab, under Updates. It works even if automatic checking is turned off, and you can press it again if a check fails
@@ -75,8 +82,15 @@ One panel with a card for every module.
 
 ### MineBerry Client (HUD)
 A separate menu for the on-screen HUD. Press **Right Shift** to open it.
-- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status** and **Clock**
+- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time**
 - Filter the list with **All**, **New** and **HUD**, or use the search box
+- **Keystrokes / CPS:** W, A, S, D, both mouse buttons and Space light up while held, with the clicks per second of each mouse button
+- **Armor Status:** your armor as item icons with the durability left (green, yellow, red). A held tool or bow is shown too
+- **Potion Effects:** every visible effect with its colour, level and time left. The time turns red under 10 seconds
+- **Compass:** a scrolling N / NE / E strip with your exact heading and world axis, like `N (-Z) 0°`
+- **Biome / Time:** the biome you are in and, in the overworld, the in-game time and Day / Dusk / Night / Dawn
+- The five new modules are **off by default**. Turn them on from their cards
+- Use the `<` `>` buttons or the mouse wheel to change page
 - **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**
 - **Edit HUD Layout** lets you move the modules around on screen
 - **Settings** and **Waypoints** tabs are also in this menu

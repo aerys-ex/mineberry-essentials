@@ -37,10 +37,11 @@ public class PanelScreen extends Screen {
     private static final int GREEN_FILL = 0xFF1B5E2C, GREEN_EDGE = 0xFF2C7D42, GREEN_TEXT = 0xFF6EE08C;
 
     private static final String[] CATEGORIES = {"All", "Chat", "Safety", "Tools"};
-    private static final Map<String, String> CATEGORY_OF = Map.of(
-            "clan_chat", "Chat", "admin_chat", "Chat", "party_chat", "Chat", "chat_extras", "Chat", "quick_reply", "Chat",
-            "spawn_escape", "Safety", "tp_danger_escape", "Safety",
-            "evidence", "Tools", "worldeditcui", "Tools", "waypoints", "Tools");
+    private static final Map<String, String> CATEGORY_OF = Map.ofEntries(
+            Map.entry("clan_chat", "Chat"), Map.entry("admin_chat", "Chat"), Map.entry("party_chat", "Chat"),
+            Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"),
+            Map.entry("spawn_escape", "Safety"), Map.entry("tp_danger_escape", "Safety"), Map.entry("safe_logout", "Safety"),
+            Map.entry("evidence", "Tools"), Map.entry("worldeditcui", "Tools"), Map.entry("waypoints", "Tools"));
 
     /** One card: a module or an option. */
     private static final class Entry {
@@ -140,6 +141,13 @@ public class PanelScreen extends Screen {
             if (module.id().equals("waypoints")) {
                 gearHint = "Open the waypoint list";
                 gearAction = () -> this.minecraft.gui.setScreen(new WaypointScreen(this));
+            } else if (module.id().equals("safe_logout")) {
+                boolean block = Config.safeLogoutMode().equals("block");
+                gearHint = "Mode: " + (block ? "Block quit" : "Warn first") + " (click to switch)";
+                gearAction = () -> {
+                    Config.setSafeLogoutMode(block ? "warn" : "block");
+                    this.rebuildWidgets();
+                };
             } else if (module.id().equals("worldeditcui")) {
                 gearHint = "WorldEdit CUI settings";
                 gearAction = () -> {
@@ -264,6 +272,10 @@ public class PanelScreen extends Screen {
             if (r != null) net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(r.url()));
         }).bounds(right - 140, uy, 140, BTN_H).build());
         updateBtn.visible = false;
+        if (Changelog.hasEntries()) {
+            addPlain(Button.builder(Component.literal("What's New"), button -> this.minecraft.gui.setScreen(Changelog.screen(this)))
+                    .bounds(left + 124, uy, 76, BTN_H).build());
+        }
     }
 
     // ---------------------------------------------------------------- grid + filter
@@ -458,7 +470,7 @@ public class PanelScreen extends Screen {
             case FAILED -> status = "Couldn't reach GitHub. Try again";
             default -> status = "You have v" + UpdateChecker.installed();
         }
-        int statusX = left + 120 + 8;
+        int statusX = left + 120 + 8 + (Changelog.hasEntries() ? 80 : 0);
         int statusMax = (hasUpdate ? right - 140 - 8 : right) - statusX;
         Ui.txt(g, this.font, this.font.plainSubstrByWidth(status, Math.max(0, statusMax)), statusX, py + UPD_Y + 6, statusColor, false);
     }

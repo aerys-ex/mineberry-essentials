@@ -31,13 +31,19 @@ public class HudEditScreen extends Screen {
             String hint = "Click a mod to move it to the next corner";
             Ui.txt(g, this.font, hint, (this.width - this.font.width(hint)) / 2, this.height / 2 - 4, Ui.TEXT, true);
         });
-        int[] used = new int[4];
+        int[] used = new int[4], shift = new int[4], wide = new int[4];   // see LunarHud#draw: full columns wrap beside each other
         for (HudMod mod : LunarHud.MODS) {
             if (!mod.enabled()) continue;
             int corner = mod.corner(), w = this.font.width(mod.name()) + PAD * 2 + 4;
-            int x = corner % 2 == 0 ? EDGE : this.width - EDGE - w;
+            if (used[corner] > 0 && used[corner] + H > this.height - EDGE * 2) {
+                shift[corner] += wide[corner] + GAP;
+                used[corner] = 0;
+                wide[corner] = 0;
+            }
+            int x = corner % 2 == 0 ? EDGE + shift[corner] : this.width - EDGE - w - shift[corner];
             int y = corner < 2 ? EDGE + used[corner] : this.height - EDGE - H - used[corner];
             used[corner] += H + GAP;
+            wide[corner] = Math.max(wide[corner], w);
             Button b = Button.builder(Component.literal(mod.name()), btn -> {
                 mod.nextCorner();
                 LunarHud.sync();
