@@ -5,20 +5,20 @@ import net.minecraft.client.Minecraft;
 import java.util.function.Function;
 
 /**
- * One HUD element: an id, a name and either a function that returns the text to show (null = hide for now)
- * or a {@link HudWidget} for richer content. defaultOn is what the switch shows until the player changes it.
+ * One HUD element. Simple mods return one line of text (null = hide for now); widget mods draw several lines
+ * themselves through a HudWidget. defaultOn is what the mod does until the player switches it.
  */
-record HudMod(String id, String name, int defaultCorner, boolean fresh, boolean defaultOn,
-              Function<Minecraft, String> text, HudWidget widget) {
+record HudMod(String id, String name, int defaultCorner, boolean fresh, Function<Minecraft, String> text,
+              HudWidget widget, boolean defaultOn) {
 
     /** A one-line text mod that is on by default. */
     HudMod(String id, String name, int defaultCorner, boolean fresh, Function<Minecraft, String> text) {
-        this(id, name, defaultCorner, fresh, true, text, null);
+        this(id, name, defaultCorner, fresh, text, null, true);
     }
 
-    /** A multi-line widget mod. Off by default, so updating the mod does not suddenly fill the screen. */
-    static HudMod ofWidget(String id, String name, int defaultCorner, HudWidget widget) {
-        return new HudMod(id, name, defaultCorner, true, false, null, widget);
+    /** A multi-line widget mod. New widgets start off so the HUD does not suddenly fill up after an update. */
+    static HudMod widget(String id, String name, int defaultCorner, HudWidget widget) {
+        return new HudMod(id, name, defaultCorner, true, null, widget, false);
     }
 
     boolean enabled() {

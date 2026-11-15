@@ -142,11 +142,14 @@ public class PanelScreen extends Screen {
                 gearHint = "Open the waypoint list";
                 gearAction = () -> this.minecraft.gui.setScreen(new WaypointScreen(this));
             } else if (module.id().equals("safe_logout")) {
-                boolean block = Config.safeLogoutMode().equals("block");
-                gearHint = "Mode: " + (block ? "Block quit" : "Warn first") + " (click to switch)";
+                gearHint = "Switch mode: warn or block";
                 gearAction = () -> {
+                    boolean block = Config.safeLogoutMode().equals("block");
                     Config.setSafeLogoutMode(block ? "warn" : "block");
-                    this.rebuildWidgets();
+                    if (this.minecraft.player != null) {
+                        this.minecraft.player.sendSystemMessage(Component.literal("[MineBerry] Safe Logout mode: "
+                                + (block ? "warn (second click quits)" : "block (quitting is refused in combat)")));
+                    }
                 };
             } else if (module.id().equals("worldeditcui")) {
                 gearHint = "WorldEdit CUI settings";
@@ -263,6 +266,10 @@ public class PanelScreen extends Screen {
         }).bounds(left, py + APP_Y, 100, BTN_H).build());
         addPlain(Button.builder(Component.literal("Gradient"), button -> this.minecraft.gui.setScreen(new GradientScreen(this)))
                 .bounds(left + 104, py + APP_Y, 80, BTN_H).build());
+        if (Changelog.hasEntries()) {
+            addPlain(Button.builder(Component.literal("What's New"), button -> this.minecraft.gui.setScreen(Changelog.screen(this)))
+                    .bounds(left + 188, py + APP_Y, 90, BTN_H).build());
+        }
         // updates: manual check, plus the download button once a newer version is known
         int uy = py + UPD_Y;
         checkBtn = addPlain(Button.builder(Component.literal("Check for updates"), button -> UpdateChecker.checkNow())
@@ -272,10 +279,6 @@ public class PanelScreen extends Screen {
             if (r != null) net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(r.url()));
         }).bounds(right - 140, uy, 140, BTN_H).build());
         updateBtn.visible = false;
-        if (Changelog.hasEntries()) {
-            addPlain(Button.builder(Component.literal("What's New"), button -> this.minecraft.gui.setScreen(Changelog.screen(this)))
-                    .bounds(left + 124, uy, 76, BTN_H).build());
-        }
     }
 
     // ---------------------------------------------------------------- grid + filter
@@ -470,7 +473,7 @@ public class PanelScreen extends Screen {
             case FAILED -> status = "Couldn't reach GitHub. Try again";
             default -> status = "You have v" + UpdateChecker.installed();
         }
-        int statusX = left + 120 + 8 + (Changelog.hasEntries() ? 80 : 0);
+        int statusX = left + 120 + 8;
         int statusMax = (hasUpdate ? right - 140 - 8 : right) - statusX;
         Ui.txt(g, this.font, this.font.plainSubstrByWidth(status, Math.max(0, statusMax)), statusX, py + UPD_Y + 6, statusColor, false);
     }

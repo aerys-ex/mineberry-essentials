@@ -19,10 +19,11 @@ import java.util.Map;
  */
 public class LunarMenu extends Screen {
 
-    private static final int HEADER_H = 22, PAD = 8, SIDE_W = 100, COLS = 3, GAP = 6, CARD_H = 91, ROWS = 2, BTN = 16, PER_PAGE = COLS * ROWS;
+    private static final int HEADER_H = 22, PAD = 8, SIDE_W = 100, COLS = 3, GAP = 6, CARD_H = 91, ROWS = 2, BTN = 16;
     private static final int GREEN = 0xFF2E9E4F, GREEN_EDGE = 0xFF45C76B;
 
-    private static int tab = 0, filter = 0, page = 0;   // tab: 0 mods, 1 settings; filter: 0 all, 1 new, 2 hud; page of the card grid
+    private static final int PER_PAGE = COLS * ROWS;
+    private static int tab = 0, filter = 0, page = 0;   // tab: 0 mods, 1 settings; filter: 0 all, 1 new, 2 hud
     private static String search = "";
     private static boolean refocus = false;
 
@@ -33,9 +34,9 @@ public class LunarMenu extends Screen {
 
     private int px, py, pw, ph, bodyY, mainX, mainW, cardW, gridY;
     private EditBox box;
-    private final List<HudMod> shown = new ArrayList<>();      // every mod matching the filter and search
-    private final List<HudMod> onPage = new ArrayList<>();     // the part of shown that is on the current page
-    private int pages = 1, pageLabelX, pageLabelY;
+    private final List<HudMod> shown = new ArrayList<>();      // every mod that passes the filter and search
+    private final List<HudMod> pageMods = new ArrayList<>();   // the ones on the current page
+    private int pageCount = 1;
     private final int[] tabX = new int[3], tabW = new int[3];
 
     public LunarMenu(Screen parent) {
@@ -47,7 +48,7 @@ public class LunarMenu extends Screen {
     protected void init() {
         Ui.applyTheme();
         LunarHud.ensureProfiles();
-        widgets.clear(); fancy.clear(); flag.clear(); shown.clear(); onPage.clear();
+        widgets.clear(); fancy.clear(); flag.clear(); shown.clear(); pageMods.clear();
 
         pw = Math.min(440, this.width - 20);
         ph = HEADER_H + PAD + 20 + PAD + ROWS * CARD_H + (ROWS - 1) * GAP + PAD;
@@ -120,34 +121,26 @@ public class LunarMenu extends Screen {
             flag.put(b, filter == i);
             x += w + 4;
         }
-        int sx = x + 4;
-
         String q = search.toLowerCase(Locale.ROOT).trim();
         for (HudMod m : LunarHud.MODS) {
             if (filter == 1 && !m.fresh()) continue;
             if (!q.isEmpty() && !m.name().toLowerCase(Locale.ROOT).contains(q)) continue;
             shown.add(m);
         }
-        pages = Math.max(1, (shown.size() + PER_PAGE - 1) / PER_PAGE);
-        page = Math.max(0, Math.min(page, pages - 1));
-        onPage.addAll(shown.subList(page * PER_PAGE, Math.min(shown.size(), (page + 1) * PER_PAGE)));
+        pageCount = Math.max(1, (shown.size() + PER_PAGE - 1) / PER_PAGE);
+        page = Math.max(0, Math.min(page, pageCount - 1));
+        for (int i = page * PER_PAGE; i < Math.min(shown.size(), (page + 1) * PER_PAGE); i++) pageMods.add(shown.get(i));
 
-        // page arrows at the right end of the search row, only when there is more than one page
-        int right = px + pw - PAD;
-        if (pages > 1) {
-            String label = pages + "/" + pages;   // the widest the label can get
-            Button next = add(Button.builder(Component.literal(">"), btn -> { page++; this.rebuildWidgets(); })
-                    .bounds(right - 18, bodyY + 1, 18, 18).build());
-            Button prev = add(Button.builder(Component.literal("<"), btn -> { page--; this.rebuildWidgets(); })
-                    .bounds(right - 18 - 2 - 18, bodyY + 1, 18, 18).build());
-            next.active = page < pages - 1;
-            prev.active = page > 0;
-            pageLabelX = right - 18 - 2 - 18 - 4 - this.font.width(label);
-            pageLabelY = bodyY + 6;
-            right = pageLabelX - 4;
+        // page buttons (only when there is more than one page), at the right end of the chip row
+        int searchEnd = px + pw - PAD;
+        if (pageCount > 1) {
+            int nextX = px + pw - PAD - 20;
+            add(Button.builder(Component.literal(">"), btn -> changePage(1)).bounds(nextX, bodyY, 20, 20).build());
+            add(Button.builder(Component.literal("<"), btn -> changePage(-1)).bounds(nextX - 22, bodyY, 20, 20).build());
+            searchEnd = nextX - 22 - 4 - this.font.width("9/9") - 4;
         }
-
-        box = new EditBox(this.font, sx + 4 + 12, bodyY + 6, Math.max(24, right - sx - 8 - 12), 12, Component.literal("Search"));
+        int sx = x + 4;
+        box = new EditBox(this.font, sx + 4 + 12, bodyY + 6, Math.max(20, searchEnd - sx - 8 - 12), 12, Component.literal("Search"));
         box.setBordered(false);
         box.setMaxLength(20);
         box.setValue(search);
@@ -155,8 +148,8 @@ public class LunarMenu extends Screen {
         add(box);
         if (refocus) { this.setInitialFocus(box); refocus = false; }
 
-        for (int i = 0; i < onPage.size(); i++) {
-            HudMod mod = onPage.get(i);
+        for (int i = 0; i < pageMods.size(); i++) {
+            HudMod mod = pageMods.get(i);
             int cx = mainX + (i % COLS) * (cardW + GAP), cy = gridY + (i / COLS) * (CARD_H + GAP);
             int by = cy + CARD_H - 4 - BTN;
             add(Button.builder(Component.literal(LunarHud.CORNERS[mod.corner()].toUpperCase(Locale.ROOT)), btn -> {
@@ -193,6 +186,22 @@ public class LunarMenu extends Screen {
                 .bounds(x, y, w, 20).build());
     }
 
+    private void changePage(int delta) {
+        int next = Math.max(0, Math.min(page + delta, pageCount - 1));
+        if (next == page) return;
+        page = next;
+        this.rebuildWidgets();
+    }
+
+    /** Mouse wheel flips the mod pages. */
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (tab == 0 && pageCount > 1 && scrollY != 0) {
+            changePage(scrollY > 0 ? -1 : 1);
+            return true;
+        }
+        return false;
+    }
+
     private <T extends AbstractWidget> T add(T widget) {
         widgets.add(widget);
         return this.addRenderableWidget(widget);
@@ -212,9 +221,13 @@ public class LunarMenu extends Screen {
         if (tab != 0) return;
         Ui.inputBox(g, box);
         Ui.txt(g, this.font, "/", box.getX() - 10, bodyY + 6, Ui.MUTED, false);
-        if (pages > 1) Ui.txt(g, this.font, (page + 1) + "/" + pages, pageLabelX, pageLabelY, Ui.MUTED, false);
-        for (int i = 0; i < onPage.size(); i++) {
-            HudMod mod = onPage.get(i);
+        if (pageCount > 1) {
+            String label = (page + 1) + "/" + pageCount;
+            int nextX = px + pw - PAD - 20;
+            Ui.txt(g, this.font, label, nextX - 22 - 4 - this.font.width(label), bodyY + 6, Ui.MUTED, false);
+        }
+        for (int i = 0; i < pageMods.size(); i++) {
+            HudMod mod = pageMods.get(i);
             int cx = mainX + (i % COLS) * (cardW + GAP), cy = gridY + (i / COLS) * (CARD_H + GAP);
             Ui.box(g, cx, cy, cardW, CARD_H, Ui.BTN_BORDER, Ui.BTN, 0, 0);
             int col = mod.enabled() ? Ui.TEXT : Ui.MUTED;
@@ -236,16 +249,21 @@ public class LunarMenu extends Screen {
                 Ui.fill(g, x + 13, y + 6, x + 15, y + 16, c); Ui.fill(g, x + 13, y + 14, x + 21, y + 16, c); }
             case "sprint" -> { for (int i = 0; i < 2; i++) { int o = i * 10; Ui.fill(g, x + 4 + o, y + 4, x + 8 + o, y + 10, c); Ui.fill(g, x + 8 + o, y + 10, x + 12 + o, y + 18, c); Ui.fill(g, x + 4 + o, y + 18, x + 8 + o, y + 24, c); } }
             case "coords" -> { Ui.fill(g, x + 13, y + 2, x + 15, y + 16, c); Ui.fill(g, x + 3, y + 22, x + 14, y + 24, c); Ui.fill(g, x + 14, y + 16, x + 24, y + 18, c); Ui.fill(g, x + 22, y + 22, x + 26, y + 26, c); }
-            case "keys" -> { Ui.fill(g, x + 10, y + 2, x + 18, y + 10, c);
-                for (int i = 0; i < 3; i++) Ui.fill(g, x + 1 + i * 9, y + 12, x + 9 + i * 9, y + 20, c);
-                Ui.fill(g, x + 1, y + 22, x + 27, y + 26, c); }
-            case "armor" -> { Ui.fill(g, x + 2, y + 4, x + 10, y + 12, c); Ui.fill(g, x + 18, y + 4, x + 26, y + 12, c); Ui.fill(g, x + 8, y + 10, x + 20, y + 26, c); }
-            case "potions" -> { Ui.fill(g, x + 10, y + 1, x + 18, y + 4, c); Ui.fill(g, x + 11, y + 4, x + 17, y + 11, c); Ui.fill(g, x + 6, y + 11, x + 22, y + 27, c); }
-            case "compass" -> { Ui.fill(g, x + 3, y + 3, x + 25, y + 5, c); Ui.fill(g, x + 3, y + 23, x + 25, y + 25, c);
-                Ui.fill(g, x + 3, y + 5, x + 5, y + 23, c); Ui.fill(g, x + 23, y + 5, x + 25, y + 23, c);
-                Ui.fill(g, x + 13, y + 8, x + 15, y + 20, c); Ui.fill(g, x + 11, y + 8, x + 17, y + 10, c); }
-            case "biome" -> { Ui.fill(g, x + 11, y + 2, x + 17, y + 8, c); Ui.fill(g, x + 8, y + 8, x + 20, y + 14, c);
-                Ui.fill(g, x + 5, y + 14, x + 23, y + 20, c); Ui.fill(g, x + 12, y + 20, x + 16, y + 27, c); }
+            case "keystrokes" -> { Ui.fill(g, x + 9, y + 2, x + 19, y + 12, c);
+                Ui.fill(g, x + 2, y + 14, x + 12, y + 24, c); Ui.fill(g, x + 16, y + 14, x + 26, y + 24, c);
+                Ui.fill(g, x + 4, y + 26, x + 24, y + 28, c); }
+            case "armor" -> { Ui.fill(g, x + 4, y + 2, x + 24, y + 8, c); Ui.fill(g, x + 4, y + 8, x + 9, y + 14, c);
+                Ui.fill(g, x + 19, y + 8, x + 24, y + 14, c); Ui.fill(g, x + 6, y + 14, x + 22, y + 22, c);
+                Ui.fill(g, x + 10, y + 22, x + 18, y + 28, c); }
+            case "potions" -> { Ui.fill(g, x + 11, y + 2, x + 17, y + 8, c); Ui.fill(g, x + 13, y + 8, x + 15, y + 12, c);
+                Ui.fill(g, x + 7, y + 12, x + 21, y + 14, c); Ui.fill(g, x + 4, y + 14, x + 24, y + 28, c);
+                Ui.fill(g, x + 6, y + 20, x + 22, y + 26, Ui.BTN); }
+            case "compass" -> { Ui.fill(g, x + 13, y + 2, x + 15, y + 8, c); Ui.fill(g, x + 2, y + 13, x + 8, y + 15, c);
+                Ui.fill(g, x + 20, y + 13, x + 26, y + 15, c); Ui.fill(g, x + 13, y + 20, x + 15, y + 26, c);
+                Ui.fill(g, x + 11, y + 11, x + 17, y + 17, c); }
+            case "biome" -> { Ui.fill(g, x + 2, y + 24, x + 26, y + 28, c); Ui.fill(g, x + 4, y + 16, x + 12, y + 24, c);
+                Ui.fill(g, x + 8, y + 8, x + 16, y + 16, c); Ui.fill(g, x + 14, y + 14, x + 24, y + 24, c);
+                Ui.fill(g, x + 20, y + 2, x + 26, y + 8, c); }
             default -> Ui.txt(g, this.font, id.substring(0, 1).toUpperCase(Locale.ROOT), cxm - 3, y + 10, c, false);
         }
     }
@@ -272,16 +290,6 @@ public class LunarMenu extends Screen {
                     Ui.txt(g, this.font, label, x + 8, y + (bh - 8) / 2 + 1, on ? Ui.TEXT : Ui.MUTED, false); }
             }
         }
-    }
-
-    /** Mouse wheel flips the pages of the mods grid. */
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (tab == 0 && pages > 1 && scrollY != 0) {
-            int next = Math.max(0, Math.min(pages - 1, page + (scrollY > 0 ? -1 : 1)));
-            if (next != page) { page = next; this.rebuildWidgets(); }
-            return true;
-        }
-        return false;
     }
 
     @Override

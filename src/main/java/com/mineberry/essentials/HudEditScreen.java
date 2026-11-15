@@ -31,19 +31,19 @@ public class HudEditScreen extends Screen {
             String hint = "Click a mod to move it to the next corner";
             Ui.txt(g, this.font, hint, (this.width - this.font.width(hint)) / 2, this.height / 2 - 4, Ui.TEXT, true);
         });
-        int[] used = new int[4], shift = new int[4], wide = new int[4];   // see LunarHud#draw: full columns wrap beside each other
+        int[] used = new int[4], shift = new int[4], colW = new int[4];
         for (HudMod mod : LunarHud.MODS) {
             if (!mod.enabled()) continue;
             int corner = mod.corner(), w = this.font.width(mod.name()) + PAD * 2 + 4;
-            if (used[corner] > 0 && used[corner] + H > this.height - EDGE * 2) {
-                shift[corner] += wide[corner] + GAP;
+            if (used[corner] > 0 && used[corner] + H > this.height - EDGE * 2) {   // column full: start the next one
+                shift[corner] += colW[corner] + GAP;
                 used[corner] = 0;
-                wide[corner] = 0;
+                colW[corner] = 0;
             }
-            int x = corner % 2 == 0 ? EDGE + shift[corner] : this.width - EDGE - w - shift[corner];
+            int x = corner % 2 == 0 ? EDGE + shift[corner] : this.width - EDGE - shift[corner] - w;
             int y = corner < 2 ? EDGE + used[corner] : this.height - EDGE - H - used[corner];
             used[corner] += H + GAP;
-            wide[corner] = Math.max(wide[corner], w);
+            colW[corner] = Math.max(colW[corner], w);
             Button b = Button.builder(Component.literal(mod.name()), btn -> {
                 mod.nextCorner();
                 LunarHud.sync();

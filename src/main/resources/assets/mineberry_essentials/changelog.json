@@ -1,6 +1,35 @@
 {
   "versions": [
     {
+      "version": "1.4.0",
+      "title": "New HUD modules and Safe Logout",
+      "sections": {
+        "New": [
+          "Five new HUD modules: Keystrokes / CPS, Armor Status, Potion Effects, Compass and Biome / Time. They are off by default, turn them on from their cards.",
+          "Safe Logout: quitting is guarded for 30 seconds after combat, so you can't leave a fight by accident."
+        ],
+        "Improved": [
+          "The HUD menu has < > page buttons (or use the mouse wheel) when there are more modules than fit.",
+          "When a screen corner is full, the next HUD modules start a second column instead of going off screen."
+        ],
+        "Fixed": [
+          "Fixes for Minecraft 26.2 (Safe Logout and the pause menu guard)."
+        ]
+      }
+    },
+    {
+      "version": "1.3.1",
+      "title": "Update checker",
+      "sections": {
+        "New": [
+          "A Check for updates button in the Tools tab. It works even if automatic checking is turned off."
+        ],
+        "Improved": [
+          "The update checker no longer depends on GitHub's rate-limited API, so it keeps working on shared networks."
+        ]
+      }
+    },
+    {
       "version": "1.3.0",
       "title": "What's New popup",
       "sections": {

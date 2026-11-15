@@ -17,6 +17,8 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 - **Five new HUD modules:** **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time** (see [MineBerry Client (HUD)](#mineberry-client-hud))
 - **HUD menu pages:** the Mods tab now has `<` `>` page buttons (or use the mouse wheel) when there are more modules than fit
 - **Smarter HUD layout:** when a screen corner is full, the next modules start a second column instead of going off screen
+- **Safe Logout:** quitting is guarded for a few seconds after combat, so you can't leave a fight by accident (see [Safe Logout](#safe-logout))
+- **What's New popup:** after an update, a popup shows what changed, once (see [What's New Popup](#whats-new-popup))
 - Fixes for Minecraft 26.2 (Safe Logout and the pause menu guard)
 
 ## What's New in 1.3.1
@@ -122,6 +124,14 @@ Know when there is a new version without checking GitHub yourself.
 - Nothing is downloaded or installed automatically, you only get a link
 - Turn it off any time with `"checkForUpdates": false` in the config file
 
+### What's New Popup
+See what changed after you update the mod.
+- After you update, a popup shows the changes the first time you start the game on the new version
+- It shows only once per version
+- Read the notes again any time with the **What's New** button in the Tools tab
+- It does not appear on a fresh install, since nothing is new yet
+- Turn it off with `"showChangelog": false` in the config file
+
 ### Clan, Admin and Party Chat
 Switch your normal chat into a channel with one key.
 - `J` toggles Clan Chat (`/cc <message>`)
@@ -149,6 +159,17 @@ Get out of trouble instantly.
 - Press **Right Alt** to send `/spawn`
 - **Pit guard:** after a sudden large teleport, the mod detects whether you were dropped into a tight pit and escapes automatically
 - Ordinary caves and corners will not trigger it
+
+### Safe Logout
+Don't quit in the middle of a fight by accident.
+- After a hit, quitting is guarded for **30 seconds** (`combatSeconds`). The guard ends sooner if the server's combat-end message appears
+- Two modes, set with `safeLogoutMode`:
+  - `warn` (default): the first try is refused, a second click quits
+  - `block`: quitting is blocked until combat is over
+- A title message tells you whether quitting is blocked or needs a second click
+- The pause menu is guarded too
+- The chat line that ends combat is editable via `combatEndPattern`
+- The gear on the Safe Logout card switches between the two modes
 
 ### TP Danger Escape
 Protection against `/tpahere` traps.
@@ -238,6 +259,8 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - The spawn command
 - The theme
 - The PvP detection pattern
+- Safe Logout: how long combat lasts (`combatSeconds`, default 30), the mode (`safeLogoutMode`: `warn` or `block`) and the combat-end chat line (`combatEndPattern`)
+- The What's New popup (`showChangelog`, on by default)
 - Update checking (`checkForUpdates`, on by default)
 - Gradient generator colors, format and styles (saved automatically when you use it)
 - Your waypoints
@@ -269,6 +292,12 @@ Set `"checkForUpdates": false` in `config/mineberry_essentials.json`. You can st
 
 **The update check says "Couldn't reach GitHub".**
 You are offline, or GitHub is blocked on your network. Press **Check for updates** again later. You can always look at the [releases page](https://github.com/aerys-ex/mineberry-essentials/releases) yourself.
+
+**I do not want the What's New popup.**
+Set `"showChangelog": false` in `config/mineberry_essentials.json`.
+
+**Safe Logout blocks me for too long, or not long enough.**
+Change `combatSeconds` in `config/mineberry_essentials.json`. Set `safeLogoutMode` to `block` or `warn` to change how it reacts.
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.

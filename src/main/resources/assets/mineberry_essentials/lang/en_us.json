@@ -1,5 +1,7 @@
 {
   "key.category.mineberry_essentials.keys": "MineBerry Essentials",
   "key.mineberry_essentials.open_menu": "Open mod menu",
-  "key.mineberry_essentials.toggle_hud": "Show / hide HUD"
+  "key.mineberry_essentials.toggle_hud": "Show / hide HUD",
+  "key.category.mineberry_essentials.lunar_menu": "MineBerry Client (HUD)",
+  "key.mineberry_essentials.lunar_menu": "Open MineBerry Client (HUD)"
 }

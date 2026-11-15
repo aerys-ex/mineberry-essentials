@@ -45,8 +45,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Config.load();
-		Changelog.init();        // "What's New" popup after an update; before the update checker so it opens first
-		UpdateChecker.init();    // "new version available" popup + chat message
+		Changelog.init();   // the "What's New" popup after an update
 
 		openPanelKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.mineberry_essentials.open_panel",
