@@ -1,7 +1,21 @@
 {
+  "key.category.mineberry_essentials.main": "MineBerry Essentials",
   "key.category.mineberry_essentials.keys": "MineBerry Essentials",
+  "key.mineberry_essentials.open_panel": "Open control panel",
   "key.mineberry_essentials.open_menu": "Open mod menu",
   "key.mineberry_essentials.toggle_hud": "Show / hide HUD",
+  "key.mineberry_essentials.toggle_clan": "Toggle clan chat",
+  "key.mineberry_essentials.toggle_admin": "Toggle admin chat",
+  "key.mineberry_essentials.toggle_party": "Toggle party chat",
+  "key.mineberry_essentials.quick_reply": "Quick reply (/r)",
+  "key.mineberry_essentials.spawn_escape": "Spawn escape",
+  "key.mineberry_essentials.add_waypoint": "Add waypoint here",
+  "key.mineberry_essentials.waypoint_menu": "Open waypoint list",
+  "key.mineberry_essentials.confirm_abuse": "Evidence: confirm report",
+  "key.mineberry_essentials.skip_abuse": "Evidence: skip report",
+  "key.mineberry_essentials.screenshot": "Screenshot (copy to clipboard)",
+  "key.mineberry_essentials.screenshots_menu": "Open screenshots",
+  "key.mineberry_essentials.chat_search": "Search chat history",
   "key.category.mineberry_essentials.lunar_menu": "MineBerry Client (HUD)",
   "key.mineberry_essentials.lunar_menu": "Open MineBerry Client (HUD)"
 }

@@ -39,7 +39,7 @@ public class PanelScreen extends Screen {
     private static final String[] CATEGORIES = {"All", "Chat", "Safety", "Tools"};
     private static final Map<String, String> CATEGORY_OF = Map.ofEntries(
             Map.entry("clan_chat", "Chat"), Map.entry("admin_chat", "Chat"), Map.entry("party_chat", "Chat"),
-            Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"),
+            Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"), Map.entry("chat_search", "Chat"),
             Map.entry("spawn_escape", "Safety"), Map.entry("tp_danger_escape", "Safety"), Map.entry("safe_logout", "Safety"),
             Map.entry("evidence", "Tools"), Map.entry("worldeditcui", "Tools"), Map.entry("waypoints", "Tools"));
 
@@ -141,6 +141,12 @@ public class PanelScreen extends Screen {
             if (module.id().equals("waypoints")) {
                 gearHint = "Open the waypoint list";
                 gearAction = () -> this.minecraft.gui.setScreen(new WaypointScreen(this));
+            } else if (module.id().equals("chat_search")) {
+                gearHint = "Open chat search";
+                gearAction = () -> this.minecraft.gui.setScreen(new ChatSearchScreen(this));
+            } else if (module.id().equals("screenshot")) {
+                gearHint = "Open your screenshots";
+                gearAction = () -> this.minecraft.gui.setScreen(new ScreenshotScreen(this));
             } else if (module.id().equals("safe_logout")) {
                 gearHint = "Switch mode: warn or block";
                 gearAction = () -> {
@@ -172,12 +178,12 @@ public class PanelScreen extends Screen {
     }
 
     private void initTopBar() {
-        String[] names = {"MODULES", "TOOLS"};
+        String[] names = {"MODULES", "TOOLS", "SCREENSHOTS"};
         int x = px;
         for (int i = 0; i < names.length; i++) {
             final int target = i;
             int w = this.font.width(names[i]) + 24;
-            pageTabs.add(add(Button.builder(Component.literal(names[i]), button -> switchPage(target))
+            pageTabs.add(add(Button.builder(Component.literal(names[i]), button -> { if (target == 2) this.minecraft.gui.setScreen(new ScreenshotScreen(this)); else switchPage(target); })
                     .bounds(x, topY, w, TOP_H).build()));
             x += w + 4;
         }

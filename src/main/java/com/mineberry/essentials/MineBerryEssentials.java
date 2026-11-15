@@ -3,11 +3,13 @@ package com.mineberry.essentials;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.modules.AdminChatModule;
 import com.mineberry.essentials.modules.ChatExtrasModule;
+import com.mineberry.essentials.modules.ChatSearchModule;
 import com.mineberry.essentials.modules.ClanChatModule;
 import com.mineberry.essentials.modules.EvidenceModule;
 import com.mineberry.essentials.modules.PartyChatModule;
 import com.mineberry.essentials.modules.QuickReplyModule;
 import com.mineberry.essentials.modules.SafeLogoutModule;
+import com.mineberry.essentials.modules.ScreenshotModule;
 import com.mineberry.essentials.modules.SpawnEscapeModule;
 import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
@@ -63,6 +65,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new AdminChatModule());
 		register(new PartyChatModule());
 		register(new ChatExtrasModule());
+		register(new ChatSearchModule());
 		register(new QuickReplyModule());
 		register(new SpawnEscapeModule());
 		register(new TpDangerEscapeModule());
@@ -70,6 +73,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new EvidenceModule());
 		register(new WorldEditCuiModule());
 		register(new WaypointsModule());
+		register(new ScreenshotModule());
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			boolean hurt = client.player != null && client.player.hurtTime > 0;

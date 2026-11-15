@@ -59,10 +59,10 @@ public final class Config {
     }
 
     /** Regex (case-insensitive) for the server's "you entered PvP mode" chat line. Editable in the config file. */
-    public static final String DEFAULT_PVP_MODE = "pvp mode|combat mode|combat tag|entered combat";
+    public static final String DEFAULT_PVP_MODE = "entered pvp mode|pvp mode|combat mode|combat tag|entered combat";
 
     /** Regex (case-insensitive) for the server's "you left combat" chat line. Editable in the config file. */
-    public static final String DEFAULT_COMBAT_END = "no longer in combat|left combat|combat ended|combat is over|you may now log out";
+    public static final String DEFAULT_COMBAT_END = "out of pvp mode|no longer in combat|left combat|combat ended|combat is over|you may now log out";
 
     private static Data data = new Data();
     private static boolean freshInstall = false;

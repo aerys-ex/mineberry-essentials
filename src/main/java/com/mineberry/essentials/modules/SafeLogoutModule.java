@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -18,8 +17,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 
@@ -30,28 +27,23 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Stops accidental combat-logging.
  *
- * "In combat" starts when you hit a player, when you take damage with another player close by, or when the server
- * prints its PvP/combat line (the same regex the Evidence Recorder uses, "pvpModePattern" in the config). It ends after
- * "combatSeconds" without a new hit, when you die, or when the server says combat is over ("combatEndPattern").
+ * The server tells us when PvP mode starts ("You've entered PvP mode!...") and when it ends ("You're out of PvP mode!..."),
+ * so nothing is counted here: you are "in combat" from the first line until the second one (or until you die / disconnect).
  *
  * While in combat, on a multiplayer server, the quit paths are guarded:
  *  - the pause menu's Disconnect button,
  *  - the window's close button / Alt+F4.
  * Mode "warn": the first try is refused and arms the button for a few seconds, a second try goes through.
- * Mode "block": quitting is refused until combat ends. (Switch with the gear on the module card.)
- *
- * Nothing here touches the game's quit code: the pause menu button is swapped for a look-alike that only lets the
- * real one through when it is safe, and the window close request is cancelled the way GLFW intends.
- * Crashes, kicks and killing the process are of course not (and cannot be) affected.
+ * Mode "block": quitting is refused until the server says PvP mode is over. (Switch with the gear on the module card.)
  */
 public class SafeLogoutModule extends MineBerryModule {
 
     private static final long ARM_MS = 4_000;           // how long the second click is accepted
-    private static final double NEARBY_PLAYER_SQR = 10.0 * 10.0;
+    /** Always treated as "PvP mode is over", even if an old config file still has an older end pattern. */
+    private static final Pattern BUILTIN_END = Pattern.compile("out of pvp mode", Pattern.CASE_INSENSITIVE);
 
-    private long combatUntil;                           // ms timestamp, 0 = not in combat
+    private boolean inCombat;                           // set and cleared only by the server's PvP mode messages
     private boolean wasInCombat;
-    private boolean wasHurt;
     private long pauseArmedUntil, closeArmedUntil;
 
     private Pattern pvpMode, combatEnd;
@@ -82,14 +74,6 @@ public class SafeLogoutModule extends MineBerryModule {
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> { if (!overlay) onMessage(message); });
         ClientReceiveMessageEvents.CHAT.register((message, signed, sender, params, timestamp) -> onMessage(message));
 
-        // you hit a player
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hit) -> {
-            if (world.isClientSide() && enabled() && entity instanceof Player other && other != player && !other.isSpectator()) {
-                tag();
-            }
-            return InteractionResult.PASS;
-        });
-
         // the pause menu: put a guard in front of its Disconnect button
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
             if (screen instanceof PauseScreen) installGuard(screen);
@@ -103,7 +87,7 @@ public class SafeLogoutModule extends MineBerryModule {
 
     /** True while the quit guards apply. */
     private boolean inCombat() {
-        return combatUntil > System.currentTimeMillis();
+        return inCombat;
     }
 
     private boolean guarding(Minecraft mc) {
@@ -111,13 +95,12 @@ public class SafeLogoutModule extends MineBerryModule {
     }
 
     private void tag() {
-        combatUntil = System.currentTimeMillis() + Config.combatSeconds() * 1000L;
+        inCombat = true;
     }
 
     private void reset() {
-        combatUntil = 0;
+        inCombat = false;
         wasInCombat = false;
-        wasHurt = false;
         pauseArmedUntil = 0;
         closeArmedUntil = 0;
     }
@@ -125,8 +108,9 @@ public class SafeLogoutModule extends MineBerryModule {
     private void onMessage(Component message) {
         if (!enabled()) return;
         String text = message.getString();
-        if (combatEnd().matcher(text).find()) {
-            combatUntil = 0;                // the server says it is over; the tick prints the "safe to quit" line
+        // the end message is checked first: "out of PvP mode" also contains "PvP mode"
+        if (BUILTIN_END.matcher(text).find() || combatEnd().matcher(text).find()) {
+            inCombat = false;               // the server says it is over; the tick prints the "safe to quit" line
         } else if (pvpMode().matcher(text).find()) {
             tag();
         }
@@ -139,29 +123,17 @@ public class SafeLogoutModule extends MineBerryModule {
             reset();
             return;
         }
-        if (!mc.player.isAlive()) combatUntil = 0;
-
-        // you were hit with another player close by
-        boolean hurt = mc.player.hurtTime > 0;
-        if (hurt && !wasHurt && enabled() && playerNearby(mc)) tag();
-        wasHurt = hurt;
+        if (!mc.player.isAlive()) inCombat = false;
 
         boolean now = inCombat();
         if (enabled() && now != wasInCombat && !mc.isLocalServer()) {
-            say(mc, now ? "In combat - quitting is guarded for " + Config.combatSeconds() + "s after the last hit"
-                        : "Combat over - safe to quit", now ? ChatFormatting.RED : ChatFormatting.GREEN);
+            say(mc, now ? "In PvP mode - quitting is guarded until the server says you're out"
+                        : "Out of PvP mode - safe to quit", now ? ChatFormatting.RED : ChatFormatting.GREEN);
         }
         wasInCombat = now;
         if (!now) { pauseArmedUntil = 0; closeArmedUntil = 0; }
 
         syncPauseGuard(mc);
-    }
-
-    private static boolean playerNearby(Minecraft mc) {
-        for (Player other : mc.level.players()) {
-            if (other != mc.player && !other.isSpectator() && other.distanceToSqr(mc.player) <= NEARBY_PLAYER_SQR) return true;
-        }
-        return false;
     }
 
     // ---------------------------------------------------------------- pause menu guard
@@ -207,7 +179,6 @@ public class SafeLogoutModule extends MineBerryModule {
         boolean guarded = guarding(mc);
         boolean block = Config.safeLogoutMode().equals("block");
         boolean armed = guarded && !block && pauseArmedUntil > now;
-        long secs = Math.max(0, (combatUntil - now + 999) / 1000);
 
         if (!guarded) {                                     // free to leave: the real button, untouched
             pauseArmedUntil = 0;
@@ -215,13 +186,13 @@ public class SafeLogoutModule extends MineBerryModule {
             show(g.original, true, true);
             show(g.fake, false, false);
         } else if (armed) {                                 // second click goes through to the real button
-            g.original.setMessage(Component.literal("Quit anyway! (" + secs + "s in combat)").withStyle(ChatFormatting.RED));
+            g.original.setMessage(Component.literal("Quit anyway! (in PvP mode)").withStyle(ChatFormatting.RED));
             show(g.original, true, true);
             show(g.fake, false, false);
         } else {
             g.original.setMessage(g.originalLabel);
             show(g.original, false, false);
-            g.fake.setMessage(Component.literal(block ? "Can't quit: in combat (" + secs + "s)" : "In combat! Click to unlock (" + secs + "s)")
+            g.fake.setMessage(Component.literal(block ? "Can't quit: in PvP mode" : "In PvP mode! Click to unlock")
                     .withStyle(ChatFormatting.RED));
             show(g.fake, true, !block);
         }
@@ -249,12 +220,11 @@ public class SafeLogoutModule extends MineBerryModule {
             boolean block = Config.safeLogoutMode().equals("block");
             if (!block && closeArmedUntil > now) return;    // second try in time: let it close
             GLFW.glfwSetWindowShouldClose(w, false);        // cancel this close request
-            long secs = Math.max(0, (combatUntil - now + 999) / 1000);
             if (block) {
-                say(mc, "You're in combat - can't close the game for another " + secs + "s", ChatFormatting.RED);
+                say(mc, "You're in PvP mode - can't close the game until the server says you're out", ChatFormatting.RED);
             } else {
                 closeArmedUntil = now + ARM_MS;
-                say(mc, "You're in combat (" + secs + "s)! Close again within " + (ARM_MS / 1000) + "s to quit anyway", ChatFormatting.RED);
+                say(mc, "You're in PvP mode! Close again within " + (ARM_MS / 1000) + "s to quit anyway", ChatFormatting.RED);
             }
         });
         GLFW.glfwSetWindowCloseCallback(window, closeCallback);
@@ -267,8 +237,7 @@ public class SafeLogoutModule extends MineBerryModule {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.isLocalServer() || !inCombat()) return;
         var font = mc.font;
-        long secs = Math.max(0, (combatUntil - System.currentTimeMillis() + 999) / 1000);
-        String title = "IN COMBAT: " + secs + "s";
+        String title = "IN PVP MODE";
         String subtitle = Config.safeLogoutMode().equals("block") ? "Quitting is blocked" : "Quitting needs a second click";
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;

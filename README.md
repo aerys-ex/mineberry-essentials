@@ -12,6 +12,15 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
+## What's New in 1.4.5
+
+- **Screenshot:** press `F9` to take a screenshot and copy it to your clipboard as an image, ready to paste into Discord (see [Screenshot](#screenshot))
+- **Screenshots tab:** see your screenshots, copy or open any of them
+- **Chat Search:** press `F8` to search the chat you received this session (see [Chat Search](#chat-search))
+- **Safe Logout** now follows the server's PvP mode messages instead of a 30 second timer (see [Safe Logout](#safe-logout))
+- Fixed Safe Logout re-entering combat right after the server said you were out of PvP mode
+- Fixed keybind names in the controls menu
+
 ## What's New in 1.4.0
 
 - **Five new HUD modules:** **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time** (see [MineBerry Client (HUD)](#mineberry-client-hud))
@@ -50,6 +59,20 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 |---|---|
 | ![Gradient Generator](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s3.png) | ![Waypoints](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s5.png) |
 
+**Screenshots and Chat Search**
+
+| Screenshots | Chat Search |
+|---|---|
+| ![Screenshots](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/screenshots-screen.png) | ![Chat Search](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/chat-search.png) |
+
+**Safe Logout**
+
+![Safe Logout HUD box](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/safe-logout.png)
+
+**What's New popup**
+
+![What's New popup](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/whats-new.png)
+
 **MineBerry Client (HUD)**
 
 ![MineBerry Client HUD menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/hud.png)
@@ -73,8 +96,9 @@ One panel with a card for every module.
 - **Category tabs:** All, Chat, Safety and Tools
 - **Search box** to find a module by name, and a **Reset** button to clear the category and search
 - **Hover** a card to see what it does
-- **Settings gear** on cards that have settings (Waypoints, WorldEdit CUI)
+- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search, WorldEdit CUI)
 - Scrollbar and mouse wheel scrolling when there are more modules than fit on screen
+- **Screenshots tab:** opens your screenshot list (see [Screenshot](#screenshot))
 - **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons. A small orange dot on the tab shows when an update is available
 - **Close on danger** and **Chat timestamps** are regular cards in the grid
 - Themes: the default **dark grey with orange**, plus **Aurora**, **Ember** and **Midnight**
@@ -154,6 +178,16 @@ Reply to private messages faster. This is its own module with its own card in th
 - On by default, and your existing `R` keybind carries over
 - Rebind it under *Options > Controls > Key Binds*
 
+### Chat Search
+Find something you saw in chat.
+- Press `F8` to open the search
+- Type a word, a player name or coordinates. Results update as you type, newest first
+- A line must contain **every word** you type, in any order, ignoring case
+- **Copy** puts the full line on your clipboard, handy for coordinates
+- Remembers the last 3000 chat lines **in memory only**. Nothing is saved to disk, and it is cleared when you leave a server
+- It only sees chat received after the game started, not older messages
+- Open it from the gear on the Chat Search card too, and rebind the key under *Options > Controls > Key Binds*
+
 ### Spawn Escape
 Get out of trouble instantly.
 - Press **Right Alt** to send `/spawn`
@@ -162,13 +196,13 @@ Get out of trouble instantly.
 
 ### Safe Logout
 Don't quit in the middle of a fight by accident.
-- After a hit, quitting is guarded for **30 seconds** (`combatSeconds`). The guard ends sooner if the server's combat-end message appears
+- Follows the server's PvP mode messages: you are guarded from *"You've entered PvP mode!"* until *"You're out of PvP mode!"*. The mod does not count time itself. It also ends if you die or disconnect
 - Two modes, set with `safeLogoutMode`:
   - `warn` (default): the first try is refused, a second click quits
-  - `block`: quitting is blocked until combat is over
-- A title message tells you whether quitting is blocked or needs a second click
-- The pause menu is guarded too
-- The chat line that ends combat is editable via `combatEndPattern`
+  - `block`: quitting is blocked until the server says you are out of PvP mode
+- A red **IN PVP MODE** box on the HUD tells you whether quitting is blocked or needs a second click
+- The pause menu **Disconnect** button and **Alt+F4** are guarded
+- The chat lines are editable via `pvpModePattern` (start) and `combatEndPattern` (end)
 - The gear on the Safe Logout card switches between the two modes
 
 ### TP Danger Escape
@@ -188,6 +222,14 @@ Everything you need for a staff report, captured automatically.
 - Each incident is bundled into a **report zip** containing the screenshots, an evidence log and `HOW_TO_REPORT.txt`, ready to attach to a staff ticket
 - The **Export** button in the Tools tab rebuilds the latest report at any time
 - The chat line it listens for is editable via `pvpModePattern`
+
+### Screenshot
+Take a screenshot and paste it straight into Discord.
+- Press `F9` to take a screenshot. It is saved in `screenshots/mineberry` **and copied to your clipboard as an image**, so `Ctrl+V` pastes it
+- A chat line confirms the copy. If the image can't be copied, the file path is copied instead
+- The **Screenshots** tab (or the gear on the Screenshot card) lists your screenshots, newest first, including normal `F2` ones
+- **Copy** puts any screenshot on your clipboard, **Open** shows it in your image viewer. There are also **Open folder** and **Refresh** buttons
+- The copy uses your system's tools: PowerShell on Windows, `osascript` on macOS, and `wl-copy` or `xclip` on Linux (install one of them)
 
 ### Waypoints
 - Waypoints are drawn as outlined boxes with a tall beam, **visible through walls**
@@ -218,6 +260,8 @@ Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 | Toggle Party Chat | `X` |
 | Quick Reply (`/r`) | `R` |
 | Show / Hide HUD | `Y` |
+| Screenshot (copy to clipboard) | `F9` |
+| Search Chat | `F8` |
 | Add Waypoint Here | `B` |
 | Open Waypoint List | `N` |
 | Abuse Alert: Confirm / Skip | `-` / `=` |
@@ -259,7 +303,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - The spawn command
 - The theme
 - The PvP detection pattern
-- Safe Logout: how long combat lasts (`combatSeconds`, default 30), the mode (`safeLogoutMode`: `warn` or `block`) and the combat-end chat line (`combatEndPattern`)
+- Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
 - The What's New popup (`showChangelog`, on by default)
 - Update checking (`checkForUpdates`, on by default)
 - Gradient generator colors, format and styles (saved automatically when you use it)
@@ -296,8 +340,11 @@ You are offline, or GitHub is blocked on your network. Press **Check for updates
 **I do not want the What's New popup.**
 Set `"showChangelog": false` in `config/mineberry_essentials.json`.
 
-**Safe Logout blocks me for too long, or not long enough.**
-Change `combatSeconds` in `config/mineberry_essentials.json`. Set `safeLogoutMode` to `block` or `warn` to change how it reacts.
+**Safe Logout blocks me even though the fight is over.**
+It waits for the server's *"You're out of PvP mode!"* message. If your server words it differently, change `combatEndPattern` in `config/mineberry_essentials.json`. Set `safeLogoutMode` to `block` or `warn` to change how it reacts.
+
+**The screenshot was not copied as an image.**
+Your system's copy tool may be missing. On Linux install `xclip` (or `wl-copy` on Wayland). The file path is copied as text instead, and the screenshot is still saved in `screenshots/mineberry`.
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.

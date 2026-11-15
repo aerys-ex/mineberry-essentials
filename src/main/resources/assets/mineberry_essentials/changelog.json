@@ -1,6 +1,24 @@
 {
   "versions": [
     {
+      "version": "1.4.5",
+      "title": "Screenshots and Chat Search",
+      "sections": {
+        "New": [
+          "Screenshot: press F9 to take a screenshot and copy it to your clipboard as an image, ready to paste into Discord.",
+          "Screenshots tab: see your screenshots, copy or open any of them.",
+          "Chat Search: press F8 to search your chat history. Copy any line with one click."
+        ],
+        "Improved": [
+          "Safe Logout now follows the server's PvP mode messages instead of a 30 second timer."
+        ],
+        "Fixed": [
+          "Safe Logout no longer re-enters combat after the server says you're out of PvP mode.",
+          "Keybind names now show properly in the controls menu."
+        ]
+      }
+    },
+    {
       "version": "1.4.0",
       "title": "New HUD modules and Safe Logout",
       "sections": {
