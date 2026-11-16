@@ -31,7 +31,7 @@ public class SpawnEscapeModule extends MineBerryModule {
     private long lastSpawnMs;
 
     public SpawnEscapeModule() {
-        super("spawn_escape", "Spawn Escape", "Right Alt: /spawn; auto-escapes a teleport pit");
+        super("spawn_escape", "Spawn Escape", "Right Alt: /spawn + pit guard. Can fire when a friend teleports you (tpa)");
     }
 
     @Override
@@ -44,6 +44,20 @@ public class SpawnEscapeModule extends MineBerryModule {
 
         HudElementRegistry.addLast(MineBerryEssentials.id("spawn_escape_status"), (g, delta) -> drawHud(g));
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
+    }
+
+    /** Shown when the module is switched on in the panel: the automatic pit guard can also catch a friend's tpa. */
+    @Override
+    protected void onToggled(boolean nowEnabled) {
+        if (!nowEnabled) return;
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> {
+            if (mc.player == null) return;
+            mc.player.sendSystemMessage(Component.literal("[MineBerry] ").withStyle(ChatFormatting.LIGHT_PURPLE)
+                    .append(Component.literal("Spawn Escape ON. It works well, but the pit guard can sometimes send /"
+                            + Config.spawnCommand() + " when a friend teleports you to them (tpa). Keep that in mind.")
+                            .withStyle(ChatFormatting.YELLOW)));
+        });
     }
 
     private void tick(Minecraft mc) {

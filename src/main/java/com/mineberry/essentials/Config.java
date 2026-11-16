@@ -50,6 +50,53 @@ public final class Config {
         int pvpFailsafeSeconds = 180;
         List<String> tournamentAllowedCommands = new ArrayList<>();
         List<String> pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
+        List<RadialSlice> radialSlices = defaultRadialSlices();
+    }
+
+    /** Most slices the radial menu shows. */
+    public static final int RADIAL_MAX = 8;
+
+    /**
+     * One slice of the radial menu. command has no slash. A command that contains a placeholder such as
+     * "tpa <player>" is not sent: chat opens with "/tpa " typed so you can finish it.
+     */
+    public static class RadialSlice {
+        public String label = "";
+        public String command = "";
+
+        public RadialSlice() {}
+
+        public RadialSlice(String label, String command) {
+            this.label = label;
+            this.command = command;
+        }
+
+        /** The label, or the command's first word with a capital when no label was set. */
+        public String displayLabel() {
+            String l = label == null ? "" : label.trim();
+            if (!l.isEmpty()) return l;
+            String c = cleanCommand(command);
+            int cut = c.indexOf('<');
+            if (cut >= 0) c = c.substring(0, cut).trim();
+            int space = c.indexOf(' ');
+            if (space > 0) c = c.substring(0, space);
+            return c.isEmpty() ? "?" : Character.toUpperCase(c.charAt(0)) + c.substring(1);
+        }
+    }
+
+    /** "  /Home " -> "Home". Strips spaces and the leading slash. */
+    public static String cleanCommand(String command) {
+        String c = command == null ? "" : command.trim();
+        while (c.startsWith("/")) c = c.substring(1).trim();
+        return c;
+    }
+
+    public static List<RadialSlice> defaultRadialSlices() {
+        return new ArrayList<>(List.of(
+                new RadialSlice("Home", "home"),
+                new RadialSlice("Spawn", "spawn"),
+                new RadialSlice("TPA", "tpa <player>"),
+                new RadialSlice("Accept", "tpaccept")));
     }
 
     /** A saved coordinate. dim is the dimension id, e.g. "minecraft:overworld". color is ARGB. */
@@ -62,7 +109,10 @@ public final class Config {
     }
 
     /** Regex (case-insensitive) for the server's "you entered PvP mode" chat line. Editable in the config file. */
-    public static final String DEFAULT_PVP_MODE = "entered pvp mode|pvp mode|combat mode|combat tag|entered combat";
+    public static final String DEFAULT_PVP_MODE = "entered pvp mode|entered combat|combat mode|combat tag";
+
+    /** The default before 1.6.0. It matched ANY line containing "pvp mode", e.g. "Player X has left the game while in PvP mode". */
+    private static final String OLD_DEFAULT_PVP_MODE = "entered pvp mode|pvp mode|combat mode|combat tag|entered combat";
 
     /** Regex (case-insensitive) for the server's "you left combat" chat line. Editable in the config file. */
     public static final String DEFAULT_COMBAT_END = "out of pvp mode|no longer in combat|left combat|combat ended|combat is over|you may now log out";
@@ -96,7 +146,8 @@ public final class Config {
             if (data.hudCorner == null) data.hudCorner = new HashMap<>();
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
-            if (data.pvpModePattern == null || data.pvpModePattern.isBlank()) data.pvpModePattern = DEFAULT_PVP_MODE;
+            if (data.pvpModePattern == null || data.pvpModePattern.isBlank()
+                    || data.pvpModePattern.equals(OLD_DEFAULT_PVP_MODE)) data.pvpModePattern = DEFAULT_PVP_MODE;
             if (data.gradientColors == null || data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
             if (data.gradientFormat < 0 || data.gradientFormat > 3) data.gradientFormat = 0;
             if (data.panelTheme == null || !data.panelTheme.matches("lunar|aurora|ember|midnight")) data.panelTheme = "lunar";
@@ -107,6 +158,8 @@ public final class Config {
             if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
             if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
             if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
+            if (data.radialSlices == null) data.radialSlices = defaultRadialSlices();
+            data.radialSlices.removeIf(s -> s == null);
             save(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
             e.printStackTrace();
@@ -328,5 +381,31 @@ public final class Config {
 
     public static String combatEndPattern() {
         return data.combatEndPattern;
+    }
+
+    /** The saved radial menu slices as written (may include blanks). Use radialSlicesInUse() to draw the menu. */
+    public static List<RadialSlice> radialSlices() {
+        return data.radialSlices;
+    }
+
+    /** What the radial menu shows: slices that have a command, at most RADIAL_MAX; the defaults if none are left. */
+    public static List<RadialSlice> radialSlicesInUse() {
+        List<RadialSlice> out = new ArrayList<>();
+        for (RadialSlice s : data.radialSlices) {
+            if (s == null || cleanCommand(s.command).isEmpty()) continue;
+            out.add(s);
+            if (out.size() >= RADIAL_MAX) break;
+        }
+        return out.isEmpty() ? defaultRadialSlices() : out;
+    }
+
+    public static void setRadialSlices(List<RadialSlice> slices) {
+        data.radialSlices = new ArrayList<>(slices);
+        save();
+    }
+
+    public static void resetRadialSlices() {
+        data.radialSlices = defaultRadialSlices();
+        save();
     }
 }

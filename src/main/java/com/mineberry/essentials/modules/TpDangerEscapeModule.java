@@ -29,7 +29,7 @@ public class TpDangerEscapeModule extends MineBerryModule {
     private long lastSpawnMs;
 
     public TpDangerEscapeModule() {
-        super("tp_danger_escape", "TP Danger Escape", "Auto /spawn before a nearby player can hit after TP");
+        super("tp_danger_escape", "TP Danger Escape", "Auto /spawn after a tp if a player lines up to hit you. Can fire on friends' tpa");
     }
 
     @Override
@@ -101,11 +101,21 @@ public class TpDangerEscapeModule extends MineBerryModule {
         g.text(font, subtitle, x + 8, y + 17, 0xFFE0E0E0, false);
     }
 
+    /** Off: forget any pending request. On: tell the player it can't tell a friend from an enemy. */
     @Override
     protected void onToggled(boolean nowEnabled) {
         if (!nowEnabled) {
             requestTime = 0;
             dangerWindowEnds = 0;
+            return;
         }
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> {
+            if (mc.player == null) return;
+            mc.player.sendSystemMessage(Component.literal("[MineBerry] ").withStyle(ChatFormatting.LIGHT_PURPLE)
+                    .append(Component.literal("TP Danger Escape ON. It works well, but it can't tell friends from enemies, so it can "
+                            + "sometimes send /" + Config.spawnCommand() + " when a friend teleports you to them and stands close. "
+                            + "Keep that in mind.").withStyle(ChatFormatting.YELLOW)));
+        });
     }
 }

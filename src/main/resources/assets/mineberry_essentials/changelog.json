@@ -1,6 +1,24 @@
 {
   "versions": [
     {
+      "version": "1.6.0",
+      "title": "Radial Menu",
+      "sections": {
+        "New": [
+          "Radial Menu: hold V and a pie menu opens around your crosshair with your favourite commands. Move to a slice and let go of the key to run it.",
+          "Your own commands: click the gear on the Radial Menu card to change the slices. Add up to 8, and use <player> (for example /tpa <player>) to finish a command in chat.",
+          "It follows Tournament Mode and PvP Command Lock, so a blocked command stays blocked."
+        ],
+        "Improved": [
+          "Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send /spawn when a friend teleports you to them (tpa)."
+        ],
+        "Fixed": [
+          "Fixed Safe Logout and PvP Command Lock turning on when the server announced that ANOTHER player left the game in PvP mode and was killed.",
+          "Old configs are updated automatically: the PvP start pattern no longer matches every line that contains \"PvP mode\"."
+        ]
+      }
+    },
+    {
       "version": "1.5.0",
       "title": "Tournament Mode and PvP Command Lock",
       "sections": {

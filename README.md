@@ -12,13 +12,14 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.5.0
+## What's New in 1.6.0
 
-- **Tournament Mode:** a new switch that blocks every command, so nobody types one by accident and gets sent to another gamemode (see [Tournament Mode](#tournament-mode))
-- **PvP Command Lock:** while the server has you in PvP mode, only `/r`, `/reply`, `/msg`, `/m`, `/w`, `/tell` and your clan chat command work (see [PvP Command Lock](#pvp-command-lock))
-- **Safe Logout failsafe:** if the server's "out of PvP mode" message is missed, the guard lets go by itself after 3 minutes (`pvpFailsafeSeconds`)
-- **"I'm safe - unlock" button** in the pause menu: ends the guard right away (see [Safe Logout](#safe-logout))
-- Safe Logout now also reads the "out of PvP mode" message when the server sends it in the action bar
+- **Radial Menu:** hold a key and a pie menu opens around your crosshair with your most-used commands (`/home`, `/spawn`, `/tpa` and more). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
+- **Your own commands:** change the slices with the gear on the Radial Menu card, or in the config file
+- It follows Tournament Mode and PvP Command Lock, so a blocked command stays blocked
+- **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
+- **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
+- The default `pvpModePattern` no longer matches every line that contains "PvP mode". Old configs that still have the old default are updated automatically
 
 ## Screenshots
 
@@ -71,7 +72,7 @@ One panel with a card for every module.
 - **Category tabs:** All, Chat, Safety and Tools
 - **Search box** to find a module by name, and a **Reset** button to clear the category and search
 - **Hover** a card to see what it does
-- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search, WorldEdit CUI)
+- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search, Radial Menu, WorldEdit CUI)
 - Scrollbar and mouse wheel scrolling when there are more modules than fit on screen
 - **Screenshots tab:** opens your screenshot list (see [Screenshot](#screenshot))
 - **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons. A small orange dot on the tab shows when an update is available
@@ -163,11 +164,23 @@ Find something you saw in chat.
 - It only sees chat received after the game started, not older messages
 - Open it from the gear on the Chat Search card too, and rebind the key under *Options > Controls > Key Binds*
 
+### Radial Menu
+Run your favourite commands without typing. Great for showcase videos too.
+- **Hold `V`** and a pie menu appears around your crosshair. **Move the mouse towards a slice and let go of the key** to run it
+- The slice is picked by direction, so a quick flick is enough. Let go in the middle, or press `Esc`, to cancel
+- Default slices: `/home`, `/spawn`, `/tpa <player>` and `/tpaccept`
+- **Use your own commands:** click the gear on the **Radial Menu** card (Control Center) to open the editor. Every row is one slice with a label and a command. Add up to 8, clear a row to remove it, **Reset defaults** brings the original ones back. Changes are saved when you close the editor
+- **Commands that need an argument:** put a placeholder in it, like `/tpa <player>`. Chat then opens with `/tpa ` already typed, so you only add the name
+- It uses your selected theme, and it never pauses singleplayer
+- It works with the safety modules: **Tournament Mode** and **PvP Command Lock** block radial commands like any other command, with a chat line saying what was blocked
+- Rebind the key under *Options > Controls > Key Binds*
+
 ### Spawn Escape
 Get out of trouble instantly.
 - Press **Right Alt** to send `/spawn`
 - **Pit guard:** after a sudden large teleport, the mod detects whether you were dropped into a tight pit and escapes automatically
 - Ordinary caves and corners will not trigger it
+- **Note:** it works well, but the pit guard can sometimes send `/spawn` when a **friend teleports you to them** (tpa). The Control Center shows this note when you switch the module on. Switch the module off if you are about to do a lot of friendly teleporting. The **Right Alt** key keeps working either way
 
 ### Safe Logout
 Don't quit in the middle of a fight by accident.
@@ -204,6 +217,7 @@ Protection against `/tpahere` traps.
 - After you accept an incoming `/tpahere`, a nearby player lining up to hit you triggers an automatic `/spawn`
 - It only arms briefly after an accepted request, so it never interferes with normal play
 - Has its own separate toggle
+- **Note:** it works well, but it can't tell friends from enemies, so it can sometimes send `/spawn` when a **friend teleports you to them** and stands close to you. The Control Center shows this note when you switch the module on. Switch it off when you are teleporting with friends
 
 ### Evidence Recorder and Abuse Alert
 Everything you need for a staff report, captured automatically.
@@ -253,6 +267,7 @@ Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 | Toggle Admin Chat | `K` |
 | Toggle Party Chat | `X` |
 | Quick Reply (`/r`) | `R` |
+| Radial Menu (hold, release on a slice) | `V` |
 | Show / Hide HUD | `Y` |
 | Screenshot (copy to clipboard) | `F9` |
 | Search Chat | `F8` |
@@ -295,6 +310,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - Extra mention names, mention sound and chat timestamps
 - Whether the reported player's name is copied automatically (`autoCopyReportedName`)
 - The spawn command
+- The radial menu slices (`radialSlices`: a list of `label` and `command` pairs, up to 8)
 - The theme
 - The PvP detection pattern
 - Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
@@ -352,6 +368,15 @@ The server has you in PvP mode, and PvP Command Lock only allows `/r`, `/msg`, `
 **I can't quit the game and the fight is over.**
 Press `Esc` and click **I'm safe - unlock**. The guard also lets go by itself after 180 seconds.
 
+**Can I put my own commands in the radial menu?**
+Yes. Click the gear on the **Radial Menu** card, type a label and a command per row, and close the editor. You can also edit `radialSlices` in `config/mineberry_essentials.json`. For commands that need a name, write `/tpa <player>` and chat opens with `/tpa ` typed.
+
+**I release the radial menu key and nothing happens.**
+Let go while the mouse points at a slice (it lights up in the accent colour). In the middle circle nothing is picked. If the slice is lit and still nothing happens, Tournament Mode is on or you are in PvP mode, and the command was blocked. A chat line tells you.
+
+**Spawn Escape or TP Danger Escape sent me to spawn when a friend teleported me.**
+That can happen. Both modules react to teleports and nearby players, and they can't tell a friend from an enemy. Switch the module off in the Control Center while you teleport with friends, and back on afterwards. The **Right Alt** spawn key does not depend on it.
+
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
 
@@ -363,6 +388,14 @@ Make sure the standalone WorldEditCUI mod is not installed.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.5.0
+
+- **Tournament Mode:** a new switch that blocks every command, so nobody types one by accident and gets sent to another gamemode (see [Tournament Mode](#tournament-mode))
+- **PvP Command Lock:** while the server has you in PvP mode, only `/r`, `/reply`, `/msg`, `/m`, `/w`, `/tell` and your clan chat command work (see [PvP Command Lock](#pvp-command-lock))
+- **Safe Logout failsafe:** if the server's "out of PvP mode" message is missed, the guard lets go by itself after 3 minutes (`pvpFailsafeSeconds`)
+- **"I'm safe - unlock" button** in the pause menu: ends the guard right away (see [Safe Logout](#safe-logout))
+- Safe Logout now also reads the "out of PvP mode" message when the server sends it in the action bar
 
 ### 1.4.5
 

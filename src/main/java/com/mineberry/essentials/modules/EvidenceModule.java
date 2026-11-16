@@ -224,7 +224,8 @@ public class EvidenceModule extends MineBerryModule {
         if (acceptedFrom == null || now - acceptedTime > WINDOW_MS) return;
 
         // someone started hitting -> server says PvP mode was entered -> ask the player on the HUD
-        if (!alertHandled && pvpMode().matcher(s).find() && !PVP_MODE_END.matcher(s).find()) {
+        if (!alertHandled && pvpMode().matcher(s).find() && !PVP_MODE_END.matcher(s).find()
+                && !SafeLogoutModule.isOtherPlayerNotice(s)) {
             alertHandled = true;
             alertSuspect = acceptedFrom;
             alertIncident = latest;

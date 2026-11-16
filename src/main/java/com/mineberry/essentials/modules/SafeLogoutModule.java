@@ -42,6 +42,19 @@ public class SafeLogoutModule extends MineBerryModule {
     /** Always treated as "PvP mode is over", even if an old config file still has an older end pattern. */
     private static final Pattern BUILTIN_END = Pattern.compile("out of pvp mode", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * Broadcasts about OTHER players ("Player X has left the game while in PvP mode and was killed") mention PvP mode
+     * too, but they say nothing about us. They must never start the guard, whatever the configured pattern is.
+     */
+    private static final Pattern OTHER_PLAYER_NOTICE = Pattern.compile(
+            "left the game|has quit|logged out|disconnected|was killed|were killed|killed by|was slain|slain by|combat[- ]?logg",
+            Pattern.CASE_INSENSITIVE);
+
+    /** True for server announcements about someone else's PvP mode (leaving, dying, combat logging). */
+    public static boolean isOtherPlayerNotice(String text) {
+        return OTHER_PLAYER_NOTICE.matcher(text).find();
+    }
+
     private static SafeLogoutModule instance;
     private boolean inCombat;                           // set and cleared only by the server's PvP mode messages
     private long pvpSince;                              // last time the server put us in PvP mode
@@ -137,7 +150,7 @@ public class SafeLogoutModule extends MineBerryModule {
         // the end message is checked first: "out of PvP mode" also contains "PvP mode"
         if (BUILTIN_END.matcher(text).find() || combatEnd().matcher(text).find()) {
             inCombat = false;               // the server says it is over; the tick prints the "safe to quit" line
-        } else if (!overlay && pvpMode().matcher(text).find()) {
+        } else if (!overlay && pvpMode().matcher(text).find() && !isOtherPlayerNotice(text)) {
             tag();
         }
     }

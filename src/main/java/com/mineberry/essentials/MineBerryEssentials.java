@@ -8,6 +8,7 @@ import com.mineberry.essentials.modules.ClanChatModule;
 import com.mineberry.essentials.modules.EvidenceModule;
 import com.mineberry.essentials.modules.PartyChatModule;
 import com.mineberry.essentials.modules.PvpCommandLockModule;
+import com.mineberry.essentials.modules.RadialMenuModule;
 import com.mineberry.essentials.modules.QuickReplyModule;
 import com.mineberry.essentials.modules.SafeLogoutModule;
 import com.mineberry.essentials.modules.ScreenshotModule;
@@ -78,6 +79,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new WorldEditCuiModule());
 		register(new WaypointsModule());
 		register(new ScreenshotModule());
+		register(new RadialMenuModule());
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			boolean hurt = client.player != null && client.player.hurtTime > 0;

@@ -165,6 +165,20 @@ final class Icons {
             "............",
             "............"};
 
+    private static final String[] RADIAL = {
+            "....####....",
+            "..##.##.##..",
+            ".#...##...#.",
+            ".#...##...#.",
+            "##...##...##",
+            "############",
+            "############",
+            "##...##...##",
+            ".#...##...#.",
+            ".#...##...#.",
+            "..##.##.##..",
+            "....####...."};
+
     /** Small gear (10 rows) for the "settings" button on a card. */
     static final String[] GEAR = {
             ".....##.....",
@@ -202,6 +216,7 @@ final class Icons {
             Map.entry("evidence", CAMERA),
             Map.entry("worldeditcui", SELECTION),
             Map.entry("waypoints", PIN),
+            Map.entry("radial_menu", RADIAL),
             Map.entry("opt_close_on_danger", WARNING),
             Map.entry("opt_chat_timestamps", CLOCK));
 
