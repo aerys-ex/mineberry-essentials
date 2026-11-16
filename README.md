@@ -8,18 +8,20 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 ![Java](https://img.shields.io/badge/Java-25%2B-e76f00)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-[![Watch the trailer](https://img.youtube.com/vi/Cxq_ilGEqrs/maxresdefault.jpg)](https://www.youtube.com/watch?v=Cxq_ilGEqrs)
+https://github.com/user-attachments/assets/92ab1026-6b5c-4430-89a7-2100722186f6
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
 ## What's New in 1.6.0
 
-- **Radial Menu:** hold a key and a pie menu opens around your crosshair with quick commands (`/spawn`, `/tpa` and `/tpaccept`). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
-- It follows Tournament Mode and PvP Command Lock, so a blocked command stays blocked
+- **Radial Menu:** hold `V` and a pie menu opens around your crosshair with quick commands (`/spawn`, `/tpa` and `/tpaccept`). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
+  - `/tpa` opens chat with `/tpa ` already typed, so you only add the player's name
+  - Let go in the middle or press `Esc` to cancel
+  - It follows your theme, Tournament Mode and PvP Command Lock, so a blocked command stays blocked
 - **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
 - **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
 - **Chat can't trigger PvP mode anymore:** a player typing "entered pvp mode" (or similar) in chat used to switch on Safe Logout, PvP Command Lock and the abuse alert. Only the server's own messages count now
-- The default `pvpModePattern` no longer matches every line that contains "PvP mode". Old configs that still have the old default are updated automatically
+- **Config:** the default `pvpModePattern` is now `entered pvp mode|entered combat|combat mode|combat tag`. It no longer matches every line that contains "PvP mode". Configs that still have the old default are updated automatically, a pattern you changed yourself is left alone (see [Configuration](#configuration))
 
 ## Screenshots
 
@@ -190,6 +192,7 @@ Don't quit in the middle of a fight by accident.
 - A red **IN PVP MODE** box on the HUD tells you whether quitting is blocked or needs a second click
 - The pause menu **Disconnect** button and **Alt+F4** are guarded
 - The chat lines are editable via `pvpModePattern` (start) and `combatEndPattern` (end)
+- **Only the server counts:** lines typed by players (`<Steve> ...`, `Steve: ...`) and announcements about other players (left the game, was killed, combat logging) never start or end the guard
 - The gear on the Safe Logout card switches between the two modes
 - **Failsafe:** if the server's end message never arrives (lag, or a missed line), the guard lets go by itself after 180 seconds. Change it with `pvpFailsafeSeconds`
 - **"I'm safe - unlock":** while you are guarded, the pause menu shows this button under Disconnect. One click ends the guard immediately
@@ -199,7 +202,7 @@ Don't quit in the middle of a fight by accident.
 Stops commands from teleporting you out of a fight.
 - While the server has you in PvP mode, only a few commands work: `/r`, `/reply`, `/msg`, `/m`, `/w`, `/tell` and your clan chat command (`/cc` by default)
 - Every other command is blocked until the server says *"You're out of PvP mode!"*, and you get a chat line saying what was blocked
-- It follows the same server messages as Safe Logout and works even if Safe Logout is switched off
+- It follows the same server messages as Safe Logout, ignores player chat and announcements about other players, and works even if Safe Logout is switched off
 - It lets go by itself if the end message is missed (see `pvpFailsafeSeconds`), and the **I'm safe - unlock** button in the pause menu ends it at once
 - Change the allowed commands with `pvpAllowedCommands` in the config file
 - Only on servers, never in singleplayer
@@ -228,7 +231,7 @@ Everything you need for a staff report, captured automatically.
 - The **Copy** button copies the incident summary as text, ready to paste into a staff ticket
 - Each incident is bundled into a **report zip** containing the screenshots, an evidence log and `HOW_TO_REPORT.txt`, ready to attach to a staff ticket
 - The **Export** button in the Tools tab rebuilds the latest report at any time
-- The chat line it listens for is editable via `pvpModePattern`
+- The chat line it listens for is editable via `pvpModePattern`. Player chat and announcements about other players do not trigger the alert
 
 ### Screenshot
 Take a screenshot and paste it straight into Discord.
@@ -310,8 +313,8 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - Whether the reported player's name is copied automatically (`autoCopyReportedName`)
 - The spawn command
 - The theme
-- The PvP detection pattern
 - Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
+- `pvpModePattern` is also used by PvP Command Lock and the Abuse Alert. Since 1.6.0 its default is `entered pvp mode|entered combat|combat mode|combat tag` and it no longer matches every line containing "PvP mode". Old configs that still have the previous default are updated automatically, a custom pattern is kept as it is
 - PvP Command Lock: the commands that still work in PvP mode (`pvpAllowedCommands`)
 - Tournament Mode: commands that still work while it is on (`tournamentAllowedCommands`, empty by default)
 - The failsafe time for Safe Logout and PvP Command Lock (`pvpFailsafeSeconds`, 180 by default)
@@ -362,6 +365,9 @@ Tournament Mode is on. Switch it off from its card in the **Safety** tab of the 
 
 **A command is blocked and I am not in a tournament.**
 The server has you in PvP mode, and PvP Command Lock only allows `/r`, `/msg`, `/m` and a few others. It ends when the server says you are out of PvP mode, after 3 minutes at most, or when you press **I'm safe - unlock** in the pause menu.
+
+**Safe Logout or PvP Command Lock turned on and I was not in a fight.**
+Update to 1.6.0. Older versions reacted to *"Player X has left the game while in PvP mode"* (about someone else) and to players typing "entered pvp mode" in chat. Now only the server's own messages about you count. If it still happens, check that `pvpModePattern` in `config/mineberry_essentials.json` is not too broad.
 
 **I can't quit the game and the fight is over.**
 Press `Esc` and click **I'm safe - unlock**. The guard also lets go by itself after 180 seconds.

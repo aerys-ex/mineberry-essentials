@@ -35,6 +35,11 @@ dependencies {
 
 	// Mod Menu (compile-time only; optional at runtime)
 	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	// Unit tests (JUnit 5)
+	testImplementation platform("org.junit:junit-bom:5.11.4")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 processResources {
@@ -55,6 +60,10 @@ java {
 
 	sourceCompatibility = JavaVersion.VERSION_25
 	targetCompatibility = JavaVersion.VERSION_25
+}
+
+test {
+	useJUnitPlatform()
 }
 
 jar {
