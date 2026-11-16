@@ -42,7 +42,9 @@ public class SafeLogoutModule extends MineBerryModule {
     /** Always treated as "PvP mode is over", even if an old config file still has an older end pattern. */
     private static final Pattern BUILTIN_END = Pattern.compile("out of pvp mode", Pattern.CASE_INSENSITIVE);
 
+    private static SafeLogoutModule instance;
     private boolean inCombat;                           // set and cleared only by the server's PvP mode messages
+    private long pvpSince;                              // last time the server put us in PvP mode
     private boolean wasInCombat;
     private long pauseArmedUntil, closeArmedUntil;
 
@@ -56,10 +58,10 @@ public class SafeLogoutModule extends MineBerryModule {
     /** The vanilla Disconnect button and the look-alike that stands in front of it. */
     private static final class Guard {
         final Screen screen;
-        final Button original, fake;
+        final Button original, fake, unlock;
         final Component originalLabel;
-        Guard(Screen screen, Button original, Button fake) {
-            this.screen = screen; this.original = original; this.fake = fake; this.originalLabel = original.getMessage();
+        Guard(Screen screen, Button original, Button fake, Button unlock) {
+            this.screen = screen; this.original = original; this.fake = fake; this.unlock = unlock; this.originalLabel = original.getMessage();
         }
     }
 
@@ -69,10 +71,11 @@ public class SafeLogoutModule extends MineBerryModule {
 
     @Override
     public void init() {
+        instance = this;
         HudElementRegistry.addLast(MineBerryEssentials.id("safe_logout_status"), (g, delta) -> drawHud(g));
 
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> { if (!overlay) onMessage(message); });
-        ClientReceiveMessageEvents.CHAT.register((message, signed, sender, params, timestamp) -> onMessage(message));
+        ClientReceiveMessageEvents.GAME.register((message, overlay) -> onMessage(message, overlay));
+        ClientReceiveMessageEvents.CHAT.register((message, signed, sender, params, timestamp) -> onMessage(message, false));
 
         // the pause menu: put a guard in front of its Disconnect button
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
@@ -87,7 +90,23 @@ public class SafeLogoutModule extends MineBerryModule {
 
     /** True while the quit guards apply. */
     private boolean inCombat() {
-        return inCombat;
+        return inCombat && System.currentTimeMillis() - pvpSince < failsafeMs();
+    }
+
+    /** If the server's "out of PvP mode" line is ever missed, everything lets go after this long (config: pvpFailsafeSeconds). */
+    private static long failsafeMs() {
+        return Config.pvpFailsafeSeconds() * 1000L;
+    }
+
+    /** The manual "I'm safe, unlock" override: ends the guard right now, without waiting for the server. */
+    private void unlockManually() {
+        Minecraft mc = Minecraft.getInstance();
+        inCombat = false;
+        wasInCombat = false;
+        pauseArmedUntil = 0;
+        closeArmedUntil = 0;
+        say(mc, "Unlocked by you - quitting and commands work again", ChatFormatting.GREEN);
+        syncPauseGuard(mc);
     }
 
     private boolean guarding(Minecraft mc) {
@@ -96,6 +115,13 @@ public class SafeLogoutModule extends MineBerryModule {
 
     private void tag() {
         inCombat = true;
+        pvpSince = System.currentTimeMillis();
+    }
+
+    /** True while the server says we are in PvP mode (used by PvP Command Lock). Works even if Safe Logout itself is switched off. */
+    public static boolean inPvpMode() {
+        SafeLogoutModule m = instance;
+        return m != null && m.inCombat();
     }
 
     private void reset() {
@@ -105,13 +131,13 @@ public class SafeLogoutModule extends MineBerryModule {
         closeArmedUntil = 0;
     }
 
-    private void onMessage(Component message) {
-        if (!enabled()) return;
+    /** Action bar lines (overlay) can only end PvP mode, never start it: a countdown there would keep re-arming the guard. */
+    private void onMessage(Component message, boolean overlay) {
         String text = message.getString();
         // the end message is checked first: "out of PvP mode" also contains "PvP mode"
         if (BUILTIN_END.matcher(text).find() || combatEnd().matcher(text).find()) {
             inCombat = false;               // the server says it is over; the tick prints the "safe to quit" line
-        } else if (pvpMode().matcher(text).find()) {
+        } else if (!overlay && pvpMode().matcher(text).find()) {
             tag();
         }
     }
@@ -124,6 +150,13 @@ public class SafeLogoutModule extends MineBerryModule {
             return;
         }
         if (!mc.player.isAlive()) inCombat = false;
+        if (inCombat && !inCombat()) {                      // the end message never came: let go
+            inCombat = false;
+            if (enabled() && !mc.isLocalServer()) {
+                say(mc, "No PvP mode message for " + Config.pvpFailsafeSeconds() + "s - unlocked", ChatFormatting.YELLOW);
+            }
+            wasInCombat = false;
+        }
 
         boolean now = inCombat();
         if (enabled() && now != wasInCombat && !mc.isLocalServer()) {
@@ -156,7 +189,12 @@ public class SafeLogoutModule extends MineBerryModule {
         Button fake = Button.builder(original.getMessage(), button -> onFakePressed())
                 .bounds(original.getX(), original.getY(), original.getWidth(), original.getHeight()).build();
         buttons.add(fake);
-        Guard g = new Guard(screen, original, fake);
+        Button unlock = Button.builder(Component.literal("I'm safe - unlock").withStyle(ChatFormatting.GREEN), button -> unlockManually())
+                .bounds(original.getX(), original.getY() + original.getHeight() + 4, original.getWidth(), original.getHeight()).build();
+        unlock.visible = false;
+        unlock.active = false;
+        buttons.add(unlock);
+        Guard g = new Guard(screen, original, fake, unlock);
         guard = g;
         ScreenEvents.remove(screen).register(removed -> { if (guard == g) guard = null; });
         syncPauseGuard(Minecraft.getInstance());
@@ -177,6 +215,7 @@ public class SafeLogoutModule extends MineBerryModule {
 
         long now = System.currentTimeMillis();
         boolean guarded = guarding(mc);
+        show(g.unlock, guarded, guarded);                   // the manual override is only there while a guard is
         boolean block = Config.safeLogoutMode().equals("block");
         boolean armed = guarded && !block && pauseArmedUntil > now;
 
@@ -221,7 +260,7 @@ public class SafeLogoutModule extends MineBerryModule {
             if (!block && closeArmedUntil > now) return;    // second try in time: let it close
             GLFW.glfwSetWindowShouldClose(w, false);        // cancel this close request
             if (block) {
-                say(mc, "You're in PvP mode - can't close the game until the server says you're out", ChatFormatting.RED);
+                say(mc, "You're in PvP mode - can't close the game until the server says you're out (or press Esc and click \"I'm safe - unlock\")", ChatFormatting.RED);
             } else {
                 closeArmedUntil = now + ARM_MS;
                 say(mc, "You're in PvP mode! Close again within " + (ARM_MS / 1000) + "s to quit anyway", ChatFormatting.RED);

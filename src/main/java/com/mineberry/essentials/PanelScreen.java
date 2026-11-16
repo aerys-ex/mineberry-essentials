@@ -41,6 +41,7 @@ public class PanelScreen extends Screen {
             Map.entry("clan_chat", "Chat"), Map.entry("admin_chat", "Chat"), Map.entry("party_chat", "Chat"),
             Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"), Map.entry("chat_search", "Chat"),
             Map.entry("spawn_escape", "Safety"), Map.entry("tp_danger_escape", "Safety"), Map.entry("safe_logout", "Safety"),
+            Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"),
             Map.entry("evidence", "Tools"), Map.entry("worldeditcui", "Tools"), Map.entry("waypoints", "Tools"));
 
     /** One card: a module or an option. */

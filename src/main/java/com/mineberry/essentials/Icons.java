@@ -197,6 +197,8 @@ final class Icons {
             Map.entry("spawn_escape", DOOR),
             Map.entry("tp_danger_escape", WARNING),
             Map.entry("safe_logout", DOOR),
+            Map.entry("pvp_command_lock", SHIELD),
+            Map.entry("tournament_mode", CROWN),
             Map.entry("evidence", CAMERA),
             Map.entry("worldeditcui", SELECTION),
             Map.entry("waypoints", PIN),

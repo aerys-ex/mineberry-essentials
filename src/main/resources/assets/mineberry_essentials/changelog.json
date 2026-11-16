@@ -1,6 +1,21 @@
 {
   "versions": [
     {
+      "version": "1.5.0",
+      "title": "Tournament Mode and PvP Command Lock",
+      "sections": {
+        "New": [
+          "Tournament Mode: blocks every command so nobody gets teleported out of a tournament by accident. Off by default, switch it on in the Safety tab.",
+          "PvP Command Lock: while you're in PvP mode, only /r, /msg, /m and a few other chat commands work.",
+          "Safe Logout: an \"I'm safe - unlock\" button in the pause menu ends the guard right away."
+        ],
+        "Improved": [
+          "Safe Logout and PvP Command Lock let go by themselves after 3 minutes if the server's \"out of PvP mode\" message is missed.",
+          "The \"out of PvP mode\" message is now also read from the action bar."
+        ]
+      }
+    },
+    {
       "version": "1.4.5",
       "title": "Screenshots and Chat Search",
       "sections": {

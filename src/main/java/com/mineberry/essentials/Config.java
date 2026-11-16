@@ -47,6 +47,9 @@ public final class Config {
         int combatSeconds = 30;
         String safeLogoutMode = "warn";
         String combatEndPattern = DEFAULT_COMBAT_END;
+        int pvpFailsafeSeconds = 180;
+        List<String> tournamentAllowedCommands = new ArrayList<>();
+        List<String> pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
     }
 
     /** A saved coordinate. dim is the dimension id, e.g. "minecraft:overworld". color is ARGB. */
@@ -63,6 +66,9 @@ public final class Config {
 
     /** Regex (case-insensitive) for the server's "you left combat" chat line. Editable in the config file. */
     public static final String DEFAULT_COMBAT_END = "out of pvp mode|no longer in combat|left combat|combat ended|combat is over|you may now log out";
+
+    /** Commands that still work while the server has you in PvP mode (PvP Command Lock). Editable in the config file. */
+    public static final List<String> DEFAULT_PVP_ALLOWED = List.of("r", "reply", "msg", "m", "w", "tell", "cc");
 
     private static Data data = new Data();
     private static boolean freshInstall = false;
@@ -98,6 +104,9 @@ public final class Config {
             if (data.combatSeconds < 1 || data.combatSeconds > 300) data.combatSeconds = 30;
             if (data.safeLogoutMode == null || !data.safeLogoutMode.matches("warn|block")) data.safeLogoutMode = "warn";
             if (data.combatEndPattern == null || data.combatEndPattern.isBlank()) data.combatEndPattern = DEFAULT_COMBAT_END;
+            if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
+            if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
+            if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
             save(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,6 +311,21 @@ public final class Config {
     }
 
     /** Regex (case-insensitive) for the server's "combat ended" chat line. Edit in the config file. */
+    /** If the server's "out of PvP mode" line is missed, Safe Logout and PvP Command Lock let go after this many seconds. */
+    public static int pvpFailsafeSeconds() {
+        return data.pvpFailsafeSeconds;
+    }
+
+    /** Commands (no slash) that still work in Tournament Mode. Empty by default: every command is blocked. */
+    public static List<String> tournamentAllowedCommands() {
+        return data.tournamentAllowedCommands;
+    }
+
+    /** Commands (no slash) that still work while in PvP mode. */
+    public static List<String> pvpAllowedCommands() {
+        return data.pvpAllowedCommands;
+    }
+
     public static String combatEndPattern() {
         return data.combatEndPattern;
     }

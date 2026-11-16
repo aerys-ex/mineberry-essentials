@@ -1,7 +1,7 @@
 # MineBerry - Essentials
 
 **The all-in-one control center for MineBerry and MinePeak.**
-Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator and a coordinate converter, all in one clean dashboard.
+Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a gradient generator and a coordinate converter, all in one clean dashboard.
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-26.2-62b47a)
 ![Loader](https://img.shields.io/badge/Fabric-0.20.1%2B-dbd0b4)
@@ -12,38 +12,13 @@ Chat shortcuts, safety tools, evidence reports, waypoints, a gradient generator 
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.4.5
+## What's New in 1.5.0
 
-- **Screenshot:** press `F9` to take a screenshot and copy it to your clipboard as an image, ready to paste into Discord (see [Screenshot](#screenshot))
-- **Screenshots tab:** see your screenshots, copy or open any of them
-- **Chat Search:** press `F8` to search the chat you received this session (see [Chat Search](#chat-search))
-- **Safe Logout** now follows the server's PvP mode messages instead of a 30 second timer (see [Safe Logout](#safe-logout))
-- Fixed Safe Logout re-entering combat right after the server said you were out of PvP mode
-- Fixed keybind names in the controls menu
-
-## What's New in 1.4.0
-
-- **Five new HUD modules:** **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time** (see [MineBerry Client (HUD)](#mineberry-client-hud))
-- **HUD menu pages:** the Mods tab now has `<` `>` page buttons (or use the mouse wheel) when there are more modules than fit
-- **Smarter HUD layout:** when a screen corner is full, the next modules start a second column instead of going off screen
-- **Safe Logout:** quitting is guarded for a few seconds after combat, so you can't leave a fight by accident (see [Safe Logout](#safe-logout))
-- **What's New popup:** after an update, a popup shows what changed, once (see [What's New Popup](#whats-new-popup))
-- Fixes for Minecraft 26.2 (Safe Logout and the pause menu guard)
-
-## What's New in 1.3.1
-
-- **Manual update check:** a new **Check for updates** button in the Tools tab, under Updates. It works even if automatic checking is turned off, and you can press it again if a check fails
-- **More reliable update checker:** it no longer depends on GitHub's rate-limited API, so it keeps working on shared networks. The API is only a fallback
-
-## What's New in 1.3.0
-
-- **Control Center redesign:** a new flat look with an orange accent. Modules are now cards in a grid, each with an icon and an Enabled / Disabled button (see [Control Center](#control-center))
-- **Modules and Tools tabs:** the coordinate converter, evidence export, Theme, Gradient and Update buttons now live in the Tools tab
-- **Category tabs, search and reset** to find a module fast
-- **Quick Reply (`/r`) is now its own module,** separate from Chat Extras (see [Quick Reply](#quick-reply))
-- **MineBerry Client (HUD):** a new menu with HUD modules, profiles and a layout editor, opened with **Right Shift** (see [MineBerry Client (HUD)](#mineberry-client-hud))
-- New default theme: dark grey with orange
-- The Website button in Mod Menu now opens this GitHub page
+- **Tournament Mode:** a new switch that blocks every command, so nobody types one by accident and gets sent to another gamemode (see [Tournament Mode](#tournament-mode))
+- **PvP Command Lock:** while the server has you in PvP mode, only `/r`, `/reply`, `/msg`, `/m`, `/w`, `/tell` and your clan chat command work (see [PvP Command Lock](#pvp-command-lock))
+- **Safe Logout failsafe:** if the server's "out of PvP mode" message is missed, the guard lets go by itself after 3 minutes (`pvpFailsafeSeconds`)
+- **"I'm safe - unlock" button** in the pause menu: ends the guard right away (see [Safe Logout](#safe-logout))
+- Safe Logout now also reads the "out of PvP mode" message when the server sends it in the action bar
 
 ## Screenshots
 
@@ -204,6 +179,25 @@ Don't quit in the middle of a fight by accident.
 - The pause menu **Disconnect** button and **Alt+F4** are guarded
 - The chat lines are editable via `pvpModePattern` (start) and `combatEndPattern` (end)
 - The gear on the Safe Logout card switches between the two modes
+- **Failsafe:** if the server's end message never arrives (lag, or a missed line), the guard lets go by itself after 180 seconds. Change it with `pvpFailsafeSeconds`
+- **"I'm safe - unlock":** while you are guarded, the pause menu shows this button under Disconnect. One click ends the guard immediately
+- The server's end message is also read when it comes in the action bar
+
+### PvP Command Lock
+Stops commands from teleporting you out of a fight.
+- While the server has you in PvP mode, only a few commands work: `/r`, `/reply`, `/msg`, `/m`, `/w`, `/tell` and your clan chat command (`/cc` by default)
+- Every other command is blocked until the server says *"You're out of PvP mode!"*, and you get a chat line saying what was blocked
+- It follows the same server messages as Safe Logout and works even if Safe Logout is switched off
+- It lets go by itself if the end message is missed (see `pvpFailsafeSeconds`), and the **I'm safe - unlock** button in the pause menu ends it at once
+- Change the allowed commands with `pvpAllowedCommands` in the config file
+- Only on servers, never in singleplayer
+
+### Tournament Mode
+Switch it on before a tournament and no command can be sent at all.
+- One card in the **Safety** tab. It is **off by default** and stays on until you switch it off
+- Blocks commands you type, commands from clickable chat messages and the ones the mod sends itself (Spawn Escape, TP Danger Escape, Clan / Admin / Party chat). Normal chat messages still work
+- A red **TOURNAMENT MODE** box on the HUD reminds you it is on, and a chat line tells you which command was blocked
+- Let specific commands through with `tournamentAllowedCommands` in the config file (empty by default)
 
 ### TP Danger Escape
 Protection against `/tpahere` traps.
@@ -304,6 +298,9 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - The theme
 - The PvP detection pattern
 - Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
+- PvP Command Lock: the commands that still work in PvP mode (`pvpAllowedCommands`)
+- Tournament Mode: commands that still work while it is on (`tournamentAllowedCommands`, empty by default)
+- The failsafe time for Safe Logout and PvP Command Lock (`pvpFailsafeSeconds`, 180 by default)
 - The What's New popup (`showChangelog`, on by default)
 - Update checking (`checkForUpdates`, on by default)
 - Gradient generator colors, format and styles (saved automatically when you use it)
@@ -346,11 +343,59 @@ It waits for the server's *"You're out of PvP mode!"* message. If your server wo
 **The screenshot was not copied as an image.**
 Your system's copy tool may be missing. On Linux install `xclip` (or `wl-copy` on Wayland). The file path is copied as text instead, and the screenshot is still saved in `screenshots/mineberry`.
 
+**Every command does nothing and says it was blocked.**
+Tournament Mode is on. Switch it off from its card in the **Safety** tab of the Control Center, or add the command to `tournamentAllowedCommands` in the config file.
+
+**A command is blocked and I am not in a tournament.**
+The server has you in PvP mode, and PvP Command Lock only allows `/r`, `/msg`, `/m` and a few others. It ends when the server says you are out of PvP mode, after 3 minutes at most, or when you press **I'm safe - unlock** in the pause menu.
+
+**I can't quit the game and the fight is over.**
+Press `Esc` and click **I'm safe - unlock**. The guard also lets go by itself after 180 seconds.
+
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
 
 **The game crashes or WorldEdit selections look broken.**
 Make sure the standalone WorldEditCUI mod is not installed.
+
+---
+
+## Older Versions
+
+Earlier release notes. The newest ones are at the top of this page.
+
+### 1.4.5
+
+- **Screenshot:** press `F9` to take a screenshot and copy it to your clipboard as an image, ready to paste into Discord (see [Screenshot](#screenshot))
+- **Screenshots tab:** see your screenshots, copy or open any of them
+- **Chat Search:** press `F8` to search the chat you received this session (see [Chat Search](#chat-search))
+- **Safe Logout** now follows the server's PvP mode messages instead of a 30 second timer (see [Safe Logout](#safe-logout))
+- Fixed Safe Logout re-entering combat right after the server said you were out of PvP mode
+- Fixed keybind names in the controls menu
+
+### 1.4.0
+
+- **Five new HUD modules:** **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time** (see [MineBerry Client (HUD)](#mineberry-client-hud))
+- **HUD menu pages:** the Mods tab now has `<` `>` page buttons (or use the mouse wheel) when there are more modules than fit
+- **Smarter HUD layout:** when a screen corner is full, the next modules start a second column instead of going off screen
+- **Safe Logout:** quitting is guarded for a few seconds after combat, so you can't leave a fight by accident (see [Safe Logout](#safe-logout))
+- **What's New popup:** after an update, a popup shows what changed, once (see [What's New Popup](#whats-new-popup))
+- Fixes for Minecraft 26.2 (Safe Logout and the pause menu guard)
+
+### 1.3.1
+
+- **Manual update check:** a new **Check for updates** button in the Tools tab, under Updates. It works even if automatic checking is turned off, and you can press it again if a check fails
+- **More reliable update checker:** it no longer depends on GitHub's rate-limited API, so it keeps working on shared networks. The API is only a fallback
+
+### 1.3.0
+
+- **Control Center redesign:** a new flat look with an orange accent. Modules are now cards in a grid, each with an icon and an Enabled / Disabled button (see [Control Center](#control-center))
+- **Modules and Tools tabs:** the coordinate converter, evidence export, Theme, Gradient and Update buttons now live in the Tools tab
+- **Category tabs, search and reset** to find a module fast
+- **Quick Reply (`/r`) is now its own module,** separate from Chat Extras (see [Quick Reply](#quick-reply))
+- **MineBerry Client (HUD):** a new menu with HUD modules, profiles and a layout editor, opened with **Right Shift** (see [MineBerry Client (HUD)](#mineberry-client-hud))
+- New default theme: dark grey with orange
+- The Website button in Mod Menu now opens this GitHub page
 
 ---
 
