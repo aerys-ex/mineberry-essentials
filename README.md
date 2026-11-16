@@ -41,9 +41,11 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 |---|---|
 | ![Screenshots](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/screenshots-screen.png) | ![Chat Search](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/chat-search.png) |
 
-**Safe Logout**
+**Radial Menu**
 
-![Safe Logout HUD box](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/safe-logout.png)
+| Radial Menu | Editor |
+|---|---|
+| ![Radial Menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-menu.png) | ![Radial Menu editor](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-editor.png) |
 
 **What's New popup**
 
