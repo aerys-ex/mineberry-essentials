@@ -5,8 +5,7 @@
       "title": "Radial Menu",
       "sections": {
         "New": [
-          "Radial Menu: hold V and a pie menu opens around your crosshair with your favourite commands. Move to a slice and let go of the key to run it.",
-          "Your own commands: click the gear on the Radial Menu card to change the slices. Add up to 8, and use <player> (for example /tpa <player>) to finish a command in chat.",
+          "Radial Menu: hold V and a pie menu opens around your crosshair with quick commands (/spawn, /tpa and /tpaccept). Move to a slice and let go of the key to run it.",
           "It follows Tournament Mode and PvP Command Lock, so a blocked command stays blocked."
         ],
         "Improved": [

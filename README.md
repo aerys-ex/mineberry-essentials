@@ -14,8 +14,7 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 
 ## What's New in 1.6.0
 
-- **Radial Menu:** hold a key and a pie menu opens around your crosshair with your most-used commands (`/home`, `/spawn`, `/tpa` and more). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
-- **Your own commands:** change the slices with the gear on the Radial Menu card, or in the config file
+- **Radial Menu:** hold a key and a pie menu opens around your crosshair with quick commands (`/spawn`, `/tpa` and `/tpaccept`). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
 - It follows Tournament Mode and PvP Command Lock, so a blocked command stays blocked
 - **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
 - **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
@@ -43,9 +42,7 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 
 **Radial Menu**
 
-| Radial Menu | Editor |
-|---|---|
-| ![Radial Menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-menu.png) | ![Radial Menu editor](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-editor.png) |
+![Radial Menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-menu.png)
 
 **What's New popup**
 
@@ -74,7 +71,7 @@ One panel with a card for every module.
 - **Category tabs:** All, Chat, Safety and Tools
 - **Search box** to find a module by name, and a **Reset** button to clear the category and search
 - **Hover** a card to see what it does
-- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search, Radial Menu, WorldEdit CUI)
+- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search, WorldEdit CUI)
 - Scrollbar and mouse wheel scrolling when there are more modules than fit on screen
 - **Screenshots tab:** opens your screenshot list (see [Screenshot](#screenshot))
 - **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons. A small orange dot on the tab shows when an update is available
@@ -167,12 +164,11 @@ Find something you saw in chat.
 - Open it from the gear on the Chat Search card too, and rebind the key under *Options > Controls > Key Binds*
 
 ### Radial Menu
-Run your favourite commands without typing. Great for showcase videos too.
+Run common commands without typing. Great for showcase videos too.
 - **Hold `V`** and a pie menu appears around your crosshair. **Move the mouse towards a slice and let go of the key** to run it
 - The slice is picked by direction, so a quick flick is enough. Let go in the middle, or press `Esc`, to cancel
-- Default slices: `/home`, `/spawn`, `/tpa <player>` and `/tpaccept`
-- **Use your own commands:** click the gear on the **Radial Menu** card (Control Center) to open the editor. Every row is one slice with a label and a command. Add up to 8, clear a row to remove it, **Reset defaults** brings the original ones back. Changes are saved when you close the editor
-- **Commands that need an argument:** put a placeholder in it, like `/tpa <player>`. Chat then opens with `/tpa ` already typed, so you only add the name
+- Slices: `/spawn`, `/tpa <player>` and `/tpaccept`. They are fixed and can't be changed
+- **`/tpa`:** chat opens with `/tpa ` already typed, so you only add the name
 - It uses your selected theme, and it never pauses singleplayer
 - It works with the safety modules: **Tournament Mode** and **PvP Command Lock** block radial commands like any other command, with a chat line saying what was blocked
 - Rebind the key under *Options > Controls > Key Binds*
@@ -312,7 +308,6 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - Extra mention names, mention sound and chat timestamps
 - Whether the reported player's name is copied automatically (`autoCopyReportedName`)
 - The spawn command
-- The radial menu slices (`radialSlices`: a list of `label` and `command` pairs, up to 8)
 - The theme
 - The PvP detection pattern
 - Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
@@ -371,7 +366,7 @@ The server has you in PvP mode, and PvP Command Lock only allows `/r`, `/msg`, `
 Press `Esc` and click **I'm safe - unlock**. The guard also lets go by itself after 180 seconds.
 
 **Can I put my own commands in the radial menu?**
-Yes. Click the gear on the **Radial Menu** card, type a label and a command per row, and close the editor. You can also edit `radialSlices` in `config/mineberry_essentials.json`. For commands that need a name, write `/tpa <player>` and chat opens with `/tpa ` typed.
+Not at the moment. The slices are fixed: `/spawn`, `/tpa` and `/tpaccept`.
 
 **I release the radial menu key and nothing happens.**
 Let go while the mouse points at a slice (it lights up in the accent colour). In the middle circle nothing is picked. If the slice is lit and still nothing happens, Tournament Mode is on or you are in PvP mode, and the command was blocked. A chat line tells you.

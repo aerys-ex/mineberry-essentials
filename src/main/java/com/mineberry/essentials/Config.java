@@ -50,11 +50,7 @@ public final class Config {
         int pvpFailsafeSeconds = 180;
         List<String> tournamentAllowedCommands = new ArrayList<>();
         List<String> pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
-        List<RadialSlice> radialSlices = defaultRadialSlices();
     }
-
-    /** Most slices the radial menu shows. */
-    public static final int RADIAL_MAX = 8;
 
     /**
      * One slice of the radial menu. command has no slash. A command that contains a placeholder such as
@@ -91,9 +87,8 @@ public final class Config {
         return c;
     }
 
-    public static List<RadialSlice> defaultRadialSlices() {
+    private static List<RadialSlice> defaultRadialSlices() {
         return new ArrayList<>(List.of(
-                new RadialSlice("Home", "home"),
                 new RadialSlice("Spawn", "spawn"),
                 new RadialSlice("TPA", "tpa <player>"),
                 new RadialSlice("Accept", "tpaccept")));
@@ -158,8 +153,6 @@ public final class Config {
             if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
             if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
             if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
-            if (data.radialSlices == null) data.radialSlices = defaultRadialSlices();
-            data.radialSlices.removeIf(s -> s == null);
             save(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
             e.printStackTrace();
@@ -383,29 +376,8 @@ public final class Config {
         return data.combatEndPattern;
     }
 
-    /** The saved radial menu slices as written (may include blanks). Use radialSlicesInUse() to draw the menu. */
+    /** The radial menu slices. They are fixed and can't be changed. */
     public static List<RadialSlice> radialSlices() {
-        return data.radialSlices;
-    }
-
-    /** What the radial menu shows: slices that have a command, at most RADIAL_MAX; the defaults if none are left. */
-    public static List<RadialSlice> radialSlicesInUse() {
-        List<RadialSlice> out = new ArrayList<>();
-        for (RadialSlice s : data.radialSlices) {
-            if (s == null || cleanCommand(s.command).isEmpty()) continue;
-            out.add(s);
-            if (out.size() >= RADIAL_MAX) break;
-        }
-        return out.isEmpty() ? defaultRadialSlices() : out;
-    }
-
-    public static void setRadialSlices(List<RadialSlice> slices) {
-        data.radialSlices = new ArrayList<>(slices);
-        save();
-    }
-
-    public static void resetRadialSlices() {
-        data.radialSlices = defaultRadialSlices();
-        save();
+        return defaultRadialSlices();
     }
 }

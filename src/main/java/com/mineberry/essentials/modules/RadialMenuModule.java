@@ -13,9 +13,8 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import org.lwjgl.glfw.GLFW;
 
 /**
- * Radial menu: hold a key and a pie menu opens around the crosshair with your favourite commands. Move towards a
- * slice and let go of the key to run it. The slices are editable (gear on the module card, or "radialSlices" in the
- * config file).
+ * Radial menu: hold a key and a pie menu opens around the crosshair with a few quick commands (spawn, tpa,
+ * tpaccept). Move towards a slice and let go of the key to run it. The slices are fixed and can't be changed.
  *
  * The menu is a screen so the mouse is free. While a screen is open Minecraft no longer tracks held keys, so this
  * module asks GLFW directly whether the key is still down; the moment it is let go, the highlighted slice runs.
@@ -28,7 +27,7 @@ public class RadialMenuModule extends MineBerryModule {
     private KeyMapping radialKey;
 
     public RadialMenuModule() {
-        super("radial_menu", "Radial Menu", "Hold V for a pie menu of your favourite commands");
+        super("radial_menu", "Radial Menu", "Hold V for a pie menu of quick commands");
     }
 
     @Override

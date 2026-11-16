@@ -20,7 +20,7 @@ public class RadialMenuScreen extends Screen {
     private static final double DEAD_ZONE = 14.0, GAP_PX = 2.0;
     private static final long ANIM_MS = 150;
 
-    private final List<Config.RadialSlice> slices = Config.radialSlicesInUse();
+    private final List<Config.RadialSlice> slices = Config.radialSlices();
     private final long openedAt = System.currentTimeMillis();
     private int hovered = -1;
     private boolean done;

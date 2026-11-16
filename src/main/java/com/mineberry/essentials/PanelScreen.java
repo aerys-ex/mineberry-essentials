@@ -146,9 +146,6 @@ public class PanelScreen extends Screen {
             } else if (module.id().equals("chat_search")) {
                 gearHint = "Open chat search";
                 gearAction = () -> this.minecraft.gui.setScreen(new ChatSearchScreen(this));
-            } else if (module.id().equals("radial_menu")) {
-                gearHint = "Edit the radial menu commands";
-                gearAction = () -> this.minecraft.gui.setScreen(new RadialEditScreen(this));
             } else if (module.id().equals("screenshot")) {
                 gearHint = "Open your screenshots";
                 gearAction = () -> this.minecraft.gui.setScreen(new ScreenshotScreen(this));
