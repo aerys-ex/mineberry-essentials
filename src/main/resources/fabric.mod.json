@@ -14,8 +14,8 @@
 		"discord": "https://discord.com/invite/ApRvuNsX3j"
 	},
 	"license": "MIT",
-	"icon": "assets/mineberry-essentials/icon.png",
-	"environment": "*",
+	"icon": "assets/mineberry_essentials/mod_icon.png",
+	"environment": "client",
 	"entrypoints": {
 		"client": [
 			"com.mineberry.essentials.MineBerryEssentials",
@@ -26,9 +26,6 @@
 		]
 	},
 	"accessWidener": "mineberry-essentials.accesswidener",
-	"mixins": [
-		"mineberry-essentials.mixins.json"
-	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.2",

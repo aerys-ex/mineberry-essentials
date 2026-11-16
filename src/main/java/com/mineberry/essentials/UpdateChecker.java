@@ -233,7 +233,13 @@ public final class UpdateChecker {
             int x = i < a.length ? a[i] : 0, y = i < b.length ? b[i] : 0;
             if (x != y) return x > y;
         }
-        return false;
+        // same numbers: 1.6.0 is newer than 1.6.0-beta
+        return !isPreRelease(latest) && isPreRelease(current);
+    }
+
+    private static boolean isPreRelease(String version) {
+        String v = stripV(version).split("\\+", 2)[0];            // "+build" metadata does not make a pre-release
+        return v.contains("-");
     }
 
     private static int[] parts(String version) {

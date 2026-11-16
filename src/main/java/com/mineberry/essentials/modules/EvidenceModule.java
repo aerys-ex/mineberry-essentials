@@ -1,5 +1,7 @@
 package com.mineberry.essentials.modules;
 
+import com.mineberry.essentials.Clock;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mineberry.essentials.Config;
@@ -143,7 +145,7 @@ public class EvidenceModule extends MineBerryModule {
         ClientReceiveMessageEvents.CHAT.register((msg, signed, sender, params, ts) -> handle(msg));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (alertSuspect != null && System.currentTimeMillis() - alertTime > ALERT_MS) alertSuspect = null;
+            if (alertSuspect != null && Clock.ms() - alertTime > ALERT_MS) alertSuspect = null;
             while (confirmKey.consumeClick()) {
                 if (enabled() && alertSuspect != null) confirmAlert(client);
             }
@@ -187,7 +189,7 @@ public class EvidenceModule extends MineBerryModule {
     private void handle(Component text) {
         if (!enabled()) return;
         String s = text.getString();
-        long now = System.currentTimeMillis();
+        long now = Clock.ms();
 
         // the same line can reach us twice (system + chat channel) -> handle it once
         if (s.equals(lastText) && now - lastTextTime < DUPLICATE_MSG_MS) return;
@@ -321,7 +323,7 @@ public class EvidenceModule extends MineBerryModule {
         Minecraft mc = Minecraft.getInstance();
         var font = mc.font;
 
-        long leftMs = Math.max(0, ALERT_MS - (System.currentTimeMillis() - alertTime));
+        long leftMs = Math.max(0, ALERT_MS - (Clock.ms() - alertTime));
         String title = "POSSIBLE TP KILL / RG ABUSE DETECTED";
         String line2 = "tpahere from " + suspect + " - PvP mode entered";
         String line3 = "[" + keyName(confirmKey) + "] Yes, confirm     [" + keyName(skipKey) + "] Skip     ("
@@ -360,7 +362,7 @@ public class EvidenceModule extends MineBerryModule {
             }
             Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), (NativeImage img) -> {
                 Thread t = new Thread(() -> {
-                    try (img) { img.writeToFile(file); } catch (Exception e) { e.printStackTrace(); }
+                    try (img) { img.writeToFile(file); } catch (Exception e) { MineBerryEssentials.LOGGER.warn("Could not save evidence screenshot", e); }
                     if (p.finalShot && p.incident != null) autoExport(p.incident);
                 }, "mineberry-evidence-writer");
                 t.setDaemon(true);
@@ -370,7 +372,7 @@ public class EvidenceModule extends MineBerryModule {
                     logEntry + System.lineSeparator(),
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (Exception e) {
-            e.printStackTrace();
+            MineBerryEssentials.LOGGER.warn("Could not record evidence", e);
         }
     }
 
@@ -450,7 +452,7 @@ public class EvidenceModule extends MineBerryModule {
             }
             return zip;
         } catch (Exception e) {
-            e.printStackTrace();
+            MineBerryEssentials.LOGGER.warn("Could not build the evidence zip", e);
             return null;
         }
     }

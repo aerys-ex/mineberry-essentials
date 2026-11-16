@@ -18,6 +18,7 @@ import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
 import com.mineberry.essentials.modules.WorldEditCuiModule;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
@@ -50,6 +51,8 @@ public class MineBerryEssentials implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Config.load();
+		LunarHud.init();    // HUD + its keybind
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> Config.flushNow());
 		Changelog.init();   // the "What's New" popup after an update
 
 		openPanelKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
@@ -82,6 +85,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new RadialMenuModule());
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			Config.flush();
 			boolean hurt = client.player != null && client.player.hurtTime > 0;
 			if (hurt && !wasHurt) closePanelForDanger(client);
 			wasHurt = hurt;

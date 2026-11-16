@@ -21,7 +21,7 @@ public class RadialMenuScreen extends Screen {
     private static final long ANIM_MS = 150;
 
     private final List<Config.RadialSlice> slices = Config.radialSlices();
-    private final long openedAt = System.currentTimeMillis();
+    private final long openedAt = Clock.ms();
     private int hovered = -1;
     private boolean done;
     private float scale = 1f;
@@ -94,7 +94,7 @@ public class RadialMenuScreen extends Screen {
     // ---------------------------------------------------------------- drawing
 
     private void draw(GuiGraphicsExtractor g, int mx, int my) {
-        float t = Math.min(1f, (System.currentTimeMillis() - openedAt) / (float) ANIM_MS);
+        float t = Math.min(1f, (Clock.ms() - openedAt) / (float) ANIM_MS);
         float ease = 1f - (1f - t) * (1f - t) * (1f - t);        // fast start, soft landing
         int cx = this.width / 2, cy = this.height / 2;
         int n = slices.size();

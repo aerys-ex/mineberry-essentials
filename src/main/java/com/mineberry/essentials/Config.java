@@ -7,8 +7,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,17 +119,20 @@ public final class Config {
 
     private static Data data = new Data();
     private static boolean freshInstall = false;
+    private static volatile boolean dirty;
+    private static volatile long dirtySince;
+    /** Changes are written to disk this long after the first one, so dragging a HUD widget doesn't hit the disk every tick. */
+    private static final long SAVE_DELAY_MS = 500;
 
     private Config() {}
 
     public static void load() {
-        LunarHud.init();   // makes sure the HUD and keybinds register even without a client entrypoint
         // one-time migration of settings saved under the old name
         Path old = FILE.resolveSibling("peakberry_essentials.json");
         if (!Files.exists(FILE) && Files.exists(old)) {
-            try { Files.copy(old, FILE); } catch (Exception e) { e.printStackTrace(); }
+            try { Files.copy(old, FILE); } catch (Exception e) { MineBerryEssentials.LOGGER.warn("Could not migrate the old settings file", e); }
         }
-        if (!Files.exists(FILE)) { freshInstall = true; save(); return; }
+        if (!Files.exists(FILE)) { freshInstall = true; writeNow(); return; }
         try (Reader r = Files.newBufferedReader(FILE, StandardCharsets.UTF_8)) {
             Data loaded = GSON.fromJson(r, Data.class);
             if (loaded != null) data = loaded;
@@ -153,18 +158,52 @@ public final class Config {
             if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
             if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
             if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
-            save(); // writes any newly added keys so they can be edited
+            writeNow(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
-            e.printStackTrace();
+            // never overwrite a file we could not read: keep it as a backup so the player's waypoints and profiles are not lost
+            Path backup = FILE.resolveSibling("mineberry_essentials.json.broken");
+            try {
+                Files.move(FILE, backup, StandardCopyOption.REPLACE_EXISTING);
+                MineBerryEssentials.LOGGER.error("Settings file could not be read; it was kept as {} and defaults are used", backup, e);
+            } catch (Exception moveFailed) {
+                MineBerryEssentials.LOGGER.error("Settings file could not be read and could not be backed up", e);
+            }
             data = new Data();
         }
     }
 
+    /** Marks the settings as changed. They are written shortly after (see flush), not immediately. */
     public static void save() {
-        try (Writer w = Files.newBufferedWriter(FILE, StandardCharsets.UTF_8)) {
-            GSON.toJson(data, w);
+        if (!dirty) dirtySince = Clock.ms();
+        dirty = true;
+    }
+
+    /** Called every client tick: writes pending changes once they are SAVE_DELAY_MS old. */
+    public static void flush() {
+        if (dirty && Clock.ms() - dirtySince >= SAVE_DELAY_MS) writeNow();
+    }
+
+    /** Writes pending changes right now (used when the game closes). */
+    public static void flushNow() {
+        if (dirty) writeNow();
+    }
+
+    /** Writes to a temp file first and then swaps it in, so a crash mid-write can't leave a half-written config. */
+    private static synchronized void writeNow() {
+        dirty = false;
+        Path tmp = FILE.resolveSibling("mineberry_essentials.json.tmp");
+        try {
+            try (Writer w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
+                GSON.toJson(data, w);
+            }
+            try {
+                Files.move(tmp, FILE, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(tmp, FILE, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            dirty = true;   // try again later
+            MineBerryEssentials.LOGGER.warn("Could not save settings", e);
         }
     }
 
@@ -356,7 +395,6 @@ public final class Config {
         }
     }
 
-    /** Regex (case-insensitive) for the server's "combat ended" chat line. Edit in the config file. */
     /** If the server's "out of PvP mode" line is missed, Safe Logout and PvP Command Lock let go after this many seconds. */
     public static int pvpFailsafeSeconds() {
         return data.pvpFailsafeSeconds;
@@ -372,6 +410,7 @@ public final class Config {
         return data.pvpAllowedCommands;
     }
 
+    /** Regex (case-insensitive) for the server's "combat ended" chat line. Edit in the config file. */
     public static String combatEndPattern() {
         return data.combatEndPattern;
     }

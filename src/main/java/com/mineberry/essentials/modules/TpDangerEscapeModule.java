@@ -1,5 +1,7 @@
 package com.mineberry.essentials.modules;
 
+import com.mineberry.essentials.Clock;
+
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.MineBerryModule;
@@ -43,7 +45,7 @@ public class TpDangerEscapeModule extends MineBerryModule {
     private void handleTeleportMessage(Component message) {
         if (!enabled()) return;
         String text = message.getString();
-        long now = System.currentTimeMillis();
+        long now = Clock.ms();
         if (TELEPORT_REQUEST.matcher(text).find()) {
             requestTime = now;
         } else if (TELEPORT_ACCEPTED.matcher(text).find() && now - requestTime <= REQUEST_VALID_MS) {
@@ -57,7 +59,7 @@ public class TpDangerEscapeModule extends MineBerryModule {
             dangerWindowEnds = 0;
             return;
         }
-        if (enabled() && System.currentTimeMillis() < dangerWindowEnds && hostilePlayerIsLinedUp(mc)) {
+        if (enabled() && Clock.ms() < dangerWindowEnds && hostilePlayerIsLinedUp(mc)) {
             dangerWindowEnds = 0;
             sendSpawn(mc);
         }
@@ -75,7 +77,7 @@ public class TpDangerEscapeModule extends MineBerryModule {
 
     private void sendSpawn(Minecraft mc) {
         if (mc.getConnection() == null || mc.player == null) return;
-        long now = System.currentTimeMillis();
+        long now = Clock.ms();
         if (now - lastSpawnMs < 1_000) return;
         lastSpawnMs = now;
         mc.getConnection().sendCommand(Config.spawnCommand());
@@ -88,7 +90,7 @@ public class TpDangerEscapeModule extends MineBerryModule {
         if (MineBerryEssentials.hudHidden() || !enabled()) return;
         Minecraft mc = Minecraft.getInstance();
         var font = mc.font;
-        long leftMs = dangerWindowEnds - System.currentTimeMillis();
+        long leftMs = dangerWindowEnds - Clock.ms();
         String title = "TP DANGER ESCAPE: ON";
         String subtitle = leftMs > 0 ? "Guard armed: " + ((leftMs + 999) / 1000) + "s" : "Waiting for an accepted TP request";
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;

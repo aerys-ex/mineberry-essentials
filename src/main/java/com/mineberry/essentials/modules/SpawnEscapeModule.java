@@ -1,5 +1,7 @@
 package com.mineberry.essentials.modules;
 
+import com.mineberry.essentials.Clock;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
@@ -118,7 +120,7 @@ public class SpawnEscapeModule extends MineBerryModule {
 
     private void sendSpawn(Minecraft mc, boolean automatic, String reason) {
         if (mc.getConnection() == null || mc.player == null) return;
-        long now = System.currentTimeMillis();
+        long now = Clock.ms();
         if (now - lastSpawnMs < 1_000) return;
         lastSpawnMs = now;
         mc.getConnection().sendCommand(Config.spawnCommand());

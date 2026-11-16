@@ -1,5 +1,7 @@
 package com.mineberry.essentials.modules;
 
+import com.mineberry.essentials.Clock;
+
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.MineBerryModule;
@@ -119,7 +121,7 @@ public class SafeLogoutModule extends MineBerryModule {
 
     /** True while the quit guards apply. */
     private boolean inCombat() {
-        return inCombat && System.currentTimeMillis() - pvpSince < failsafeMs();
+        return inCombat && Clock.ms() - pvpSince < failsafeMs();
     }
 
     /** If the server's "out of PvP mode" line is ever missed, everything lets go after this long (config: pvpFailsafeSeconds). */
@@ -144,7 +146,7 @@ public class SafeLogoutModule extends MineBerryModule {
 
     private void tag() {
         inCombat = true;
-        pvpSince = System.currentTimeMillis();
+        pvpSince = Clock.ms();
     }
 
     /** True while the server says we are in PvP mode (used by PvP Command Lock). Works even if Safe Logout itself is switched off. */
@@ -213,7 +215,10 @@ public class SafeLogoutModule extends MineBerryModule {
         for (AbstractWidget widget : buttons) {
             if (widget instanceof Button button && isQuitLabel(button.getMessage().getString())) { original = button; break; }
         }
-        if (original == null) return;                       // unknown pause menu layout: leave it alone
+        if (original == null) {                             // unknown pause menu layout: leave it alone, but say so
+            MineBerryEssentials.LOGGER.warn("Safe Logout: could not find the Disconnect button on the pause menu, so it is not guarded");
+            return;
+        }
 
         Button fake = Button.builder(original.getMessage(), button -> onFakePressed())
                 .bounds(original.getX(), original.getY(), original.getWidth(), original.getHeight()).build();
@@ -233,7 +238,7 @@ public class SafeLogoutModule extends MineBerryModule {
     private void onFakePressed() {
         Minecraft mc = Minecraft.getInstance();
         if (!guarding(mc) || Config.safeLogoutMode().equals("block")) return;
-        pauseArmedUntil = System.currentTimeMillis() + ARM_MS;
+        pauseArmedUntil = Clock.ms() + ARM_MS;
         syncPauseGuard(mc);
     }
 
@@ -242,7 +247,7 @@ public class SafeLogoutModule extends MineBerryModule {
         Guard g = guard;
         if (g == null || mc.gui.screen() != g.screen) return;
 
-        long now = System.currentTimeMillis();
+        long now = Clock.ms();
         boolean guarded = guarding(mc);
         show(g.unlock, guarded, guarded);                   // the manual override is only there while a guard is
         boolean block = Config.safeLogoutMode().equals("block");
@@ -284,7 +289,7 @@ public class SafeLogoutModule extends MineBerryModule {
             if (previous != null) previous.invoke(w);
             Minecraft mc = Minecraft.getInstance();
             if (!guarding(mc)) return;
-            long now = System.currentTimeMillis();
+            long now = Clock.ms();
             boolean block = Config.safeLogoutMode().equals("block");
             if (!block && closeArmedUntil > now) return;    // second try in time: let it close
             GLFW.glfwSetWindowShouldClose(w, false);        // cancel this close request

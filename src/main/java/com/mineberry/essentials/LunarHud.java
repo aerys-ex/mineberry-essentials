@@ -1,8 +1,12 @@
 package com.mineberry.essentials;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -50,16 +54,28 @@ public final class LunarHud {
     public static void init() {
         if (ready) return;
         ready = true;
-        MineBerryHudClient.registerKeys();
-        System.out.println("[MineBerry] HUD registered");
+        registerKeys();
+        MineBerryEssentials.LOGGER.info("HUD registered");
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,
                 Identifier.fromNamespaceAndPath("mineberry_essentials", "lunar_hud"), LunarHud::draw);
+    }
+
+    /** Right Shift opens the HUD menu (like Lunar); change it in Options > Controls. HUD show/hide has its own key in MineBerryEssentials. */
+    private static void registerKeys() {
+        KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("mineberry_essentials", "lunar_menu"));
+        KeyMapping openMenu = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.mineberry_essentials.lunar_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (openMenu.consumeClick()) {
+                if (client.gui.screen() == null) client.gui.setScreen(new LunarMenu(null));
+            }
+        });
     }
 
     private static void draw(GuiGraphicsExtractor g, DeltaTracker tick) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || Config.hudHidden() || mc.gui.screen() instanceof HudEditScreen) return;
-        if (!logged) { logged = true; System.out.println("[MineBerry] HUD is drawing"); }
+        if (!logged) { logged = true; MineBerryEssentials.LOGGER.debug("HUD is drawing"); }
         Ui.applyTheme();
         Font font = mc.font;
         int sw = mc.getWindow().getGuiScaledWidth(), sh = mc.getWindow().getGuiScaledHeight();

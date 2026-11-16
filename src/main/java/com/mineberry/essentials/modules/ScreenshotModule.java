@@ -167,10 +167,13 @@ public class ScreenshotModule extends MineBerryModule {
         try {
             ProcessBuilder pb;
             if (os.contains("win")) {
+                // The path goes in through an environment variable, never into the script text: PowerShell treats
+                // typographic quotes (\u2018 \u2019 ...) like ' so escaping inside the script is not safe.
                 String script = "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; "
-                        + "$i = [System.Drawing.Image]::FromFile('" + path.replace("'", "''") + "'); "
+                        + "$i = [System.Drawing.Image]::FromFile($env:MINEBERRY_IMG); "
                         + "[System.Windows.Forms.Clipboard]::SetImage($i); $i.Dispose()";
                 pb = new ProcessBuilder("powershell", "-NoProfile", "-NonInteractive", "-Sta", "-Command", script);
+                pb.environment().put("MINEBERRY_IMG", path);
             } else if (os.contains("mac")) {
                 String script = "set the clipboard to (read (POSIX file \"" + path.replace("\\", "\\\\").replace("\"", "\\\"")
                         + "\") as \u00abclass PNGf\u00bb)";

@@ -1,5 +1,7 @@
 package com.mineberry.essentials.modules;
 
+import com.mineberry.essentials.Clock;
+
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -37,6 +39,8 @@ public class ChatExtrasModule extends MineBerryModule {
 
     private Pattern mentionPattern = null;
     private String mentionSource = null;
+    private Pattern ownPattern = null;
+    private String ownName = null;
 
     public ChatExtrasModule() {
         super("chat_extras", "Chat Extras", "Mentions with sound, and chat timestamps");
@@ -83,14 +87,18 @@ public class ChatExtrasModule extends MineBerryModule {
         Minecraft mc = Minecraft.getInstance();
         String own = mc.getUser() == null ? null : mc.getUser().getName();
         if (own == null || own.isBlank()) return false;
-        return Pattern.compile("^.{0,40}?(?<![A-Za-z0-9_])" + Pattern.quote(own) + "(?![A-Za-z0-9_])\\s*[:>\u00bb]",
-                Pattern.CASE_INSENSITIVE).matcher(text).find();
+        if (ownPattern == null || !own.equals(ownName)) {      // compiled once per username, not once per chat line
+            ownPattern = Pattern.compile("^.{0,40}?(?<![A-Za-z0-9_])" + Pattern.quote(own) + "(?![A-Za-z0-9_])\\s*[:>\u00bb]",
+                    Pattern.CASE_INSENSITIVE);
+            ownName = own;
+        }
+        return ownPattern.matcher(text).find();
     }
 
     private void onMessage(Component msg) {
         if (!enabled() || !Config.mentionSound()) return;
         String s = msg.getString();
-        long now = System.currentTimeMillis();
+        long now = Clock.ms();
         // the same line can reach us twice (system + chat channel) -> react once
         if (s.equals(lastText) && now - lastTextTime < DUPLICATE_MSG_MS) return;
         lastText = s;
