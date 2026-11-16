@@ -55,6 +55,22 @@ public class SafeLogoutModule extends MineBerryModule {
         return OTHER_PLAYER_NOTICE.matcher(text).find();
     }
 
+    /** Chat separators: what comes before a player's own words, like "<Steve> ..." or "Steve: ..." or "Steve > ...". */
+    private static final Pattern CHAT_SEPARATOR = Pattern.compile("[<>:\u00bb\u203a\u2192]");
+
+    /**
+     * True only if the pattern matches AND the line is a server notice, not a player typing the same words.
+     * A player's line has a chat separator before the matched words ("Steve: entered pvp mode"), a server notice
+     * ("You've entered PvP mode!") does not. Without this, anyone could switch the PvP guard on or off from chat.
+     */
+    public static boolean matchesServerNotice(Pattern pattern, String text) {
+        java.util.regex.Matcher m = pattern.matcher(text);
+        while (m.find()) {
+            if (!CHAT_SEPARATOR.matcher(text.substring(0, m.start())).find()) return true;
+        }
+        return false;
+    }
+
     private static SafeLogoutModule instance;
     private boolean inCombat;                           // set and cleared only by the server's PvP mode messages
     private long pvpSince;                              // last time the server put us in PvP mode
@@ -88,7 +104,7 @@ public class SafeLogoutModule extends MineBerryModule {
         HudElementRegistry.addLast(MineBerryEssentials.id("safe_logout_status"), (g, delta) -> drawHud(g));
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> onMessage(message, overlay));
-        ClientReceiveMessageEvents.CHAT.register((message, signed, sender, params, timestamp) -> onMessage(message, false));
+        // Signed player chat is deliberately NOT listened to: a player typing "entered pvp mode" must not start the guard.
 
         // the pause menu: put a guard in front of its Disconnect button
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
@@ -148,9 +164,9 @@ public class SafeLogoutModule extends MineBerryModule {
     private void onMessage(Component message, boolean overlay) {
         String text = message.getString();
         // the end message is checked first: "out of PvP mode" also contains "PvP mode"
-        if (BUILTIN_END.matcher(text).find() || combatEnd().matcher(text).find()) {
+        if (matchesServerNotice(BUILTIN_END, text) || matchesServerNotice(combatEnd(), text)) {
             inCombat = false;               // the server says it is over; the tick prints the "safe to quit" line
-        } else if (!overlay && pvpMode().matcher(text).find() && !isOtherPlayerNotice(text)) {
+        } else if (!overlay && matchesServerNotice(pvpMode(), text) && !isOtherPlayerNotice(text)) {
             tag();
         }
     }

@@ -18,6 +18,7 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 - It follows Tournament Mode and PvP Command Lock, so a blocked command stays blocked
 - **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
 - **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
+- **Chat can't trigger PvP mode anymore:** a player typing "entered pvp mode" (or similar) in chat used to switch on Safe Logout, PvP Command Lock and the abuse alert. Only the server's own messages count now
 - The default `pvpModePattern` no longer matches every line that contains "PvP mode". Old configs that still have the old default are updated automatically
 
 ## Screenshots

@@ -13,6 +13,7 @@
         ],
         "Fixed": [
           "Fixed Safe Logout and PvP Command Lock turning on when the server announced that ANOTHER player left the game in PvP mode and was killed.",
+          "Fixed a player typing \"entered pvp mode\" (or similar) in chat switching on Safe Logout, PvP Command Lock and the abuse alert. Only the server's own messages count now.",
           "Old configs are updated automatically: the PvP start pattern no longer matches every line that contains \"PvP mode\"."
         ]
       }
