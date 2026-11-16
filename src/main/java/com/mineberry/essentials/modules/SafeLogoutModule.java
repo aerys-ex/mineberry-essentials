@@ -58,17 +58,56 @@ public class SafeLogoutModule extends MineBerryModule {
     }
 
     /** Chat separators: what comes before a player's own words, like "<Steve> ..." or "Steve: ..." or "Steve > ...". */
-    private static final Pattern CHAT_SEPARATOR = Pattern.compile("[<>:\u00bb\u203a\u2192]");
+    private static final Pattern CHAT_SEPARATOR = Pattern.compile("[<>:|\\-\u00bb\u203a\u2192\u2022\u2503\u2502\u27a4\u279c\u276f]");
+
+    /** Names of everyone on the tab list (profile names and display names). Set by init(); empty in unit tests. */
+    private static volatile java.util.function.Supplier<java.util.Collection<String>> nameSource = java.util.List::of;
+
+    /** True if the text before the match contains the name of any online player: that is a player talking, never the server. */
+    private static boolean mentionsPlayerBefore(String prefix, java.util.Collection<String> names) {
+        String lower = prefix.toLowerCase(java.util.Locale.ROOT);
+        for (String name : names) {
+            if (name == null || name.length() < 3) continue;
+            String n = name.toLowerCase(java.util.Locale.ROOT);
+            int from = 0, i;
+            while ((i = lower.indexOf(n, from)) >= 0) {
+                boolean startOk = i == 0 || !Character.isLetterOrDigit(lower.charAt(i - 1)) && lower.charAt(i - 1) != '_';
+                int end = i + n.length();
+                boolean endOk = end >= lower.length() || !Character.isLetterOrDigit(lower.charAt(end)) && lower.charAt(end) != '_';
+                if (startOk && endOk) return true;
+                from = i + 1;
+            }
+        }
+        return false;
+    }
+
+    /** The only things allowed in front of the matched words: nothing, a [Tag], or "You / You've / You're / You have / You are ...". */
+    private static final java.util.Set<String> SERVER_PREFIXES = java.util.Set.of(
+            "", "you", "youve", "youre", "youhave", "youare", "youhavebeen", "youvebeen", "youjust", "youhavejust", "youvejust");
+
+    /** True if the text before the match looks like the server talking to us, never a player talking. */
+    private static boolean isServerPrefix(String prefix) {
+        String letters = prefix.replaceAll("\\[[^\\]]*\\]", "").replaceAll("[^A-Za-z]", "").toLowerCase(java.util.Locale.ROOT);
+        return SERVER_PREFIXES.contains(letters);
+    }
 
     /**
      * True only if the pattern matches AND the line is a server notice, not a player typing the same words.
-     * A player's line has a chat separator before the matched words ("Steve: entered pvp mode"), a server notice
-     * ("You've entered PvP mode!") does not. Without this, anyone could switch the PvP guard on or off from chat.
+     * Many servers deliver player chat as plain system messages, so the "signed chat" flag cannot be trusted.
+     * A line is rejected as player chat if, before the matched words, it has a chat separator ("Steve: ...")
+     * OR it contains the name of any online player ("[Rank] Steve pvp mode").
+     * A real server notice ("You've entered PvP mode!") has neither.
      */
     public static boolean matchesServerNotice(Pattern pattern, String text) {
+        java.util.Collection<String> names;
+        try { names = nameSource.get(); } catch (RuntimeException e) { names = java.util.List.of(); }
         java.util.regex.Matcher m = pattern.matcher(text);
         while (m.find()) {
-            if (!CHAT_SEPARATOR.matcher(text.substring(0, m.start())).find()) return true;
+            String prefix = text.substring(0, m.start());
+            if (CHAT_SEPARATOR.matcher(prefix).find()) continue;
+            if (mentionsPlayerBefore(prefix, names)) continue;
+            if (!isServerPrefix(prefix)) continue;
+            return true;
         }
         return false;
     }
@@ -103,6 +142,18 @@ public class SafeLogoutModule extends MineBerryModule {
     @Override
     public void init() {
         instance = this;
+        nameSource = () -> {
+            Minecraft mc = Minecraft.getInstance();
+            java.util.List<String> out = new java.util.ArrayList<>();
+            if (mc.getConnection() != null) {
+                for (var info : mc.getConnection().getOnlinePlayers()) {
+                    out.add(info.getProfile().name());
+                    if (info.getTabListDisplayName() != null) out.add(info.getTabListDisplayName().getString());
+                }
+            }
+            if (mc.player != null) out.add(mc.player.getName().getString());
+            return out;
+        };
         HudElementRegistry.addLast(MineBerryEssentials.id("safe_logout_status"), (g, delta) -> drawHud(g));
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> onMessage(message, overlay));

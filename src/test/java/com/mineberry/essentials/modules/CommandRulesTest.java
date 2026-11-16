@@ -27,6 +27,11 @@ class CommandRulesTest {
         assertTrue(SafeLogoutModule.matchesServerNotice(p, "You've entered PvP mode!"));
         assertFalse(SafeLogoutModule.matchesServerNotice(p, "<Steve> entered pvp mode"));
         assertFalse(SafeLogoutModule.matchesServerNotice(p, "Steve: entered pvp mode"));
+        assertFalse(SafeLogoutModule.matchesServerNotice(p, "[Member] Steve entered pvp mode"));
+        assertFalse(SafeLogoutModule.matchesServerNotice(p, "Nick \u2022 entered pvp mode"));
+        assertTrue(SafeLogoutModule.matchesServerNotice(p, "[PvP] You\u2019ve entered PvP mode!"));
+        assertFalse(SafeLogoutModule.matchesServerNotice(p, "Steve - entered pvp mode"));
+        assertFalse(SafeLogoutModule.matchesServerNotice(p, "Steve \u27a4 entered pvp mode"));
     }
 
     @Test void noticesAboutOtherPlayersAreRecognised() {
