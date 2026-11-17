@@ -18,7 +18,13 @@ https://github.com/user-attachments/assets/92ab1026-6b5c-4430-89a7-2100722186f6
   - Dead comes from the server's death and elimination lines and from spectator mode, never from player chat
   - Statuses start fresh when a round starts, when you join a server and when you press **Reset statuses**
   - Off by default. Move or hide it in the HUD menu (**Tournament Players**)
-- **Config:** new `tournamentFriends`, `tournamentMessageSeconds` and `tournamentStartPattern` (see [Configuration](#configuration))
+- **Edit HUD Layout, drag anywhere:** drag any HUD box where you want it. It snaps to the screen edges, the centre and the other boxes, with guide lines. Right-click a box to put it back in the automatic stack, or press **Reset all**. Boxes that overlap get a red outline (see [MineBerry Client (HUD)](#mineberry-client-hud))
+  - A box stays attached to the corner nearest to where you drop it, so your layout survives window and GUI scale changes
+  - Positions are saved in your HUD profiles
+- **Compass waypoints:** your waypoints show as coloured markers under the Compass strip. Look at one and the Compass shows its name and distance (needs the **Waypoints** module)
+- **Watermark:** a small *MineBerry Essentials* label in the top left corner, drawn without a box. On by default, switch it off or move it in the HUD menu
+- **Fixed overlapping HUD boxes:** Tournament Mode, Spawn Escape, TP Danger Escape, Safe Logout, the Clan / Admin / Party badge and the waypoint list now stack under the HUD boxes of the top right corner instead of drawing on top of them and of each other. The abuse alert no longer covers the top left boxes
+- **Config:** new `tournamentFriends`, `tournamentMessageSeconds` and `tournamentStartPattern` (see [Configuration](#configuration)). The default theme's config id changed from `lunar` to `default`, and old configs are converted automatically
 
 ## Screenshots
 
@@ -80,20 +86,26 @@ One panel with a card for every module.
 - Adapts to your window size and GUI scale
 - Smooth fade in/out animations
 - Optional auto-close when you take damage or PvP danger is detected
+- The status boxes on the right side of the screen (Tournament Mode, Spawn Escape, Safe Logout, chat badges and so on) stack under each other and under the HUD boxes, so they never overlap
 
 ### MineBerry Client (HUD)
 A separate menu for the on-screen HUD. Press **Right Shift** to open it.
-- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass** and **Biome / Time**
+- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass**, **Biome / Time** and the **Watermark**
 - Filter the list with **All**, **New** and **HUD**, or use the search box
 - **Keystrokes / CPS:** W, A, S, D, both mouse buttons and Space light up while held, with the clicks per second of each mouse button
 - **Armor Status:** your armor as item icons with the durability left (green, yellow, red). A held tool or bow is shown too
 - **Potion Effects:** every visible effect with its colour, level and time left. The time turns red under 10 seconds
-- **Compass:** a scrolling N / NE / E strip with your exact heading and world axis, like `N (-Z) 0°`
+- **Compass:** a scrolling N / NE / E strip with your exact heading and world axis, like `N (-Z) 0°`. With the **Waypoints** module on, your waypoints of the current dimension show as coloured markers under the strip (dimmed at the edge when they are out of view), and looking at one shows its name and distance
 - **Biome / Time:** the biome you are in and, in the overworld, the in-game time and Day / Dusk / Night / Dawn
-- The five new modules are **off by default**. Turn them on from their cards
+- **Watermark:** a small *MineBerry Essentials* label with no box, top left by default. **On by default**, switch it off or move it like any other module
+- The five new modules (Keystrokes / CPS, Armor Status, Potion Effects, Compass, Biome / Time) are **off by default**. Turn them on from their cards
 - Use the `<` `>` buttons or the mouse wheel to change page
-- **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**
-- **Edit HUD Layout** lets you move the modules around on screen
+- **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**. Free positions are saved in the profile too
+- **Edit HUD Layout** shows every box where it really is:
+  - **Drag** a box anywhere. It snaps to the screen edges, the centre and other boxes, and guide lines show what it lines up with
+  - **Right-click** a box to put it back in the automatic stack, or press **Reset all**
+  - Overlapping boxes get a **red outline**
+  - A box stays attached to the corner nearest to where you drop it, so it keeps its place when the window or GUI scale changes
 - **Settings** and **Waypoints** tabs are also in this menu
 - Show or hide the whole HUD with `Y`
 
