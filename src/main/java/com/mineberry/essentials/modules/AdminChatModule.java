@@ -90,7 +90,7 @@ public class AdminChatModule extends MineBerryModule {
         String title = "ADMIN CHAT ENABLED";
         int w = font.width(title) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;
-        int y = 6;    // same slot as the clan badge (the chat modes are mutually exclusive)
+        int y = com.mineberry.essentials.StatusStack.take(21);   // chat badge: same slot for all three (modes are exclusive)
         g.fill(x - 1, y - 1, x + w + 1, y + 22, 0x66000000);
         g.fill(x, y, x + w, y + 21, 0xE0301818);
         g.fill(x + w - 3, y, x + w, y + 21, 0xFFFF5566);

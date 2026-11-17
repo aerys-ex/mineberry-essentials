@@ -12,16 +12,13 @@ https://github.com/user-attachments/assets/92ab1026-6b5c-4430-89a7-2100722186f6
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.6.0
+## What's New in 1.6.1
 
-- **Radial Menu:** hold `V` and a pie menu opens around your crosshair with quick commands (`/spawn`, `/tpa` and `/tpaccept`). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
-  - `/tpa` opens chat with `/tpa ` already typed, so you only add the player's name
-  - Let go in the middle or press `Esc` to cancel
-  - It follows your theme, Tournament Mode and PvP Command Lock, so a blocked command stays blocked
-- **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
-- **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
-- **Chat can't trigger PvP mode anymore:** a player typing "entered pvp mode" (or similar) in chat used to switch on Safe Logout, PvP Command Lock and the abuse alert. Only the server's own messages count now
-- **Config:** the default `pvpModePattern` is now `entered pvp mode|entered combat|combat mode|combat tag`. It no longer matches every line that contains "PvP mode". Configs that still have the old default are updated automatically, a pattern you changed yourself is left alone (see [Configuration](#configuration))
+- **Tournament HUD:** a box on your screen that follows your friends during a tournament. Add their usernames with the gear button on its card, and you see each friend's last chat messages in full and whether they are **alive**, **dead (in-game)**, **dead (left)** or **left**, with an **Alive 3/5** counter on top (see [Tournament HUD](#tournament-hud))
+  - Dead comes from the server's death and elimination lines and from spectator mode, never from player chat
+  - Statuses start fresh when a round starts, when you join a server and when you press **Reset statuses**
+  - Off by default. Move or hide it in the HUD menu (**Tournament Players**)
+- **Config:** new `tournamentFriends`, `tournamentMessageSeconds` and `tournamentStartPattern` (see [Configuration](#configuration))
 
 ## Screenshots
 
@@ -214,6 +211,15 @@ Switch it on before a tournament and no command can be sent at all.
 - A red **TOURNAMENT MODE** box on the HUD reminds you it is on, and a chat line tells you which command was blocked
 - Let specific commands through with `tournamentAllowedCommands` in the config file (empty by default)
 
+### Tournament HUD
+See which of your friends are still alive, and what they say, while tournament chat flies by.
+- One card in the **Tools** tab, **off by default**. Press its gear button to add friends by username (up to 30) or remove them
+- A box on the HUD lists each friend who is in the match with a status: **alive**, **dead (in-game)**, **dead (left)** or **left**. Alive friends come first, with an **Alive 3/5** counter on top. Under each name you see that friend's last 3 chat messages in full (long ones wrap). Newer messages are brighter, older ones dimmer, and each one fades out by itself after a few seconds
+- Dead is detected from the server's death and elimination lines (never from player chat), from the *left the game while in PvP mode and was killed* line, and from a friend switching to spectator mode. Left comes from the player list
+- Statuses start fresh when you join a server, when the server says a round, match or game started, and when you press **Reset statuses** in the friends screen
+- Move or hide the box in the HUD menu (**Tournament Players**, bottom right by default). It only reads what you already receive and sends nothing
+- Change how long messages stay with `tournamentMessageSeconds` and the round start line with `tournamentStartPattern` (empty turns the automatic reset off) in the config file
+
 ### TP Danger Escape
 Protection against `/tpahere` traps.
 - After you accept an incoming `/tpahere`, a nearby player lining up to hit you triggers an automatic `/spawn`
@@ -317,6 +323,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - `pvpModePattern` is also used by PvP Command Lock and the Abuse Alert. Since 1.6.0 its default is `entered pvp mode|entered combat|combat mode|combat tag` and it no longer matches every line containing "PvP mode". Old configs that still have the previous default are updated automatically, a custom pattern is kept as it is
 - PvP Command Lock: the commands that still work in PvP mode (`pvpAllowedCommands`)
 - Tournament Mode: commands that still work while it is on (`tournamentAllowedCommands`, empty by default)
+- Tournament HUD: your friends (`tournamentFriends`, also editable in the friends screen), how long a message stays (`tournamentMessageSeconds`, 15 by default) and the round start line (`tournamentStartPattern`)
 - The failsafe time for Safe Logout and PvP Command Lock (`pvpFailsafeSeconds`, 180 by default)
 - The What's New popup (`showChangelog`, on by default)
 - Update checking (`checkForUpdates`, on by default)
@@ -392,6 +399,17 @@ Make sure the standalone WorldEditCUI mod is not installed.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.6.0
+
+- **Radial Menu:** hold `V` and a pie menu opens around your crosshair with quick commands (`/spawn`, `/tpa` and `/tpaccept`). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
+  - `/tpa` opens chat with `/tpa ` already typed, so you only add the player's name
+  - Let go in the middle or press `Esc` to cancel
+  - It follows your theme, Tournament Mode and PvP Command Lock, so a blocked command stays blocked
+- **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
+- **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
+- **Chat can't trigger PvP mode anymore:** a player typing "entered pvp mode" (or similar) in chat used to switch on Safe Logout, PvP Command Lock and the abuse alert. Only the server's own messages count now
+- **Config:** the default `pvpModePattern` is now `entered pvp mode|entered combat|combat mode|combat tag`. It no longer matches every line that contains "PvP mode". Configs that still have the old default are updated automatically, a pattern you changed yourself is left alone (see [Configuration](#configuration))
 
 ### 1.5.0
 

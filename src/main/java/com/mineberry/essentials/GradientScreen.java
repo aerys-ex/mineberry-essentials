@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * Chat gradient generator, in the spirit of Birdflop's RGBirdflop: type some text, pick 2 to 6 hex colors,
- * see a live preview and copy the result in the format your server understands. Same flat Lunar look as the other screens.
+ * see a live preview and copy the result in the format your server understands. Same flat MineBerry look as the other screens.
  */
 public class GradientScreen extends Screen {
 
@@ -156,7 +156,7 @@ public class GradientScreen extends Screen {
         add(Button.builder(Component.literal("Close"), button -> onClose())
                 .bounds(right - 60, py + footerY + 6, 60, BTN_H).build());
 
-        // Lunar look drawn over the vanilla buttons (added last so it renders on top)
+        // MineBerry look drawn over the vanilla buttons (added last so it renders on top)
         this.addRenderableOnly((g, mouseX, mouseY, delta) -> Ui.buttons(g, this.font, widgets, cards, mouseX, mouseY));
     }
 

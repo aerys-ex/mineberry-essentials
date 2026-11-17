@@ -217,6 +217,7 @@ final class Icons {
             Map.entry("worldeditcui", SELECTION),
             Map.entry("waypoints", PIN),
             Map.entry("radial_menu", RADIAL),
+            Map.entry("tournament_hud", PERSON),
             Map.entry("opt_close_on_danger", WARNING),
             Map.entry("opt_chat_timestamps", CLOCK));
 

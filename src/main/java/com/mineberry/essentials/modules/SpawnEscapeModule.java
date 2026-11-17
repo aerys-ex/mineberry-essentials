@@ -141,7 +141,7 @@ public class SpawnEscapeModule extends MineBerryModule {
                 + "  |  pit guard armed";
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;
-        int y = 40;
+        int y = com.mineberry.essentials.StatusStack.take(29);
         g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
         g.fill(x, y, x + w, y + 29, 0xE0182534);
         g.fill(x + w - 3, y, x + w, y + 29, 0xFF48A9FF);

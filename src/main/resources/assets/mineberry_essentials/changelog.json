@@ -1,6 +1,16 @@
 {
   "versions": [
     {
+      "version": "1.6.1",
+      "title": "Tournament HUD",
+      "sections": {
+        "New": [
+          "Tournament HUD: add your friends by username and a box on your screen shows their last chat messages in full, and whether they are alive, dead or left, with an Alive count on top. Off by default, switch it on in the Tools tab.",
+          "Dead is read from the server's death and elimination lines and from spectator mode, never from player chat. Statuses start fresh when a round starts or you join a server."
+        ]
+      }
+    },
+    {
       "version": "1.6.0",
       "title": "Radial Menu",
       "sections": {

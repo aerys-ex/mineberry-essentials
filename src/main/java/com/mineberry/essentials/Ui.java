@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Shared look of the MineBerry screens, Lunar-client style: dark flat surfaces, one thin outline, module cards
+ * Shared look of the MineBerry screens, MineBerry Client style: dark flat surfaces, one thin outline, module cards
  * with a toggle switch. No shadows, gradients or animations, so screens open and close instantly.
  */
 final class Ui {
@@ -32,7 +32,7 @@ final class Ui {
             case "aurora" -> set(0xF50B1317, 0xFF11242B, 0xFF2FA9BA, 0xFF9BE6F2, 0xFFEFFAFC, 0xFF86A5AD, 0xFF2FA9BA);
             case "ember" -> set(0xF5130D09, 0xFF251810, 0xFFE08A2E, 0xFFFFC98A, 0xFFFFF4E8, 0xFFAB9580, 0xFFE08A2E);
             case "midnight" -> set(0xF5090B14, 0xFF141934, 0xFF5C7CF0, 0xFFB3C4FF, 0xFFF0F3FF, 0xFF8A91B0, 0xFF5C7CF0);
-            // default (config id "lunar"): neutral dark surfaces with an orange accent
+            // default (config id "default"): neutral dark surfaces with an orange accent
             default -> set(0xF2111111, 0xFF171717, 0xFF2D2D2D, 0xFFE8943A, 0xFFE8E8E8, 0xFF8E8E8E, 0xFFD9822B);
         }
         int solid = BG | 0xFF000000;
@@ -63,10 +63,10 @@ final class Ui {
 
     static String nextTheme() {
         return switch (Config.panelTheme()) {
-            case "lunar" -> "aurora";
+            case "default" -> "aurora";
             case "aurora" -> "ember";
             case "ember" -> "midnight";
-            default -> "lunar";
+            default -> "default";
         };
     }
 
@@ -162,7 +162,7 @@ final class Ui {
     }
 
     /**
-     * Draws the Lunar look over the vanilla buttons. Call it from a renderable that was added AFTER the widgets,
+     * Draws the MineBerry look over the vanilla buttons. Call it from a renderable that was added AFTER the widgets,
      * so it lands on top. Widgets listed in cards become module cards; everything else a rounded outlined button.
      */
     static void buttons(GuiGraphicsExtractor g, Font font, List<AbstractWidget> widgets, Map<AbstractWidget, Card> cards,

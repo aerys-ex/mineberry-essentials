@@ -15,6 +15,6 @@
   "key.mineberry_essentials.screenshot": "Screenshot (copy to clipboard)",
   "key.mineberry_essentials.screenshots_menu": "Open screenshots",
   "key.mineberry_essentials.chat_search": "Search chat history",
-  "key.category.mineberry_essentials.lunar_menu": "MineBerry Client (HUD)",
-  "key.mineberry_essentials.lunar_menu": "Open MineBerry Client (HUD)"
+  "key.category.mineberry_essentials.client_menu": "MineBerry Client (HUD)",
+  "key.mineberry_essentials.client_menu": "Open MineBerry Client (HUD)"
 }

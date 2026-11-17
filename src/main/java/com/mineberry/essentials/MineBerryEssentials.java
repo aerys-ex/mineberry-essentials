@@ -13,6 +13,7 @@ import com.mineberry.essentials.modules.QuickReplyModule;
 import com.mineberry.essentials.modules.SafeLogoutModule;
 import com.mineberry.essentials.modules.ScreenshotModule;
 import com.mineberry.essentials.modules.SpawnEscapeModule;
+import com.mineberry.essentials.modules.TournamentHudModule;
 import com.mineberry.essentials.modules.TournamentModeModule;
 import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
@@ -51,7 +52,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Config.load();
-		LunarHud.init();    // HUD + its keybind
+		ClientHud.init();    // HUD + its keybind
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> Config.flushNow());
 		Changelog.init();   // the "What's New" popup after an update
 
@@ -83,6 +84,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new WaypointsModule());
 		register(new ScreenshotModule());
 		register(new RadialMenuModule());
+		register(new TournamentHudModule());
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			Config.flush();

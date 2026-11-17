@@ -95,7 +95,7 @@ public class TpDangerEscapeModule extends MineBerryModule {
         String subtitle = leftMs > 0 ? "Guard armed: " + ((leftMs + 999) / 1000) + "s" : "Waiting for an accepted TP request";
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;
-        int y = 74;
+        int y = com.mineberry.essentials.StatusStack.take(29);
         g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
         g.fill(x, y, x + w, y + 29, 0xE0341A12);
         g.fill(x + w - 3, y, x + w, y + 29, 0xFFFF8A3D);

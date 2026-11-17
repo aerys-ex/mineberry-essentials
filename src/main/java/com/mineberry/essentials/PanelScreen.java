@@ -43,7 +43,7 @@ public class PanelScreen extends Screen {
             Map.entry("spawn_escape", "Safety"), Map.entry("tp_danger_escape", "Safety"), Map.entry("safe_logout", "Safety"),
             Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"),
             Map.entry("evidence", "Tools"), Map.entry("worldeditcui", "Tools"), Map.entry("waypoints", "Tools"),
-            Map.entry("radial_menu", "Tools"));
+            Map.entry("radial_menu", "Tools"), Map.entry("tournament_hud", "Tools"));
 
     /** One card: a module or an option. */
     private static final class Entry {
@@ -146,6 +146,9 @@ public class PanelScreen extends Screen {
             } else if (module.id().equals("chat_search")) {
                 gearHint = "Open chat search";
                 gearAction = () -> this.minecraft.gui.setScreen(new ChatSearchScreen(this));
+            } else if (module.id().equals("tournament_hud")) {
+                gearHint = "Edit your friends list";
+                gearAction = () -> this.minecraft.gui.setScreen(new TournamentHudScreen(this));
             } else if (module.id().equals("screenshot")) {
                 gearHint = "Open your screenshots";
                 gearAction = () -> this.minecraft.gui.setScreen(new ScreenshotScreen(this));

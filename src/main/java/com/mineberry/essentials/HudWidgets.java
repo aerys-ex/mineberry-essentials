@@ -1,6 +1,8 @@
 package com.mineberry.essentials;
 
 import net.minecraft.client.KeyMapping;
+import com.mineberry.essentials.modules.TournamentHudModule;
+import com.mineberry.essentials.modules.WaypointsModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,12 +18,39 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-/** The multi-line HUD mods: Keystrokes/CPS, Armor Status, Potion Effects, Compass and Biome/Time. */
+/** The multi-line HUD mods: Keystrokes/CPS, Armor Status, Potion Effects, Compass, Biome/Time and Tournament Players. */
 final class HudWidgets {
 
     private static final int WHITE = 0xFFFFFFFF, SOFT = 0xFFC8C8C8;
 
     private HudWidgets() {}
+
+    // ---------------------------------------------------------------- watermark
+
+    /** "MineBerry Essentials" in a corner, drawn without a box like the watermarks of other clients. */
+    static final class Watermark implements HudWidget {
+
+        private static final String MINE = "Mine", BERRY = "Berry", SUB = " Essentials";
+
+        @Override
+        public int[] size(Minecraft mc, Font font) {
+            return new int[]{font.width(MINE + BERRY + SUB), 9};
+        }
+
+        @Override
+        public void draw(GuiGraphicsExtractor g, Minecraft mc, Font font, int x, int y) {
+            Ui.txt(g, font, MINE, x, y + 1, WHITE, true);
+            x += font.width(MINE);
+            Ui.txt(g, font, BERRY, x, y + 1, 0xFF000000 | Ui.ACCENT, true);
+            x += font.width(BERRY);
+            Ui.txt(g, font, SUB, x, y + 1, 0xFF000000 | Ui.MUTED, true);
+        }
+
+        @Override
+        public boolean plain() {
+            return true;
+        }
+    }
 
     // ---------------------------------------------------------------- keystrokes + CPS
 
@@ -196,21 +225,44 @@ final class HudWidgets {
 
     // ---------------------------------------------------------------- compass
 
-    /** A scrolling strip of N / NE / E... that follows where you look, with the exact heading and world axis below it. */
+    /**
+     * A scrolling strip of N / NE / E... that follows where you look, with the exact heading and world axis below it.
+     * When the Waypoints module is on, your visible waypoints of this dimension show as coloured markers under the strip
+     * (dimmed at the edge when they are outside the view), and the heading line shows the waypoint you are looking at.
+     */
     static final class Compass implements HudWidget {
 
         private static final int W = 110, STRIP_H = 9, HEIGHT = STRIP_H + 1 + 4 + 2 + 9;
         private static final float SPAN = 100f;   // degrees visible across the strip
 
+        private static final int MARK_H = 3;   // extra rows for the waypoint markers, only when there are some
+
+        private record Mark(float off, int color, double dist, String name) {}
+
+        private final List<Mark> marks = new ArrayList<>();
         private float bearing;
-        private int degrees;
+        private int degrees, markH;
 
         @Override
         public int[] size(Minecraft mc, Font font) {
             if (mc.player == null) return null;
             degrees = HudFormat.bearing(mc.player.getYRot());
             bearing = ((mc.player.getYRot() + 180f) % 360f + 360f) % 360f;
-            return new int[]{W, HEIGHT};
+            marks.clear();
+            if (mc.level != null && Config.isEnabled("waypoints")) {
+                String dim = WaypointsModule.dimensionId(mc);
+                for (Config.Waypoint wp : Config.waypoints()) {
+                    if (!wp.visible || !dim.equals(wp.dim)) continue;
+                    double dx = wp.x + 0.5 - mc.player.getX(), dz = wp.z + 0.5 - mc.player.getZ();
+                    if (dx * dx + dz * dz < 0.25) continue;   // standing on it: it has no direction
+                    float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));   // Minecraft yaw towards the waypoint
+                    float heading = ((yaw + 180f) % 360f + 360f) % 360f;       // same 0 = north scale as the strip
+                    marks.add(new Mark(Mth.wrapDegrees(heading - bearing), wp.color, WaypointsModule.distanceTo(mc, wp), wp.name));
+                }
+                marks.sort(Comparator.comparingDouble(Mark::dist).reversed());   // far ones first, so near ones end up on top
+            }
+            markH = marks.isEmpty() ? 0 : MARK_H;
+            return new int[]{W, HEIGHT + markH};
         }
 
         @Override
@@ -235,10 +287,27 @@ final class HudWidgets {
             }
             Ui.fill(g, x + W / 2, lineY - 1, x + W / 2 + 1, lineY + 5, Ui.ACCENT);   // where you are looking
 
+            Mark ahead = null;   // the nearest waypoint you are looking at
+            for (Mark m : marks) {
+                float off = m.off();
+                boolean inView = Math.abs(off) <= half;
+                int px = Math.max(x + 2, Math.min(x + W - 3, x + Math.round(W / 2f + off * perDegree)));
+                int argb = ((inView ? 0xFF : 0x80) << 24) | (m.color() & 0xFFFFFF);
+                for (int r = 0; r < 3; r++) Ui.fill(g, px - r, lineY + 4 + r, px + r + 1, lineY + 5 + r, argb);   // little triangle under the strip
+                if (Math.abs(off) <= 6f && (ahead == null || m.dist() < ahead.dist())) ahead = m;
+            }
+
             int point = HudFormat.point(degrees);
             String axis = HudFormat.axis(point);
             String text = HudFormat.pointName(point) + (axis.isEmpty() ? "" : " (" + axis + ")") + " " + degrees + "\u00B0";
-            Ui.txt(g, font, text, x + (W - font.width(text)) / 2, y + HEIGHT - 8, WHITE, true);
+            int textColor = WHITE;
+            if (ahead != null) {   // looking at a waypoint: show its name and distance instead of the heading
+                String name = ahead.name(), dist = " " + WaypointsModule.formatDistance(ahead.dist());
+                while (name.length() > 1 && font.width(name + dist) > W) name = name.substring(0, name.length() - 1);
+                text = name + dist;
+                textColor = 0xFF000000 | (ahead.color() & 0xFFFFFF);
+            }
+            Ui.txt(g, font, text, x + (W - font.width(text)) / 2, y + HEIGHT + markH - 8, textColor, true);
         }
     }
 
@@ -273,6 +342,165 @@ final class HudWidgets {
         public void draw(GuiGraphicsExtractor g, Minecraft mc, Font font, int x, int y) {
             Ui.txt(g, font, biome, x, y + 1, WHITE, true);
             if (!time.isEmpty()) Ui.txt(g, font, time, x, y + 11, SOFT, true);
+        }
+    }
+
+    // ---------------------------------------------------------------- tournament players
+
+    /**
+     * Your friends in a tournament: a dot, the name and the status (alive, dead (in-game), dead (left), left), and under
+     * each name the last few things that friend said, in full (long lines wrap). Newer messages are brighter, older
+     * ones dimmer, and every message fades out on its own before it disappears. The data comes from the
+     * Tournament HUD module; this only draws it.
+     */
+    static final class TournamentPlayers implements HudWidget {
+
+        private static final int MAX = 8, ROW = 10, LINE = 9, DOT = 4, NAME_GAP = 7, COL_GAP = 8;
+        private static final int WRAP_W = 190, MAX_WRAP_LINES = 4, LINE_BUDGET = 14, FADE_MS = 3000;
+        private static final int GREEN = 0xFF55FF55, RED = 0xFFFF5555, GREY = 0xFF8E8E8E, DIM_RED = 0xFFCC6666;
+        private static final float[] DIM = {1f, 0.7f, 0.5f};   // newest, one before, two before
+
+        /** One message as drawn: its wrapped lines, its brightness and when it arrived (to drop the oldest first). */
+        private static final class Block {
+            final List<String> lines;
+            int alpha;
+            final long at;
+            Block(List<String> lines, int alpha, long at) { this.lines = lines; this.alpha = alpha; this.at = at; }
+        }
+
+        private final List<TournamentHudModule.Row> rows = new ArrayList<>();
+        private final List<List<Block>> blocks = new ArrayList<>();
+        private String header = "", more = "";
+        private int nameW, statusW, width;
+
+        @Override
+        public int[] size(Minecraft mc, Font font) {
+            rows.clear();
+            blocks.clear();
+            more = "";
+            if (mc.player == null || !TournamentHudModule.active()) return null;
+            List<TournamentHudModule.Row> all = TournamentHudModule.rows();
+            if (all.isEmpty()) return null;
+
+            int alive = 0;
+            for (TournamentHudModule.Row row : all) if (row.status() == TournamentHudModule.Status.ALIVE) alive++;
+            header = "Alive " + alive + "/" + all.size();
+
+            long now = Clock.ms(), window = Config.tournamentMessageSeconds() * 1000L;
+            int shown = Math.min(all.size(), MAX), totalLines = 0;
+            nameW = 0;
+            statusW = 0;
+            for (int i = 0; i < shown; i++) {
+                TournamentHudModule.Row row = all.get(i);
+                rows.add(row);
+                nameW = Math.max(nameW, font.width(row.name()));
+                statusW = Math.max(statusW, font.width(row.label()));
+
+                List<TournamentHudModule.Msg> live = new ArrayList<>();
+                for (TournamentHudModule.Msg msg : row.messages()) {
+                    long age = now - msg.at();
+                    if (age >= 0 && age < window) live.add(msg);
+                }
+                List<Block> mine = new ArrayList<>();
+                for (int k = 0; k < live.size(); k++) {
+                    TournamentHudModule.Msg msg = live.get(k);
+                    int fromNewest = live.size() - 1 - k;
+                    float dim = DIM[Math.min(fromNewest, DIM.length - 1)];
+                    float fade = Math.min(1f, (window - (now - msg.at())) / (float) FADE_MS);   // fades out over its last 3 seconds
+                    int alpha = Math.round(255f * dim * Math.max(0f, fade));
+                    if (alpha < 12) continue;
+                    List<String> wrapped = wrap(font, msg.text());
+                    mine.add(new Block(wrapped, alpha, msg.at()));
+                    totalLines += wrapped.size();
+                }
+                blocks.add(mine);
+            }
+            // too much on screen: the oldest messages go first
+            while (totalLines > LINE_BUDGET) {
+                Block oldest = null;
+                List<Block> owner = null;
+                for (List<Block> list : blocks) {
+                    for (Block b : list) {
+                        if (oldest == null || b.at < oldest.at) { oldest = b; owner = list; }
+                    }
+                }
+                if (oldest == null) break;
+                owner.remove(oldest);
+                totalLines -= oldest.lines.size();
+            }
+            if (all.size() > MAX) more = "+" + (all.size() - MAX) + " more";
+
+            width = DOT + 3 + nameW + COL_GAP + statusW;
+            int height = ROW;                                       // the header
+            for (int i = 0; i < rows.size(); i++) {
+                height += ROW;
+                for (Block b : blocks.get(i)) {
+                    for (String line : b.lines) width = Math.max(width, NAME_GAP + font.width(line));
+                    height += b.lines.size() * LINE;
+                }
+            }
+            width = Math.max(width, Math.max(font.width(header), font.width(more)));
+            if (!more.isEmpty()) height += ROW;
+            return new int[]{width, height - 1};
+        }
+
+        /** Splits a message into lines that fit WRAP_W: at spaces, and inside a word only if the word alone is too wide. */
+        private static List<String> wrap(Font font, String text) {
+            List<String> out = new ArrayList<>();
+            StringBuilder current = new StringBuilder();
+            for (String word : text.split(" ")) {
+                if (word.isEmpty()) continue;
+                while (font.width(word) > WRAP_W) {
+                    String part = font.plainSubstrByWidth(word, WRAP_W);
+                    if (part.isEmpty()) break;
+                    if (current.length() > 0) { out.add(current.toString()); current.setLength(0); }
+                    out.add(part);
+                    word = word.substring(part.length());
+                }
+                if (word.isEmpty()) continue;
+                String candidate = current.length() == 0 ? word : current + " " + word;
+                if (font.width(candidate) <= WRAP_W || current.length() == 0) {
+                    current.setLength(0);
+                    current.append(candidate);
+                } else {
+                    out.add(current.toString());
+                    current.setLength(0);
+                    current.append(word);
+                }
+            }
+            if (current.length() > 0) out.add(current.toString());
+            if (out.size() > MAX_WRAP_LINES) {                       // a very long message: cut it, with dots
+                String last = out.get(MAX_WRAP_LINES - 1);
+                out = new ArrayList<>(out.subList(0, MAX_WRAP_LINES));
+                out.set(MAX_WRAP_LINES - 1, font.plainSubstrByWidth(last, WRAP_W - font.width("...")) + "...");
+            }
+            return out;
+        }
+
+        @Override
+        public void draw(GuiGraphicsExtractor g, Minecraft mc, Font font, int x, int y) {
+            Ui.txt(g, font, header, x, y + 1, Ui.MUTED, true);
+            int ry = y + ROW;
+            for (int i = 0; i < rows.size(); i++) {
+                TournamentHudModule.Row row = rows.get(i);
+                boolean left = row.status() == TournamentHudModule.Status.LEFT;
+                int color = switch (row.status()) {
+                    case ALIVE -> GREEN;
+                    case DEAD -> RED;
+                    case LEFT -> row.died() ? DIM_RED : GREY;
+                };
+                Ui.fill(g, x, ry + 3, x + DOT, ry + 3 + DOT, color);
+                Ui.txt(g, font, row.name(), x + NAME_GAP, ry + 1, left ? GREY : WHITE, true);
+                Ui.txt(g, font, row.label(), x + width - font.width(row.label()), ry + 1, color, true);
+                ry += ROW;
+                for (Block b : blocks.get(i)) {
+                    for (String line : b.lines) {
+                        Ui.txt(g, font, line, x + NAME_GAP, ry, (b.alpha << 24) | 0xE0E0E0, true);
+                        ry += LINE;
+                    }
+                }
+            }
+            if (!more.isEmpty()) Ui.txt(g, font, more, x, ry + 1, Ui.MUTED, true);
         }
     }
 }

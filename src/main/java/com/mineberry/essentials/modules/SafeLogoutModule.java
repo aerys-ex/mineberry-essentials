@@ -365,7 +365,7 @@ public class SafeLogoutModule extends MineBerryModule {
         String subtitle = Config.safeLogoutMode().equals("block") ? "Quitting is blocked" : "Quitting needs a second click";
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;
-        int y = 108;
+        int y = com.mineberry.essentials.StatusStack.take(29);
         g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
         g.fill(x, y, x + w, y + 29, 0xE0341212);
         g.fill(x + w - 3, y, x + w, y + 29, 0xFFFF4D4D);

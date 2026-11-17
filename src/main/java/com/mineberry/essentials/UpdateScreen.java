@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Small "new version available" popup shown over the title screen. Same flat Lunar look as the other screens. */
+/** Small "new version available" popup shown over the title screen. Same flat MineBerry look as the other screens. */
 public class UpdateScreen extends Screen {
 
     private static final int PANEL_W = 280, HEADER_H = 20, MARGIN = 14, BTN_H = 20;

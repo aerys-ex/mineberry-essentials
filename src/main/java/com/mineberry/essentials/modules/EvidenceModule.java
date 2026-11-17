@@ -330,7 +330,7 @@ public class EvidenceModule extends MineBerryModule {
                 + ((leftMs + 999) / 1000) + "s)";
 
         int w = Math.max(font.width(title), Math.max(font.width(line2), font.width(line3))) + 24;
-        int x = 6, y = 6, h = 46;
+        int x = 6, y = com.mineberry.essentials.StatusStack.leftTop, h = 46;   // below the top-left HUD boxes
         g.fill(x - 1, y - 1, x + w + 1, y + h + 1, 0x66000000);
         g.fill(x, y, x + w, y + h, 0xE0200A12);
         g.fill(x, y, x + 4, y + h, 0xFFE5243B);

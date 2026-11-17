@@ -35,11 +35,12 @@ public final class Config {
         List<String> mentionNames = new ArrayList<>();
         boolean autoCopyReportedName = true;
         boolean checkForUpdates = true;
-        String panelTheme = "lunar";
+        String panelTheme = "default";
         List<String> gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
         int gradientFormat = 0;
         int gradientStyles = 0;
         Map<String, Integer> hudCorner = new HashMap<>();
+        Map<String, int[]> hudPos = new HashMap<>();   // free HUD positions: {dx, dy} from the mod's corner
         Map<String, Map<String, Integer>> profiles = new java.util.LinkedHashMap<>();
         String activeProfile = "Default";
         String pvpModePattern = DEFAULT_PVP_MODE;
@@ -52,6 +53,9 @@ public final class Config {
         int pvpFailsafeSeconds = 180;
         List<String> tournamentAllowedCommands = new ArrayList<>();
         List<String> pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
+        List<String> tournamentFriends = new ArrayList<>();
+        int tournamentMessageSeconds = 15;
+        String tournamentStartPattern = DEFAULT_TOURNAMENT_START;
     }
 
     /**
@@ -114,6 +118,9 @@ public final class Config {
     /** Regex (case-insensitive) for the server's "you left combat" chat line. Editable in the config file. */
     public static final String DEFAULT_COMBAT_END = "out of pvp mode|no longer in combat|left combat|combat ended|combat is over|you may now log out";
 
+    /** Regex (case-insensitive) for the server's "a round / match / game started" line: the Tournament HUD forgets old statuses. Empty turns it off. */
+    public static final String DEFAULT_TOURNAMENT_START = "(?:round|match|game|tournament|battle)\\s+(?:has\\s+)?(?:started|begun|begins)";
+
     /** Commands that still work while the server has you in PvP mode (PvP Command Lock). Editable in the config file. */
     public static final List<String> DEFAULT_PVP_ALLOWED = List.of("r", "reply", "msg", "m", "w", "tell", "cc");
 
@@ -144,13 +151,16 @@ public final class Config {
             if (data.profiles == null) data.profiles = new java.util.LinkedHashMap<>();
             if (data.activeProfile == null) data.activeProfile = "Default";
             if (data.hudCorner == null) data.hudCorner = new HashMap<>();
+            if (data.hudPos == null) data.hudPos = new HashMap<>();
+            data.hudPos.values().removeIf(p -> p == null || p.length != 2);
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()
                     || data.pvpModePattern.equals(OLD_DEFAULT_PVP_MODE)) data.pvpModePattern = DEFAULT_PVP_MODE;
             if (data.gradientColors == null || data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
             if (data.gradientFormat < 0 || data.gradientFormat > 3) data.gradientFormat = 0;
-            if (data.panelTheme == null || !data.panelTheme.matches("lunar|aurora|ember|midnight")) data.panelTheme = "lunar";
+            if ("lunar".equals(data.panelTheme)) data.panelTheme = "default";   // old id of the default theme
+            if (data.panelTheme == null || !data.panelTheme.matches("default|aurora|ember|midnight")) data.panelTheme = "default";
             if (data.lastSeenVersion == null) data.lastSeenVersion = "";
             if (data.combatSeconds < 1 || data.combatSeconds > 300) data.combatSeconds = 30;
             if (data.safeLogoutMode == null || !data.safeLogoutMode.matches("warn|block")) data.safeLogoutMode = "warn";
@@ -158,6 +168,9 @@ public final class Config {
             if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
             if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
             if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
+            data.tournamentFriends = cleanFriends(data.tournamentFriends);
+            if (data.tournamentMessageSeconds < 3 || data.tournamentMessageSeconds > 120) data.tournamentMessageSeconds = 15;
+            if (data.tournamentStartPattern == null) data.tournamentStartPattern = DEFAULT_TOURNAMENT_START;
             writeNow(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
             // never overwrite a file we could not read: keep it as a backup so the player's waypoints and profiles are not lost
@@ -301,7 +314,7 @@ public final class Config {
     }
 
     public static void setPanelTheme(String theme) {
-        if (theme.matches("lunar|aurora|ember|midnight")) {
+        if (theme.matches("default|aurora|ember|midnight")) {
             data.panelTheme = theme;
             save();
         }
@@ -342,6 +355,21 @@ public final class Config {
     public static void setHudCorner(String id, int corner) {
         data.hudCorner.put(id, corner);
         save();
+    }
+
+    /** Free position of a HUD mod: {dx, dy} = distance from the edges of its corner, or null while it sits in the automatic stack. */
+    public static int[] hudPos(String id) {
+        return data.hudPos.get(id);
+    }
+
+    public static void setHudPos(String id, int corner, int dx, int dy) {
+        data.hudCorner.put(id, corner);
+        data.hudPos.put(id, new int[]{dx, dy});
+        save();
+    }
+
+    public static void clearHudPos(String id) {
+        if (data.hudPos.remove(id) != null) save();
     }
 
     /** HUD profiles: name -> saved state ("on_<id>" 0/1 and "c_<id>" corner). */
@@ -413,6 +441,35 @@ public final class Config {
     /** Regex (case-insensitive) for the server's "combat ended" chat line. Edit in the config file. */
     public static String combatEndPattern() {
         return data.combatEndPattern;
+    }
+
+    /** Valid player names only, no duplicates (ignoring case), at most TournamentHudModule.MAX_FRIENDS of them. */
+    private static List<String> cleanFriends(List<String> raw) {
+        List<String> out = new ArrayList<>();
+        if (raw == null) return out;
+        for (String entry : raw) {
+            var name = com.mineberry.essentials.modules.TournamentParser.cleanName(entry);
+            if (name.isEmpty()) continue;
+            boolean duplicate = false;
+            for (String known : out) if (known.equalsIgnoreCase(name.get())) { duplicate = true; break; }
+            if (!duplicate && out.size() < com.mineberry.essentials.modules.TournamentHudModule.MAX_FRIENDS) out.add(name.get());
+        }
+        return out;
+    }
+
+    /** The friends shown on the Tournament HUD (live list). Call save() after changing it. */
+    public static List<String> tournamentFriends() {
+        return data.tournamentFriends;
+    }
+
+    /** Seconds a friend's last chat message stays on the Tournament HUD. Edit in the config file. */
+    public static int tournamentMessageSeconds() {
+        return data.tournamentMessageSeconds;
+    }
+
+    /** Regex (case-insensitive) for the server's "round started" line. Edit in the config file; empty turns the automatic reset off. */
+    public static String tournamentStartPattern() {
+        return data.tournamentStartPattern;
     }
 
     /** The radial menu slices. They are fixed and can't be changed. */

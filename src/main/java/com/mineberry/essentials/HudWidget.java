@@ -15,4 +15,9 @@ interface HudWidget {
 
     /** Draws the content with its top-left corner at x, y. Always called right after size() returned non-null. */
     void draw(GuiGraphicsExtractor g, Minecraft mc, Font font, int x, int y);
+
+    /** True for elements that draw themselves without the dark box and accent line (the watermark). */
+    default boolean plain() {
+        return false;
+    }
 }

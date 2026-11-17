@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-/** The Lunar-style HUD mods (FPS, Ping, Coordinates, Sprint, Clock, Keystrokes, Armor, Potions, Compass, Biome), drawn as small boxes in the screen corners. */
+/** The Lunar-style HUD mods (FPS, Ping, Coordinates, Sprint, Clock, Keystrokes, Armor, Potions, Compass, Biome, Tournament Players), drawn as small boxes in the screen corners. */
 public final class LunarHud {
 
     static final String[] CORNERS = {"Top left", "Top right", "Bottom left", "Bottom right"};
@@ -42,7 +42,9 @@ public final class LunarHud {
             HudMod.widget("armor", "Armor Status", 3, new HudWidgets.Armor()),
             HudMod.widget("potions", "Potion Effects", 1, new HudWidgets.Potions()),
             HudMod.widget("compass", "Compass", 0, new HudWidgets.Compass()),
-            HudMod.widget("biome", "Biome / Time", 3, new HudWidgets.BiomeTime()));
+            HudMod.widget("biome", "Biome / Time", 3, new HudWidgets.BiomeTime()),
+            // follows the Tournament HUD module (off by default), so its HUD switch starts on
+            new HudMod("tournament", "Tournament Players", 3, true, null, new HudWidgets.TournamentPlayers(), true));
 
     private static final int PAD = 4, GAP = 3, EDGE = 6;
 

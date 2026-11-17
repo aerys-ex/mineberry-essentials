@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * "What's New" popup: the release notes of the version(s) the player just updated to, in the same flat Lunar look as
+ * "What's New" popup: the release notes of the version(s) the player just updated to, in the same flat MineBerry look as
  * the other screens. Scrolls with the mouse wheel when the notes are longer than the window.
  */
 public class ChangelogScreen extends Screen {

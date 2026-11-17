@@ -153,12 +153,15 @@ public class WaypointsModule extends MineBerryModule {
         int screenW = mc.getWindow().getGuiScaledWidth();
         float yaw = mc.player.getYRot();
         int row = 0;
-        for (Config.Waypoint wp : nearby(mc)) {
+        List<Config.Waypoint> near = nearby(mc);
+        if (near.isEmpty()) return;
+        int top = com.mineberry.essentials.StatusStack.take(Math.min(near.size(), HUD_MAX) * 11);   // under the status boxes
+        for (Config.Waypoint wp : near) {
             if (row >= HUD_MAX) break;
             double dx = wp.x + 0.5 - mc.player.getX(), dz = wp.z + 0.5 - mc.player.getZ();
             String text = arrow(yaw, dx, dz) + " " + wp.name + "  " + formatDistance(distanceTo(mc, wp));
             int x = screenW - font.width(text) - 6;
-            g.text(font, text, x, 104 + row * 11, wp.color | 0xFF000000, true);
+            g.text(font, text, x, top + row * 11, wp.color | 0xFF000000, true);
             row++;
         }
     }

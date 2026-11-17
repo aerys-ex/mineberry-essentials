@@ -264,6 +264,7 @@ public class LunarMenu extends Screen {
             case "biome" -> { Ui.fill(g, x + 2, y + 24, x + 26, y + 28, c); Ui.fill(g, x + 4, y + 16, x + 12, y + 24, c);
                 Ui.fill(g, x + 8, y + 8, x + 16, y + 16, c); Ui.fill(g, x + 14, y + 14, x + 24, y + 24, c);
                 Ui.fill(g, x + 20, y + 2, x + 26, y + 8, c); }
+            case "tournament" -> { for (int i = 0; i < 3; i++) { int ry = y + 3 + i * 9; Ui.fill(g, x + 3, ry + 1, x + 8, ry + 6, c); Ui.fill(g, x + 12, ry + 2, x + 25, ry + 5, c); } }
             default -> Ui.txt(g, this.font, id.substring(0, 1).toUpperCase(Locale.ROOT), cxm - 3, y + 10, c, false);
         }
     }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Add, show/hide and delete waypoints. Same flat Lunar look as the main panel. */
+/** Add, show/hide and delete waypoints. Same flat MineBerry look as the main panel. */
 public class WaypointScreen extends Screen {
 
     private static final int PANEL_W = 340, HEADER_H = 20, MARGIN = 14, ROW_H = 28, PER_PAGE = 4, BTN_H = 20;
