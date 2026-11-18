@@ -5,185 +5,230 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MineBerry - Essentials</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0d11;--p:#16161c;--p2:#1d1d25;--ln:#2a2a35;--tx:#f1eff2;--mu:#9b98a6;--or:#ff8a1f;--bb:#ff4f93;--gn:#3be08a;--rd:#ff4d4d;--bl:#4da3ff;
+:root{--bg:#0e0e0e;--p:#171717;--p2:#202020;--ln:#363636;--tx:#efede9;--mu:#949494;--or:#ff7a14;--gn:#5cb85c;--rd:#d9534f;
 color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:calc(70px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+html{scroll-padding-top:calc(60px + env(safe-area-inset-top,0px))}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 "Instrument Sans",system-ui,sans-serif;overflow-x:hidden}
-h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;line-height:1.05;letter-spacing:-.02em}
-a{color:inherit}
-.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(circle at 50% 0,#1a1322,var(--bg) 60%)}
-.bg i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;animation:fl 18s ease-in-out infinite alternate}
-.bg i:nth-child(1){width:46vw;height:46vw;background:var(--bb);left:-10vw;top:-12vw}
-.bg i:nth-child(2){width:40vw;height:40vw;background:var(--or);right:-8vw;top:8vh;animation-delay:-6s}
-.bg i:nth-child(3){width:34vw;height:34vw;background:#6a3cff;left:30vw;top:60vh;opacity:.25;animation-delay:-11s}
-.bg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:56px 56px;opacity:.22;mask-image:radial-gradient(ellipse at 50% 20%,#000,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 50% 20%,#000,transparent 70%)}
-@keyframes fl{to{transform:translate(8vw,6vh) scale(1.15)}}
-.w{max-width:1120px;margin:0 auto;padding:0 20px}
-nav{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(13,13,17,.6);border-bottom:1px solid var(--ln)}
-nav .w{display:flex;align-items:center;justify-content:space-between;height:62px}
-nav b{font-family:"Bricolage Grotesque",sans-serif;font-size:19px}
-nav b span{color:var(--bb)}
-nav div{display:flex;gap:22px;align-items:center;font-size:14px;color:var(--mu)}
-nav a{text-decoration:none}
-nav .dl{color:#14100a;background:var(--or);padding:7px 16px;border-radius:99px;font-weight:600}
-.hero{padding:84px 0 40px;text-align:center}
-.pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--ln);background:rgba(255,255,255,.04);border-radius:99px;padding:5px 14px;font-size:13px;color:var(--mu)}
-.pill u{width:7px;height:7px;border-radius:50%;background:var(--gn);box-shadow:0 0 10px var(--gn);text-decoration:none}
-h1{font-size:clamp(42px,9vw,104px);font-weight:800;margin:22px auto 0;max-width:12ch}
-.g{background:linear-gradient(100deg,var(--bb),var(--or),var(--bb));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
-@keyframes sh{to{background-position:-220% 0}}
-.lead{max-width:56ch;margin:22px auto 0;color:var(--mu);font-size:19px}
-.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
-.b{padding:13px 24px;border-radius:12px;font-weight:600;text-decoration:none;border:1px solid var(--ln);background:var(--p)}
-.b.m{background:linear-gradient(100deg,var(--bb),var(--or));color:#14100a;border:0;box-shadow:0 8px 40px -8px var(--bb)}
-.b:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--bl);outline-offset:3px}
-.win{margin:56px auto 0;max-width:860px;background:rgba(22,22,28,.8);border:1px solid var(--ln);border-radius:16px;box-shadow:0 40px 120px -30px rgba(255,79,147,.35);text-align:left;overflow:hidden;backdrop-filter:blur(10px)}
-.bar{display:flex;gap:7px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--ln);font-size:13px;color:var(--mu)}
-.bar i{width:11px;height:11px;border-radius:50%;background:var(--ln)}
-.bar span{margin-left:10px}
-.tabs{display:flex;gap:6px;padding:12px 16px 0;flex-wrap:wrap}
-.tabs span{font-size:13px;padding:5px 14px;border-radius:99px;color:var(--mu)}
-.tabs .on{background:var(--or);color:#14100a;font-weight:600}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;padding:16px}
-.mc{background:var(--p2);border:1px solid var(--ln);border-top:2px solid transparent;border-radius:10px;padding:14px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .2s}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Pixelify Sans","Courier New",monospace;font-weight:700;margin:0;line-height:1.15}
+a{color:var(--or)}
+.w{max-width:960px;margin:0 auto;padding:0 20px}
+header{border-bottom:2px solid var(--ln);border-top:4px solid var(--or)}
+header .w{display:flex;justify-content:space-between;align-items:center;height:56px}
+header b{font:700 19px "Pixelify Sans",monospace}
+header nav{display:flex;gap:22px;font-size:14px}
+header nav a{color:var(--mu);text-decoration:none}
+header nav a:hover{color:var(--tx)}
+.hero{padding:72px 0 56px}.hero>div:first-child{margin-bottom:40px}
+h1{font-size:clamp(40px,8vw,84px);line-height:1;text-transform:uppercase}
+h1::after{content:"";display:inline-block;width:.42em;height:.78em;background:var(--or);margin-left:.14em;vertical-align:-.04em;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){h1::after{animation:none}}
+.lead{color:var(--mu);margin:18px 0 0;max-width:42ch;font-size:18px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{padding:10px 18px;border-radius:0;border:2px solid var(--ln);background:var(--p);color:var(--tx);text-decoration:none;font:700 15px "Pixelify Sans",monospace;text-transform:uppercase;letter-spacing:.03em;box-shadow:4px 4px 0 #000;transition:transform .08s,box-shadow .08s}.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #000}
+.btn:hover{border-color:var(--mu)}
+.btn.m{background:var(--or);border-color:var(--or);color:#17110a;box-shadow:4px 4px 0 #7a3a08}
+.btn.m:hover{background:#f48524}
+.btn:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+.ver{margin-top:16px;font-size:13px;color:var(--mu)}
+.win{background:var(--p);border:2px solid var(--ln);border-radius:0;box-shadow:8px 8px 0 #000}
+.win .bar{padding:10px 14px;border-bottom:1px solid var(--ln);font-size:13px;color:var(--mu);display:flex;justify-content:space-between}
+.tabs{display:flex;gap:4px;padding:10px 12px 0;font-size:13px}
+.tabs span{padding:4px 12px;border-radius:3px;color:var(--mu)}
+.tabs .on{background:var(--p2);color:var(--tx)}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px}
+.mc{background:var(--p2);border:1px solid var(--ln);border-top:2px solid var(--ln);border-radius:4px;padding:10px 12px;font:inherit;color:var(--tx);text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .mc.on{border-top-color:var(--or)}
-.mc b{display:block;font-size:15px}
-.mc small{color:var(--mu);font-size:12px;display:block;margin:2px 0 12px}
-.sw{display:inline-block;width:38px;height:22px;border-radius:99px;background:var(--ln);position:relative;transition:background .2s;vertical-align:middle}
-.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
-.mc.on .sw{background:var(--or)}
-.mc.on .sw::after{transform:translateX(16px)}
-.hint{padding:0 16px 14px;font-size:13px;color:var(--mu)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;margin:70px 0 0;background:var(--ln);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
-.stats div{background:var(--p);padding:22px}
-.stats b{font:800 38px "Bricolage Grotesque",sans-serif;display:block}
-.stats span{color:var(--mu);font-size:14px}
-section{padding:90px 0 0}
-h2{font-size:clamp(32px,5vw,54px);font-weight:800}
-.sub{color:var(--mu);max-width:52ch;margin:12px 0 34px;font-size:18px}
-.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
-.t{grid-column:span 2;position:relative;background:var(--p);border:1px solid var(--ln);border-radius:18px;padding:24px;overflow:hidden;min-height:250px}
-.t::before{content:"";position:absolute;inset:0;background:radial-gradient(360px circle at var(--x,50%) var(--y,0),rgba(255,138,31,.16),transparent 60%);opacity:0;transition:opacity .25s;pointer-events:none}
-.t:hover::before{opacity:1}
-.t.w3{grid-column:span 3}.t.w4{grid-column:span 4}
-.t h3{font-size:24px}
-.t p{color:var(--mu);font-size:15px;margin:8px 0 0;max-width:40ch}
-.mock{margin-top:18px}
-.red{display:inline-block;background:rgba(255,77,77,.15);border:1px solid var(--rd);color:#ff8a8a;font-weight:600;font-size:13px;padding:6px 12px;border-radius:8px;animation:pu 2.4s ease-in-out infinite}
-@keyframes pu{50%{box-shadow:0 0 22px rgba(255,77,77,.5)}}
-.fr{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--ln)}
-.fr em{font-style:normal}.a{color:var(--gn)}.d{color:var(--rd)}.l{color:var(--mu)}
-.cnt{font:800 20px "Bricolage Grotesque",sans-serif;margin-bottom:6px}
-.rad{display:block;margin:10px auto 0;width:190px;height:190px}
-.rad circle{fill:none;stroke:var(--p2);stroke-width:54;cursor:pointer;transition:stroke .15s}
+.mc b{font-weight:500;font-size:14px}
+.mc em{font-style:normal;font-size:11px;color:var(--mu);white-space:nowrap}
+.mc.on em{color:var(--or)}
+.note{padding:0 14px 12px;font-size:12px;color:var(--mu)}
+h2::before{content:"";display:inline-block;width:12px;height:12px;background:var(--or);margin-right:12px;vertical-align:2px}
+.scene{position:relative;aspect-ratio:16/8;min-height:400px;border:2px solid var(--ln);border-radius:0;overflow:hidden;box-shadow:8px 8px 0 var(--or);background:linear-gradient(#0f0d18,#201826 55%,#3a2420 78%,#5b3220)}
+.scene::before{content:"";position:absolute;width:3px;height:3px;background:#fff;top:14%;left:8%;opacity:.7;box-shadow:120px 46px #fff,250px 14px #ffd9a8,410px 64px #fff,540px 22px #fff,690px 74px #ffd9a8,820px 30px #fff,40px 120px #fff,330px 110px #ffd9a8}
+.moon{position:absolute;top:16%;right:20%;width:34px;height:34px;background:#f4e9cf;box-shadow:inset -8px -8px 0 #d9c9a3}
+.gr{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(#3d6b2e 0 12%,#5a3d27 12%);clip-path:polygon(0 34%,12% 34%,12% 18%,26% 18%,26% 0,44% 0,44% 24%,60% 24%,60% 10%,78% 10%,78% 28%,100% 28%,100% 100%,0 100%)}
+.hb{position:absolute;background:rgba(18,18,18,.8);border:1px solid #3a3a3a;border-radius:3px;padding:5px 9px;font:12px/1.5 ui-monospace,Consolas,monospace}
+.hb.r{border-color:var(--rd);color:#f08783}.hb .a{color:var(--gn)}.hb .d{color:var(--rd)}.hb .l{color:var(--mu)}
+.wm{position:absolute;top:12px;left:12px;font:12px ui-monospace,Consolas,monospace;color:var(--or);text-shadow:1px 1px 0 #000}
+.ch{position:absolute;left:12px;bottom:46px;font:12px/1.5 ui-monospace,Consolas,monospace;text-shadow:1px 1px 0 #000}
+.kk{position:absolute;right:12px;bottom:12px;display:grid;grid-template-columns:repeat(3,28px);gap:3px}
+.kk i{font:12px/26px ui-monospace,Consolas,monospace;text-align:center;border:1px solid #444;background:rgba(18,18,18,.8)}
+.kk .lw{animation:lit 3.2s infinite}.kk .ls{animation:lit 3.2s infinite 1.6s}
+@keyframes lit{0%,35%{background:var(--or);color:#17110a;border-color:var(--or)}36%,100%{background:rgba(18,18,18,.8);color:var(--tx);border-color:#444}}
+@media (prefers-reduced-motion:reduce){.kk i{animation:none!important}}
+.two{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
+.scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);box-shadow:inset 0 0 80px rgba(0,0,0,.65)}
+.haz{height:14px;margin:8px 0;background:repeating-linear-gradient(-45deg,var(--or) 0 14px,#0e0e0e 14px 28px);border:2px solid #000}
+h1{min-height:2em}
+.tick{overflow:hidden;background:var(--or);color:#0e0e0e;border:2px solid #000;margin:8px 0;white-space:nowrap}
+.tick div{display:inline-block;padding:6px 0;font:700 14px "Pixelify Sans",monospace;text-transform:uppercase;animation:mq 30s linear infinite}
+.tick span{margin:0 20px}
+@keyframes mq{to{transform:translateX(-50%)}}
+.scene::before{animation:tw 3s steps(1) infinite}
+@keyframes tw{50%{opacity:.3}}
+.moon{transition:transform .2s ease-out}
+.sc{position:absolute;left:-6%;right:-6%;bottom:0;transition:transform .2s ease-out}
+.mt1{height:62%;background:#1d1729;clip-path:polygon(0 70%,8% 70%,8% 52%,16% 52%,16% 36%,26% 36%,26% 50%,36% 50%,36% 62%,48% 62%,48% 26%,58% 26%,58% 44%,70% 44%,70% 58%,82% 58%,82% 40%,92% 40%,92% 66%,100% 66%,100% 100%,0 100%)}
+.mt2{height:50%;background:#2c2131;clip-path:polygon(0 60%,10% 60%,10% 44%,22% 44%,22% 56%,34% 56%,34% 30%,46% 30%,46% 52%,60% 52%,60% 38%,72% 38%,72% 58%,86% 58%,86% 44%,100% 44%,100% 100%,0 100%)}
+.cl{position:absolute;width:14px;height:14px;background:#4a3548;box-shadow:14px -10px 0 #4a3548,28px 0 0 #4a3548,42px 0 0 #4a3548,14px 0 0 #4a3548;left:0;animation:dr 70s linear infinite}
+@keyframes dr{from{transform:translateX(-80px)}to{transform:translateX(100vw)}}
+.ch{white-space:pre}
+kbd.hit{background:var(--or);color:#0e0e0e;border-color:var(--or);transform:translateY(2px)}
+.rad{width:170px;height:170px;display:block;margin-top:12px}
+.rad circle{fill:none;stroke:#2b2b2b;stroke-width:54;cursor:pointer;transition:stroke .12s}
 .rad circle:hover{stroke:var(--or)}
-.rad text{fill:var(--tx);font:600 9px "Instrument Sans",sans-serif;text-anchor:middle;pointer-events:none}
-.cmp{display:flex;justify-content:space-between;font-weight:600;font-size:13px;border:1px solid var(--ln);border-radius:8px;padding:8px 14px;background:var(--p2);position:relative;margin-top:6px}
-.cmp s{position:absolute;top:100%;margin-top:3px;width:9px;height:9px;border-radius:50%;text-decoration:none}
-.gt{grid-column:span 6}
-.gin{width:100%;padding:12px 14px;font:inherit;background:var(--p2);color:var(--tx);border:1px solid var(--ln);border-radius:10px}
-.pv{font:800 clamp(30px,6vw,60px) "Bricolage Grotesque",sans-serif;margin:16px 0;min-height:1.2em;word-break:break-word}
-.ps{display:flex;flex-wrap:wrap;gap:8px}
-.ps button{font:inherit;font-size:14px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--p2);color:var(--tx);cursor:pointer}
+.rad text{fill:var(--tx);font:600 12px "IBM Plex Sans",sans-serif;text-anchor:middle;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.scene::before,.cl,.tick div{animation:none}}
+section{padding:56px 0;border-top:1px solid var(--ln)}
+h2{font-size:clamp(26px,4vw,38px);margin-bottom:8px;text-transform:uppercase}
+.sub{color:var(--mu);margin:0 0 28px;max-width:56ch}
+.row{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:22px 0 22px 16px;border-top:1px solid var(--ln);border-left:4px solid transparent}.row:hover{border-left-color:var(--or)}
+.row:first-of-type{border-top:0}
+.row h3{font-size:19px;color:var(--tx)}
+.row h3 small{display:block;font:400 12px "IBM Plex Sans",sans-serif;color:var(--mu);margin-top:3px}
+.row p{margin:0 0 8px;max-width:62ch}
+.row p:last-child{margin:0}
+.hud{display:inline-block;font:12px/1.5 ui-monospace,Consolas,monospace;background:var(--p);border:1px solid var(--ln);border-radius:3px;padding:6px 10px;margin-top:6px}
+.hud.r{border-color:var(--rd);color:#f08783}
+.hud .a{color:var(--gn)}.hud .d{color:var(--rd)}.hud .l{color:var(--mu)}
+.gin{width:100%;padding:10px 12px;font:inherit;background:var(--p);color:var(--tx);border:1px solid var(--ln);border-radius:4px}
+.pv{font:700 clamp(28px,6vw,46px) "Pixelify Sans",monospace;margin:14px 0;min-height:1.2em;word-break:break-word}
+.ps{display:flex;flex-wrap:wrap;gap:6px}
+.ps button{font:inherit;font-size:13px;padding:4px 12px;border-radius:3px;border:1px solid var(--ln);background:var(--p);color:var(--tx);cursor:pointer}
 .ps button[aria-pressed="true"]{border-color:var(--or);color:var(--or)}
-.out{display:flex;gap:10px;margin-top:16px}
-.out code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;padding:11px 14px;background:var(--p2);border:1px solid var(--ln);border-radius:10px;font-size:13px}
-.out button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:0 20px;background:var(--or);color:#14100a;cursor:pointer}
-.cc{font-size:13px;color:var(--mu);margin-top:8px}
-.keys{display:flex;flex-wrap:wrap;gap:10px}
-.keys div{display:flex;align-items:center;gap:10px;background:var(--p);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--mu)}
-kbd{font:600 13px ui-monospace,Consolas,monospace;color:var(--tx);background:var(--p2);border:1px solid var(--ln);border-bottom-width:3px;border-radius:7px;padding:2px 9px}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;counter-reset:s;padding:0;list-style:none;margin:0}
-.steps li{counter-increment:s;background:var(--p);border:1px solid var(--ln);border-radius:16px;padding:22px}
-.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--bb),var(--or));color:#14100a;font-weight:800;margin-bottom:14px}
-.end{margin:100px 0 0;text-align:center;border:1px solid var(--ln);border-radius:24px;padding:60px 20px;background:radial-gradient(circle at 50% 120%,rgba(255,79,147,.3),var(--p) 70%)}
-footer{padding:50px 0 40px;color:var(--mu);font-size:14px;text-align:center}
-@media (max-width:820px){.t,.t.w3,.t.w4{grid-column:span 6}nav div a:not(.dl){display:none}.hero{padding-top:56px}}
-@media (prefers-reduced-motion:reduce){.bg i,.g,.red{animation:none}html{scroll-behavior:auto}}
+.out{display:flex;gap:8px;margin-top:14px}
+.out code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;padding:9px 12px;background:var(--p);border:1px solid var(--ln);border-radius:4px;font-size:13px}
+.out button{font:inherit;font-weight:600;border:0;border-radius:4px;padding:0 18px;background:var(--or);color:#17110a;cursor:pointer}
+.cc{font-size:13px;color:var(--mu);margin-top:6px}
+table{border-collapse:collapse;width:100%;max-width:560px}
+td{padding:9px 16px 9px 0;border-bottom:1px solid var(--ln);font-size:15px}
+td:first-child{white-space:nowrap}
+kbd{font:500 12px ui-monospace,Consolas,monospace;background:var(--p2);border:1px solid var(--ln);border-bottom-width:2px;border-radius:3px;padding:1px 7px}
+ol{margin:0;padding-left:22px;max-width:60ch}
+ol li{padding:4px 0 4px 6px}
+ol li::marker{color:var(--or);font-weight:600}
+.warn{border-left:2px solid var(--or);padding:2px 0 2px 14px;color:var(--mu);margin-top:22px;max-width:60ch;font-size:15px}
+footer{border-top:1px solid var(--ln);padding:28px 0 44px;color:var(--mu);font-size:14px}
+@media (max-width:780px){.hero{padding-top:44px}.two{grid-template-columns:1fr;gap:24px}.scene .hide{display:none}.row{grid-template-columns:1fr;gap:8px}header nav a:nth-child(n+3){display:none}}
 </style>
 </head>
 <body>
-<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
-
-<nav><div class="w"><b>MineBerry<span>.</span>Essentials</b><div><a href="#features">Features</a><a href="#gradient">Gradient</a><a href="#install">Install</a><a class="dl" href="https://modrinth.com/mod/mineberry-essentials">Download</a></div></div></nav>
+<header><div class="w"><b>MineBerry Essentials</b><nav><a href="#features">Features</a><a href="#gradient">Gradient</a><a href="#install">Install</a><a href="https://github.com/aerys-ex/mineberry-essentials">GitHub</a></nav></div></header>
 
 <main class="w">
 <div class="hero">
-<span class="pill"><u></u>Version 1.6.1 for Minecraft 26.2</span>
-<h1>Your whole server toolkit. <span class="g">One key.</span></h1>
-<p class="lead">Chat shortcuts, PvP safety, tournament tools, evidence reports and waypoints for MineBerry and MinePeak. Press Right Control and it’s all there.</p>
-<div class="cta"><a class="b m" href="https://modrinth.com/mod/mineberry-essentials">Get it on Modrinth</a><a class="b" href="https://github.com/aerys-ex/mineberry-essentials">View on GitHub</a><a class="b" href="https://discord.gg/ApRvuNsX3j">Join Discord</a></div>
+<div>
+<h1>MineBerry Essentials</h1>
+<p class="lead">A Fabric client mod for the MineBerry and MinePeak servers. Chat tools, PvP safety, tournament helpers and a HUD, all in one panel.</p>
+<div class="btns"><a class="btn m" href="https://modrinth.com/mod/mineberry-essentials">Download on Modrinth</a><a class="btn" href="https://github.com/aerys-ex/mineberry-essentials">Source</a><a class="btn" href="https://discord.gg/ApRvuNsX3j">Discord</a></div>
+<div class="ver">Version 1.6.1 · Minecraft 26.2 · Fabric Loader 0.20.1+ · Java 25</div>
+</div>
+<div class="scene" role="img" aria-label="Illustration of the MineBerry HUD in game">
+<span class="moon" data-p="-6"></span><i class="cl" style="top:20%"></i><i class="cl" style="top:36%;animation-delay:-35s"></i><div class="sc mt1" data-p="10"></div><div class="sc mt2" data-p="22"></div><div class="gr"></div>
+<span class="wm">MineBerry Essentials</span>
+<div class="hb" id="hf" style="top:36px;left:12px">144 FPS<br>32 ms</div>
+<div class="hb hide" style="top:12px;left:50%;transform:translateX(-50%);width:200px;text-align:center"><span id="hs">NW &nbsp; N &nbsp; NE</span><br><span class="l" id="hd">N 0°</span></div>
+<div class="hb r hide" id="hp" style="top:68px;left:50%;transform:translateX(-50%);visibility:hidden">IN PVP MODE</div>
+<div class="hb hide" id="ha" style="top:12px;right:12px"></div>
+<div class="ch hide" id="hc"></div>
+<div class="hb" id="hx" style="bottom:12px;left:12px">X: 128  Y: 64  Z: -312</div>
+<div class="kk"><i style="grid-area:1/2" class="lw">W</i><i style="grid-area:2/1">A</i><i style="grid-area:2/2" class="ls">S</i><i style="grid-area:2/3">D</i></div>
+</div>
+</div>
 
+<div class="tick" aria-hidden="true"><div><span>Safe Logout</span><span>■</span><span>PvP Command Lock</span><span>■</span><span>Tournament Mode</span><span>■</span><span>Tournament HUD</span><span>■</span><span>Evidence Recorder</span><span>■</span><span>Radial Menu</span><span>■</span><span>Waypoints</span><span>■</span><span>Gradient Generator</span><span>■</span><span>Chat Search</span><span>■</span></div></div>
+<section id="panel">
+<div class="two"><div><h2>One panel</h2><p class="sub">Every module is a card with its own switch. Search, filter by category, and open settings from the gear. Press Right Ctrl in game.</p></div>
 <div class="win">
-<div class="bar"><i></i><i></i><i></i><span>Control Center</span></div>
+<div class="bar"><span>Control Center</span><span>Right Ctrl</span></div>
 <div class="tabs"><span class="on">Modules</span><span>Screenshots</span><span>Tools</span></div>
 <div class="cards" id="cards"></div>
-<div class="hint">This is a live mock. Click the cards to switch modules on and off.</div>
-</div>
-
-<div class="stats">
-<div><b>180s</b><span>Safe Logout failsafe if the server message is missed</span></div>
-<div><b>3000</b><span>chat lines searchable with F8</span></div>
-<div><b>6</b><span>gradient presets, 4 output formats</span></div>
-<div><b>30</b><span>friends on your Tournament HUD</span></div>
+<div class="note">Mock of the panel. Click a card to switch it.</div>
 </div>
 </div>
+</section>
 
 <section id="features">
-<h2>Built for the fight.<br>And everything around it.</h2>
-<p class="sub">Every module is optional. Switch on what you need.</p>
-<div class="bento">
-<div class="t w3"><h3>Safe Logout</h3><p>Follows the server’s own PvP messages, so you can’t quit mid-fight by accident. One click on “I’m safe - unlock” ends it.</p><div class="mock"><span class="red">IN PVP MODE - click twice to quit</span></div></div>
-<div class="t w3"><h3>Tournament HUD</h3><p>See which friends are alive, plus their last chat messages, while tournament chat flies by.</p><div class="mock"><div class="cnt">Alive 3/5</div><div class="fr"><span>Alex</span><em class="a">alive</em></div><div class="fr"><span>Sam</span><em class="a">alive</em></div><div class="fr"><span>Jo</span><em class="a">alive</em></div><div class="fr"><span>Kit</span><em class="d">dead (in-game)</em></div><div class="fr"><span>Max</span><em class="l">left</em></div></div></div>
-<div class="t"><h3>Radial Menu</h3><p>Hold V, flick, let go.</p>
-<svg class="rad" viewBox="0 0 200 200" role="img" aria-label="Radial menu with spawn, tpa and tpaccept slices"><g transform="rotate(-90 100 100)"><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="0"/><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="-1"/><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="-2"/></g><text x="154" y="72">/spawn</text><text x="100" y="166">/tpa</text><text x="46" y="72">/tpaccept</text></svg></div>
-<div class="t"><h3>PvP Command Lock</h3><p>In a fight, only /r, /msg and clan chat work. Teleport commands stay blocked until you’re out.</p></div>
-<div class="t"><h3>Tournament Mode</h3><p>One switch and no command can be sent at all. Chat still works.</p><div class="mock"><span class="red">TOURNAMENT MODE</span></div></div>
-<div class="t w4"><h3>Evidence Recorder</h3><p>If a /tpahere trap goes wrong, the mod flags it. Press - to confirm and it saves screenshots, a timestamped log with coordinates, and a report zip ready for staff.</p><div class="mock"><span class="red">POSSIBLE TP KILL / RG ABUSE DETECTED</span></div></div>
-<div class="t"><h3>Waypoints and Compass</h3><p>Markers on the HUD compass with name and distance.</p><div class="mock"><div class="cmp"><span>NW</span><span>N</span><span>NE</span><s style="left:28%;background:var(--gn)"></s><s style="left:64%;background:var(--bb)"></s></div></div></div>
-<div class="t w3"><h3>Chat that keeps up</h3><p>Clan, Admin and Party chat on one key each. Mention highlights with sound, timestamps, Quick Reply on R, and a search over everything you’ve seen this session.</p></div>
-<div class="t w3"><h3>A HUD you can drag anywhere</h3><p>FPS, Ping, Coordinates, Keystrokes and CPS, Armor, Potions, Compass and more. Snapping guides, profiles, and a red outline when boxes overlap.</p></div>
-<div class="t gt" id="gradient"><h3>Gradient generator</h3><p>Type, pick a preset, copy into chat. This one is live.</p>
-<div class="mock"><input class="gin" id="txt" maxlength="64" value="MineBerry" aria-label="Text to color"><div class="pv" id="prev" aria-live="polite"></div><div class="ps" id="presets"></div><div class="out"><code id="code"></code><button id="copy" type="button">Copy</button></div><div class="cc" id="count"></div></div></div>
-</div>
+<h2>What it does</h2>
+<p class="sub">Every module is optional and has its own switch.</p>
+
+<div class="row"><h3>Safe Logout<small>Safety</small></h3><div><p>Follows the server’s own PvP messages, so you can’t quit in the middle of a fight by accident. It either asks for a second click or blocks quitting until the server says you’re out. If that message never arrives, it lets go after 180 seconds.</p><span class="hud r">IN PVP MODE - click again to quit</span></div></div>
+
+<div class="row"><h3>PvP Command Lock<small>Safety</small></h3><div><p>While you’re in PvP mode only /r, /msg, /m, /w, /tell and your clan chat command work. Everything else is blocked, so a stray /spawn or /tpa can’t pull you out of a fight.</p></div></div>
+
+<div class="row"><h3>Tournament Mode<small>Safety</small></h3><div><p>One switch and no command can be sent at all, including ones from clickable chat and from other modules. Normal chat still works.</p></div></div>
+
+<div class="row"><h3>Tournament HUD<small>Tools</small></h3><div><p>Add your friends by username and a box shows whether each is alive, dead or has left, with their last few chat messages underneath. Deaths come from the server’s own lines and spectator mode, never from player chat.</p><span class="hud">Alive 3/5<br><span class="a">Alex  alive</span><br><span class="a">Sam   alive</span><br><span class="a">Jo    alive</span><br><span class="d">Kit   dead (in-game)</span><br><span class="l">Max   left</span></span></div></div>
+
+<div class="row"><h3>Evidence Recorder<small>Safety</small></h3><div><p>When the server announces PvP mode after you accept a /tpahere, an alert asks you to confirm. Confirming saves screenshots and a timestamped log with your coordinates and dimension, copies the player’s name, and bundles a report zip you can attach to a staff ticket.</p></div></div>
+
+<div class="row"><h3>Chat<small>Chat</small></h3><div><p>Clan, Admin and Party chat on one key each, with a badge showing which is active. Mentions are highlighted with a sound, timestamps are optional, <kbd>R</kbd> opens a reply, and <kbd>F8</kbd> searches the last 3000 lines you’ve received. Search lives in memory only.</p></div></div>
+
+<div class="row"><h3>Radial Menu<small>Tools</small></h3><div><p>Hold <kbd>V</kbd>, move towards a slice, let go. Slices are /spawn, /tpa and /tpaccept, and they obey Tournament Mode and PvP Command Lock.</p><svg class="rad" viewBox="0 0 200 200" role="img" aria-label="Radial menu with spawn, tpa and tpaccept slices"><g transform="rotate(-90 100 100)"><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="0"/><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="-1"/><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="-2"/></g><text x="154" y="72">/spawn</text><text x="100" y="166">/tpa</text><text x="46" y="72">/tpaccept</text></svg></div></div>
+
+<div class="row"><h3>Spawn Escape and TP Danger Escape<small>Safety</small></h3><div><p><kbd>Right Alt</kbd> sends /spawn. The automatic parts catch pit drops and /tpahere traps.</p><p>They can’t tell a friend’s teleport from an enemy’s, so switch them off when you’re teleporting with friends.</p></div></div>
+
+<div class="row"><h3>Waypoints and Compass<small>Tools</small></h3><div><p>Save waypoints and see them as markers on the HUD compass, with the name and distance when you look at one.</p></div></div>
+
+<div class="row"><h3>HUD<small>MineBerry Client</small></h3><div><p>FPS, Ping, Coordinates, Sprint, Clock, Keystrokes and CPS, Armor, Potion Effects, Compass, Biome and Time. Drag any box anywhere with snapping guides, keep several profiles, and overlapping boxes get a red outline. Press <kbd>Right Shift</kbd> for the menu.</p></div></div>
+
+<div class="row"><h3>Updates<small>Tools</small></h3><div><p>Checks GitHub releases when the game starts and links you to the download. Nothing installs automatically. A What’s New popup shows once after each update.</p></div></div>
+</section>
+
+<section id="gradient">
+<h2>Gradient generator</h2>
+<p class="sub">Colored chat text without hand-writing codes. This is the same logic as in the mod, running here.</p>
+<input class="gin" id="txt" maxlength="64" value="MineBerry" aria-label="Text to color">
+<div class="pv" id="prev" aria-live="polite"></div>
+<div class="ps" id="presets"></div>
+<div class="out"><code id="code"></code><button id="copy" type="button">Copy</button></div>
+<div class="cc" id="count"></div>
 </section>
 
 <section>
-<h2>Your keys</h2>
-<p class="sub">All of them can be rebound in Options, Controls.</p>
-<div class="keys">
-<div><kbd>Right Ctrl</kbd>Control Center</div><div><kbd>Right Shift</kbd>HUD menu</div><div><kbd>J</kbd><kbd>K</kbd><kbd>X</kbd>Clan, Admin, Party</div><div><kbd>R</kbd>Reply</div><div><kbd>V</kbd>Radial menu</div><div><kbd>Right Alt</kbd>/spawn</div><div><kbd>F8</kbd>Chat search</div><div><kbd>F9</kbd>Screenshot</div><div><kbd>Y</kbd>Hide HUD</div>
-</div>
+<h2>Default keys</h2>
+<p class="sub">All rebindable under Options, Controls, Key Binds. Try it: press the keys on your keyboard.</p>
+<table>
+<tr><td><kbd>Right Ctrl</kbd></td><td>Control Center</td></tr>
+<tr><td><kbd>Right Shift</kbd></td><td>HUD menu</td></tr>
+<tr><td><kbd>J</kbd> <kbd>K</kbd> <kbd>X</kbd></td><td>Clan, Admin, Party chat</td></tr>
+<tr><td><kbd>R</kbd></td><td>Reply to a private message</td></tr>
+<tr><td><kbd>V</kbd> (hold)</td><td>Radial menu</td></tr>
+<tr><td><kbd>Right Alt</kbd></td><td>/spawn</td></tr>
+<tr><td><kbd>F8</kbd></td><td>Chat search</td></tr>
+<tr><td><kbd>F9</kbd></td><td>Screenshot to clipboard</td></tr>
+<tr><td><kbd>Y</kbd></td><td>Show or hide the HUD</td></tr>
+</table>
 </section>
 
+<div class="haz"></div>
 <section id="install">
-<h2>Ready in a minute</h2>
-<p class="sub">Don’t install WorldEditCUI separately. It’s already included.</p>
-<ol class="steps">
-<li><b>Get Fabric.</b><br>Fabric Loader 0.20.1 or newer for Minecraft 26.2, on Java 25.</li>
-<li><b>Drop it in.</b><br>Put the mod and Fabric API in your mods folder. Mod Menu is optional.</li>
-<li><b>Join the server.</b><br>MineBerry or MinePeak.</li>
-<li><b>Press Right Control.</b><br>Switch on the modules you want.</li>
+<h2>Install</h2>
+<ol>
+<li>Install Fabric Loader 0.20.1 or newer for Minecraft 26.2, on Java 25.</li>
+<li>Put the mod and Fabric API in your mods folder. Mod Menu is optional.</li>
+<li>Join MineBerry or MinePeak.</li>
+<li>Press <kbd>Right Ctrl</kbd> and switch on what you want.</li>
 </ol>
+<p class="warn">Don’t install WorldEditCUI separately, it’s bundled in. Some features rely on messages and commands from the MineBerry and MinePeak servers and may not work the same elsewhere.</p>
 </section>
-
-<div class="end"><h2>Play safer. Report faster.</h2><p class="sub" style="margin:12px auto 28px">Free, open source, MIT licensed.</p><div class="cta"><a class="b m" href="https://modrinth.com/mod/mineberry-essentials">Download now</a><a class="b" href="https://github.com/aerys-ex/mineberry-essentials/releases">All releases</a></div></div>
-
-<footer>Made by Agio12 (ex.aerys) and Nice_EX (nice_ex.). Includes WorldEditCUI (EPL-2.0). Built for MineBerry and MinePeak. Some features depend on those servers’ messages.</footer>
 </main>
+
+<footer><div class="w">Made by Agio12 (ex.aerys) and Nice_EX (nice_ex.). Includes WorldEditCUI (EPL-2.0). MIT licensed. <a href="https://github.com/aerys-ex/mineberry-essentials/releases">Releases</a> · <a href="https://discord.gg/ApRvuNsX3j">Discord</a></div></footer>
 
 <script>
 (function(){
-var M=[["Clan Chat","J toggles /cc",1],["Safe Logout","PvP quit guard",1],["PvP Command Lock","Blocks teleports",1],["Tournament HUD","Friends alive",0],["Waypoints","Compass markers",1],["Radial Menu","Hold V",1],["Screenshot","F9 to clipboard",0],["Chat Search","F8",1]],c=document.getElementById("cards");
-M.forEach(function(m){var b=document.createElement("button");b.type="button";b.className="mc"+(m[2]?" on":"");b.setAttribute("aria-pressed",!!m[2]);b.innerHTML="<b></b><small></small><span class='sw'></span>";b.children[0].textContent=m[0];b.children[1].textContent=m[1];b.onclick=function(){var o=b.classList.toggle("on");b.setAttribute("aria-pressed",o)};c.appendChild(b)});
-document.querySelectorAll(".t").forEach(function(t){t.addEventListener("pointermove",function(e){var r=t.getBoundingClientRect();t.style.setProperty("--x",e.clientX-r.left+"px");t.style.setProperty("--y",e.clientY-r.top+"px")})});
+var M=[["Clan Chat",1],["Safe Logout",1],["PvP Command Lock",1],["Tournament Mode",0],["Waypoints",1],["Radial Menu",1],["Screenshot",0],["Chat Search",1]],c=document.getElementById("cards");
+function lab(b,on){b.querySelector("em").textContent=on?"Enabled":"Disabled"}
+M.forEach(function(m){var b=document.createElement("button");b.type="button";b.className="mc"+(m[1]?" on":"");b.innerHTML="<b></b><em></em>";b.firstChild.textContent=m[0];lab(b,m[1]);b.onclick=function(){lab(b,b.classList.toggle("on"))};c.appendChild(b)});
 var P={MineBerry:["#E65B93","#F28A1F"],Sunset:["#FF5E62","#FF9966","#FFD166"],Ocean:["#2193B0","#6DD5ED"],Mint:["#11998E","#38EF7D"],Fire:["#F12711","#F5AF19"],Rainbow:["#FF0000","#FFD400","#2BD94F","#1E90FF","#8A2BE2"]},cur="MineBerry",txt=document.getElementById("txt"),prev=document.getElementById("prev"),code=document.getElementById("code"),count=document.getElementById("count"),box=document.getElementById("presets");
 function rgb(h){return[1,3,5].map(function(i){return parseInt(h.substr(i,2),16)})}
 function hx(a){return a.map(function(v){return Math.round(v).toString(16).padStart(2,"0")}).join("").toUpperCase()}
-function at(c,t){var n=c.length-1,x=t*n,i=Math.min(Math.floor(x),n-1),f=x-i,a=rgb(c[i]),b=rgb(c[i+1]);return a.map(function(v,k){return v+(b[k]-v)*f})}
+function at(k,t){var n=k.length-1,x=t*n,i=Math.min(Math.floor(x),n-1),f=x-i,a=rgb(k[i]),b=rgb(k[i+1]);return a.map(function(v,j){return v+(b[j]-v)*f})}
 function render(){var s=Array.from(txt.value),k=P[cur],o="";prev.textContent="";
 s.forEach(function(ch,i){var h=hx(at(k,s.length>1?i/(s.length-1):0)),e=document.createElement("span");e.textContent=ch;e.style.color="#"+h;prev.appendChild(e);o+="&#"+h+ch});
 code.textContent=o||"Type something above";count.textContent=o.length+" of 256 characters"+(o.length>256?" - too long for chat":"");count.style.color=o.length>256?"var(--rd)":""}
@@ -191,6 +236,29 @@ Object.keys(P).forEach(function(k){var b=document.createElement("button");b.type
 txt.addEventListener("input",render);
 document.getElementById("copy").onclick=function(){var b=this;(navigator.clipboard?navigator.clipboard.writeText(code.textContent):Promise.reject()).then(function(){b.textContent="Copied"}).catch(function(){b.textContent="Select it"});setTimeout(function(){b.textContent="Copy"},1400)};
 render();
+})();
+(function(){
+var rm=matchMedia("(prefers-reduced-motion:reduce)").matches,$=function(i){return document.getElementById(i)};
+var tk=document.querySelector(".tick div");tk.innerHTML+=tk.innerHTML;
+document.addEventListener("keydown",function(e){var m={ControlRight:"Right Ctrl",ShiftRight:"Right Shift",AltRight:"Right Alt",F8:"F8",F9:"F9"}[e.code]||(/^Key/.test(e.code)?e.code.slice(3):"");if(!m)return;document.querySelectorAll("kbd").forEach(function(k){if(k.textContent.trim()===m){k.classList.add("hit");setTimeout(function(){k.classList.remove("hit")},350)}})});
+var L=["N","NE","E","SE","S","SW","W","NW"],f=144,x=128,z=-312,d=0,t=0,al=[["Alex",1],["Sam",1],["Jo",1],["Kit",1],["Max",1]],cm=[["Alex","gg"],["Sam","on my way"],["Jo","rotate left"],["Max","lag"],["Kit","gl all"]],ln=["[12:04] Alex: gg","[Clan] Sam: on my way"],ci=2,sp="\u00a0\u00a0\u00a0";
+function hud(){var n=al.filter(function(a){return a[1]}).length;$("ha").innerHTML="Alive "+n+"/5"+al.map(function(a){return"<br><span class='"+(a[1]?"a":"d")+"'>"+a[0]+(a[1]?" alive":" dead")+"</span>"}).join("")}
+function cmp(){$("hs").textContent=L[(d+7)%8]+sp+L[d]+sp+L[(d+1)%8];$("hd").textContent=L[d]+" "+d*45+"\u00b0"}
+function chat(){$("hc").textContent=ln.slice(-3).join("\n")}
+hud();cmp();chat();
+if(!rm){
+var h=document.querySelector("h1"),full=h.textContent,k=0;h.setAttribute("aria-label",full);h.textContent="";
+var iv=setInterval(function(){h.textContent=full.slice(0,++k);if(k>=full.length)clearInterval(iv)},55);
+var scn=document.querySelector(".scene"),ps=scn.querySelectorAll("[data-p]");
+scn.addEventListener("pointermove",function(e){var r=scn.getBoundingClientRect(),nx=(e.clientX-r.left)/r.width-.5;ps.forEach(function(p){p.style.transform="translateX("+(-nx*p.dataset.p)+"px)"})});
+setInterval(function(){t++;
+f=Math.max(120,Math.min(165,f+Math.round((Math.random()-.5)*14)));$("hf").innerHTML=f+" FPS<br>"+(28+Math.floor(Math.random()*9))+" ms";
+x++;z--;$("hx").textContent="X: "+x+"  Y: 64  Z: "+z;
+if(t%8==0){d=(d+1)%8;cmp()}
+if(t%7==0){var p=$("hp");p.style.visibility=p.style.visibility=="hidden"?"visible":"hidden"}
+if(t%4==0){var c=cm[ci++%5];ln.push("["+new Date().toTimeString().slice(0,5)+"] "+c[0]+": "+c[1]);chat()}
+if(t%14==0){var l=al.filter(function(a){return a[1]});if(l.length>1){l[Math.floor(Math.random()*l.length)][1]=0}else{al.forEach(function(a){a[1]=1})}hud()}
+},500)}
 })();
 </script>
 </body>
