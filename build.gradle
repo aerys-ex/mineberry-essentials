@@ -14,8 +14,6 @@ loom {
 
 repositories {
 	maven { url = 'https://maven.terraformersmc.com/releases/' }
-	// WorldEditCUI protocol library
-	maven { url = 'https://maven.enginehub.org/repo/' }
 }
 
 dependencies {
@@ -25,13 +23,6 @@ dependencies {
 
 	// Fabric API
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-
-	// WorldEditCUI protocol library, bundled as jar-in-jar
-	implementation "org.enginehub.worldeditcui-protocol:worldeditcui-protocol-common-mc26.2:${project.cui_protocol_version}"
-	implementation "org.enginehub.worldeditcui-protocol:worldeditcui-protocol-fabric-mc26.2:${project.cui_protocol_version}"
-	// Both jars must be bundled: CUIPacket lives in "common", the Fabric entrypoint in "fabric".
-	include "org.enginehub.worldeditcui-protocol:worldeditcui-protocol-common-mc26.2:${project.cui_protocol_version}"
-	include "org.enginehub.worldeditcui-protocol:worldeditcui-protocol-fabric-mc26.2:${project.cui_protocol_version}"
 
 	// Mod Menu (compile-time only; optional at runtime)
 	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
