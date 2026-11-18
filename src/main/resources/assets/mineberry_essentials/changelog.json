@@ -1,6 +1,19 @@
 {
   "versions": [
     {
+      "version": "1.6.2",
+      "title": "New website link",
+      "sections": {
+        "Improved": [
+          "The mod description now reads \"An essential Fabric mod for MineBerry and MinePeak\".",
+          "The Website button in Mod Menu now opens the new Modrinth page (modrinth.com/mod/mineberryessentials)."
+        ],
+        "Removed": [
+          "WorldEditCUI was removed from the mod."
+        ]
+      }
+    },
+    {
       "version": "1.6.1",
       "title": "Tournament HUD",
       "sections": {

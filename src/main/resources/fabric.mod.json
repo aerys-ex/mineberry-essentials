@@ -3,13 +3,13 @@
 	"id": "mineberry-essentials",
 	"version": "${version}",
 	"name": "MineBerry - Essentials",
-	"description": "A polished MineBerry control center with chat tools, evidence capture, coordinate conversion, and danger-aware safety controls.",
+	"description": "An essential Fabric mod for MineBerry and MinePeak",
 	"authors": [
 		"Agio12 (ex.aerys)",
 		"Nice_EX (nice_ex.)"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/mod/mineberry-essentials",
+		"homepage": "https://modrinth.com/mod/mineberryessentials",
 		"sources": "https://github.com/aerys-ex/mineberry-essentials",
 		"discord": "https://discord.com/invite/ApRvuNsX3j"
 	},

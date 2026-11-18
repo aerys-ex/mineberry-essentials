@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Tiny wrapper around vanilla Gizmos (Minecraft 26.x). Every shape is drawn twice: once normally and once,
- * much fainter, on top of everything so it stays readable through walls (same look as WorldEditCUI).
+ * much fainter, on top of everything so it stays readable through walls.
  * Only call these from inside LevelRenderEvents.BEFORE_GIZMOS.
  */
 public final class GizmoDraw {

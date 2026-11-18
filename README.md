@@ -1,6 +1,6 @@
 # MineBerry - Essentials
 
-**The all-in-one control center for MineBerry and MinePeak.**
+**An essential mod for MineBerry and MinePeak.**
 Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a gradient generator and a coordinate converter, all in one clean dashboard.
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-26.2-62b47a)
@@ -12,19 +12,11 @@ https://github.com/user-attachments/assets/ccc7c064-3c12-48be-99bb-f2ba63870f59
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.6.1
+## What's New in 1.6.2
 
-- **Tournament HUD:** a box on your screen that follows your friends during a tournament. Add their usernames with the gear button on its card, and you see each friend's last chat messages in full and whether they are **alive**, **dead (in-game)**, **dead (left)** or **left**, with an **Alive 3/5** counter on top (see [Tournament HUD](#tournament-hud))
-  - Dead comes from the server's death and elimination lines and from spectator mode, never from player chat
-  - Statuses start fresh when a round starts, when you join a server and when you press **Reset statuses**
-  - Off by default. Move or hide it in the HUD menu (**Tournament Players**)
-- **Edit HUD Layout, drag anywhere:** drag any HUD box where you want it. It snaps to the screen edges, the centre and the other boxes, with guide lines. Right-click a box to put it back in the automatic stack, or press **Reset all**. Boxes that overlap get a red outline (see [MineBerry Client (HUD)](#mineberry-client-hud))
-  - A box stays attached to the corner nearest to where you drop it, so your layout survives window and GUI scale changes
-  - Positions are saved in your HUD profiles
-- **Compass waypoints:** your waypoints show as coloured markers under the Compass strip. Look at one and the Compass shows its name and distance (needs the **Waypoints** module)
-- **Watermark:** a small *MineBerry Essentials* label in the top left corner, drawn without a box. On by default, switch it off or move it in the HUD menu
-- **Fixed overlapping HUD boxes:** Tournament Mode, Spawn Escape, TP Danger Escape, Safe Logout, the Clan / Admin / Party badge and the waypoint list now stack under the HUD boxes of the top right corner instead of drawing on top of them and of each other. The abuse alert no longer covers the top left boxes
-- **Config:** new `tournamentFriends`, `tournamentMessageSeconds` and `tournamentStartPattern` (see [Configuration](#configuration)). The default theme's config id changed from `lunar` to `default`, and old configs are converted automatically
+- **New website link:** the Website button in Mod Menu now opens the new Modrinth page, [modrinth.com/mod/mineberryessentials](https://modrinth.com/mod/mineberryessentials)
+- **New mod description:** *An essential Fabric mod for MineBerry and MinePeak*
+- **WorldEditCUI removed:** the mod no longer includes WorldEditCUI
 
 ## Screenshots
 
@@ -402,6 +394,20 @@ Rebind it under *Options > Controls > Key Binds*.
 
 Earlier release notes. The newest ones are at the top of this page.
 
+### 1.6.1
+
+- **Tournament HUD:** a box on your screen that follows your friends during a tournament. Add their usernames with the gear button on its card, and you see each friend's last chat messages in full and whether they are **alive**, **dead (in-game)**, **dead (left)** or **left**, with an **Alive 3/5** counter on top (see [Tournament HUD](#tournament-hud))
+  - Dead comes from the server's death and elimination lines and from spectator mode, never from player chat
+  - Statuses start fresh when a round starts, when you join a server and when you press **Reset statuses**
+  - Off by default. Move or hide it in the HUD menu (**Tournament Players**)
+- **Edit HUD Layout, drag anywhere:** drag any HUD box where you want it. It snaps to the screen edges, the centre and the other boxes, with guide lines. Right-click a box to put it back in the automatic stack, or press **Reset all**. Boxes that overlap get a red outline (see [MineBerry Client (HUD)](#mineberry-client-hud))
+  - A box stays attached to the corner nearest to where you drop it, so your layout survives window and GUI scale changes
+  - Positions are saved in your HUD profiles
+- **Compass waypoints:** your waypoints show as coloured markers under the Compass strip. Look at one and the Compass shows its name and distance (needs the **Waypoints** module)
+- **Watermark:** a small *MineBerry Essentials* label in the top left corner, drawn without a box. On by default, switch it off or move it in the HUD menu
+- **Fixed overlapping HUD boxes:** Tournament Mode, Spawn Escape, TP Danger Escape, Safe Logout, the Clan / Admin / Party badge and the waypoint list now stack under the HUD boxes of the top right corner instead of drawing on top of them and of each other. The abuse alert no longer covers the top left boxes
+- **Config:** new `tournamentFriends`, `tournamentMessageSeconds` and `tournamentStartPattern` (see [Configuration](#configuration)). The default theme's config id changed from `lunar` to `default`, and old configs are converted automatically
+
 ### 1.6.0
 
 - **Radial Menu:** hold `V` and a pie menu opens around your crosshair with quick commands (`/spawn`, `/tpa` and `/tpaccept`). Move to a slice and let go of the key to run it (see [Radial Menu](#radial-menu))
@@ -452,7 +458,7 @@ Earlier release notes. The newest ones are at the top of this page.
 - **Quick Reply (`/r`) is now its own module,** separate from Chat Extras (see [Quick Reply](#quick-reply))
 - **MineBerry Client (HUD):** a new menu with HUD modules, profiles and a layout editor, opened with **Right Shift** (see [MineBerry Client (HUD)](#mineberry-client-hud))
 - New default theme: dark grey with orange
-- The Website button in Mod Menu now opens this GitHub page
+- The Website button in Mod Menu opened the GitHub page (since 1.6.2 it opens the Modrinth page)
 
 ---
 
