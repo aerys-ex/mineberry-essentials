@@ -18,8 +18,7 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"com.mineberry.essentials.MineBerryEssentials",
-			"org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI"
+			"com.mineberry.essentials.MineBerryEssentials"
 		],
 		"modmenu": [
 			"com.mineberry.essentials.ModMenuIntegration"
@@ -31,6 +30,9 @@
 		"minecraft": "~26.2",
 		"java": ">=25",
 		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
 	},
 	"custom": {
 		"modmenu": {

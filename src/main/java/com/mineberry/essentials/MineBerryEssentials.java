@@ -17,7 +17,6 @@ import com.mineberry.essentials.modules.TournamentHudModule;
 import com.mineberry.essentials.modules.TournamentModeModule;
 import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
-import com.mineberry.essentials.modules.WorldEditCuiModule;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -80,7 +79,6 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new PvpCommandLockModule());
 		register(new TournamentModeModule());
 		register(new EvidenceModule());
-		register(new WorldEditCuiModule());
 		register(new WaypointsModule());
 		register(new ScreenshotModule());
 		register(new RadialMenuModule());

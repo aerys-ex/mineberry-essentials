@@ -214,7 +214,6 @@ final class Icons {
             Map.entry("pvp_command_lock", SHIELD),
             Map.entry("tournament_mode", CROWN),
             Map.entry("evidence", CAMERA),
-            Map.entry("worldeditcui", SELECTION),
             Map.entry("waypoints", PIN),
             Map.entry("radial_menu", RADIAL),
             Map.entry("tournament_hud", PERSON),

@@ -77,7 +77,7 @@ One panel with a card for every module.
 - **Category tabs:** All, Chat, Safety and Tools
 - **Search box** to find a module by name, and a **Reset** button to clear the category and search
 - **Hover** a card to see what it does
-- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search, WorldEdit CUI)
+- **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search)
 - Scrollbar and mouse wheel scrolling when there are more modules than fit on screen
 - **Screenshots tab:** opens your screenshot list (see [Screenshot](#screenshot))
 - **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons. A small orange dot on the tab shows when an update is available
@@ -269,11 +269,6 @@ Take a screenshot and paste it straight into Discord.
 ### Overworld / Nether Converter
 Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 
-### WorldEdit CUI Built In
-- The full [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) is included, so you **do not need a separate mod**
-- Toggle the selection display from the panel, with a settings gear for colours and more
-- Key binds are under *Options > Controls > WorldEditCUI*
-
 ---
 
 ## Default Keybinds
@@ -318,8 +313,6 @@ All keys can be rebound under *Options > Controls > Key Binds*. The Gradient Gen
 | Java | 25 or newer |
 | Mod Menu | Optional |
 
-> **Do not install the standalone WorldEditCUI mod alongside this one.** It is already built in and the two will conflict.
-
 ---
 
 ## Configuration
@@ -347,7 +340,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 ## FAQ
 
 **Does it work on other servers?**
-The general tools (waypoints, converter, gradient generator, WorldEditCUI, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
+The general tools (waypoints, converter, gradient generator, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
 
 **Where are my evidence reports saved?**
 Screenshots, `log.txt` and the report zip are saved automatically inside your game's `screenshots` folder, in the `testimony`, `reports` and `tpaheres` subfolders. Use the **Export** button in the Tools tab to rebuild the latest report.
@@ -402,9 +395,6 @@ That can happen. Both modules react to teleports and nearby players, and they ca
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
-
-**The game crashes or WorldEdit selections look broken.**
-Make sure the standalone WorldEditCUI mod is not installed.
 
 ---
 
@@ -473,5 +463,4 @@ Questions, bug reports or ideas? Join our [Discord](https://discord.gg/ApRvuNsX3
 ## Credits and License
 
 Made by **Agio12 (ex.aerys)** and **Nice_EX (nice_ex.)**.
-Includes [WorldEditCUI](https://github.com/EngineHub/WorldEditCUI) (EPL-2.0).
 MineBerry - Essentials is licensed under the **MIT License**.

@@ -42,7 +42,7 @@ public class PanelScreen extends Screen {
             Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"), Map.entry("chat_search", "Chat"),
             Map.entry("spawn_escape", "Safety"), Map.entry("tp_danger_escape", "Safety"), Map.entry("safe_logout", "Safety"),
             Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"),
-            Map.entry("evidence", "Tools"), Map.entry("worldeditcui", "Tools"), Map.entry("waypoints", "Tools"),
+            Map.entry("evidence", "Tools"), Map.entry("waypoints", "Tools"),
             Map.entry("radial_menu", "Tools"), Map.entry("tournament_hud", "Tools"));
 
     /** One card: a module or an option. */
@@ -160,14 +160,6 @@ public class PanelScreen extends Screen {
                     if (this.minecraft.player != null) {
                         this.minecraft.player.sendSystemMessage(Component.literal("[MineBerry] Safe Logout mode: "
                                 + (block ? "warn (second click quits)" : "block (quitting is refused in combat)")));
-                    }
-                };
-            } else if (module.id().equals("worldeditcui")) {
-                gearHint = "WorldEdit CUI settings";
-                gearAction = () -> {
-                    var cui = org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI.getInstance();
-                    if (cui != null && cui.getController() != null) {
-                        this.minecraft.gui.setScreen(new org.enginehub.worldeditcui.gui.CUIConfigPanel(this, cui.getController().getConfiguration()));
                     }
                 };
             }
