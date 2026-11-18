@@ -8,7 +8,7 @@ Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a 
 ![Java](https://img.shields.io/badge/Java-25%2B-e76f00)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-https://github.com/user-attachments/assets/92ab1026-6b5c-4430-89a7-2100722186f6
+https://github.com/user-attachments/assets/ccc7c064-3c12-48be-99bb-f2ba63870f59
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
