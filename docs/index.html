@@ -128,7 +128,7 @@ footer{border-top:1px solid var(--ln);padding:28px 0 44px;color:var(--mu);font-s
 <h1>MineBerry Essentials</h1>
 <p class="lead">An essential Fabric mod for MineBerry and MinePeak. Chat tools, safety tools, a HUD and more, all in one panel.</p>
 <div class="btns"><a class="btn m" href="https://modrinth.com/mod/mineberryessentials">Download on Modrinth</a><a class="btn" href="https://github.com/aerys-ex/mineberry-essentials">Source</a><a class="btn" href="https://discord.gg/ApRvuNsX3j">Discord</a></div>
-<div class="ver">Version 1.6.2 · Minecraft 26.2 · Fabric Loader 0.20.1+ · Java 25</div>
+<div class="ver">Version 1.6.3 · Minecraft 26.2 · Fabric Loader 0.20.1+ · Java 25</div>
 </div>
 <div class="scene" role="img" aria-label="Illustration of the MineBerry HUD in game">
 <span class="moon" data-p="-6"></span><i class="cl" style="top:20%"></i><i class="cl" style="top:36%;animation-delay:-35s"></i><div class="sc mt1" data-p="10"></div><div class="sc mt2" data-p="22"></div><div class="gr"></div>
@@ -173,11 +173,11 @@ footer{border-top:1px solid var(--ln);padding:28px 0 44px;color:var(--mu);font-s
 
 <div class="row"><h3>Radial Menu<small>Tools</small></h3><div><p>Hold <kbd>V</kbd>, move towards a slice, let go. Slices are /spawn, /tpa and /tpaccept, and they obey Tournament Mode and PvP Command Lock.</p><svg class="rad" viewBox="0 0 200 200" role="img" aria-label="Radial menu with spawn, tpa and tpaccept slices"><g transform="rotate(-90 100 100)"><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="0"/><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="-1"/><circle cx="100" cy="100" r="62" pathLength="3" stroke-dasharray="0.96 2.04" stroke-dashoffset="-2"/></g><text x="154" y="72">/spawn</text><text x="100" y="166">/tpa</text><text x="46" y="72">/tpaccept</text></svg></div></div>
 
-<div class="row"><h3>Spawn Escape and TP Danger Escape<small>Safety</small></h3><div><p><kbd>Right Alt</kbd> sends /spawn. The automatic parts catch pit drops and /tpahere traps.</p><p>They can’t tell a friend’s teleport from an enemy’s, so switch them off when you’re teleporting with friends.</p></div></div>
+<div class="row"><h3>Spawn Escape and TP Danger Escape<small>Safety</small></h3><div><p>Both are automatic. Spawn Escape sends /spawn when a teleport drops you in a tight pit, and TP Danger Escape catches /tpahere traps. For a manual /spawn, hold <kbd>V</kbd> for the radial menu.</p><p>Their status boxes are normal HUD boxes you can hide, drag and resize. Press <kbd>U</kbd> to hide or show both at once. The modules keep working while the boxes are hidden.</p><p>They can’t tell a friend’s teleport from an enemy’s, so switch them off when you’re teleporting with friends.</p></div></div>
 
 <div class="row"><h3>Waypoints and Compass<small>Tools</small></h3><div><p>Save waypoints and see them as markers on the HUD compass, with the name and distance when you look at one.</p></div></div>
 
-<div class="row"><h3>HUD<small>MineBerry Client</small></h3><div><p>FPS, Ping, Coordinates, Sprint, Clock, Keystrokes and CPS, Armor, Potion Effects, Compass, Biome and Time. Drag any box anywhere with snapping guides, keep several profiles, and overlapping boxes get a red outline. Press <kbd>Right Shift</kbd> for the menu.</p></div></div>
+<div class="row"><h3>HUD<small>MineBerry Client</small></h3><div><p>FPS, Ping, Coordinates, Sprint, Clock, Keystrokes and CPS, Armor, Potion Effects, Compass, Biome and Time, the Scoreboard and a Watermark. Drag any box anywhere with snapping guides, and overlapping boxes get a red outline. Press <kbd>Right Shift</kbd> for the menu.</p><p>Scroll the mouse wheel over a box in Edit HUD Layout to resize it from 50% to 250%, and right-click it to reset. You can hide the Scoreboard or resize it too.</p><p>Keep several profiles with their positions and sizes, and delete the ones you don’t need with the x button.</p></div></div>
 
 <div class="row"><h3>Updates<small>Tools</small></h3><div><p>Checks GitHub releases when the game starts and links you to the download. Nothing installs automatically. A What’s New popup shows once after each update.</p></div></div>
 </section>
@@ -201,10 +201,10 @@ footer{border-top:1px solid var(--ln);padding:28px 0 44px;color:var(--mu);font-s
 <tr><td><kbd>J</kbd> <kbd>K</kbd> <kbd>X</kbd></td><td>Clan, Admin, Party chat</td></tr>
 <tr><td><kbd>R</kbd></td><td>Reply to a private message</td></tr>
 <tr><td><kbd>V</kbd> (hold)</td><td>Radial menu</td></tr>
-<tr><td><kbd>Right Alt</kbd></td><td>/spawn</td></tr>
 <tr><td><kbd>F8</kbd></td><td>Chat search</td></tr>
 <tr><td><kbd>F9</kbd></td><td>Screenshot to clipboard</td></tr>
 <tr><td><kbd>Y</kbd></td><td>Show or hide the HUD</td></tr>
+<tr><td><kbd>U</kbd></td><td>Show or hide the Spawn Escape and TP Danger Escape boxes</td></tr>
 </table>
 </section>
 
@@ -243,7 +243,7 @@ render();
 (function(){
 var rm=matchMedia("(prefers-reduced-motion:reduce)").matches,$=function(i){return document.getElementById(i)};
 var tk=document.querySelector(".tick div");tk.innerHTML+=tk.innerHTML;
-document.addEventListener("keydown",function(e){var m={ControlRight:"Right Ctrl",ShiftRight:"Right Shift",AltRight:"Right Alt",F8:"F8",F9:"F9"}[e.code]||(/^Key/.test(e.code)?e.code.slice(3):"");if(!m)return;document.querySelectorAll("kbd").forEach(function(k){if(k.textContent.trim()===m){k.classList.add("hit");setTimeout(function(){k.classList.remove("hit")},350)}})});
+document.addEventListener("keydown",function(e){var m={ControlRight:"Right Ctrl",ShiftRight:"Right Shift",F8:"F8",F9:"F9"}[e.code]||(/^Key/.test(e.code)?e.code.slice(3):"");if(!m)return;document.querySelectorAll("kbd").forEach(function(k){if(k.textContent.trim()===m){k.classList.add("hit");setTimeout(function(){k.classList.remove("hit")},350)}})});
 var L=["N","NE","E","SE","S","SW","W","NW"],f=144,x=128,z=-312,d=0,t=0,al=[["Alex",1],["Sam",1],["Jo",1],["Kit",1],["Max",1]],cm=[["Alex","gg"],["Sam","on my way"],["Jo","rotate left"],["Max","lag"],["Kit","gl all"]],ln=["[12:04] Alex: gg","[Clan] Sam: on my way"],ci=2,sp="\u00a0\u00a0\u00a0";
 function hud(){var n=al.filter(function(a){return a[1]}).length;$("ha").innerHTML="Alive "+n+"/5"+al.map(function(a){return"<br><span class='"+(a[1]?"a":"d")+"'>"+a[0]+(a[1]?" alive":" dead")+"</span>"}).join("")}
 function cmp(){$("hs").textContent=L[(d+7)%8]+sp+L[d]+sp+L[(d+1)%8];$("hd").textContent=L[d]+" "+d*45+"\u00b0"}
