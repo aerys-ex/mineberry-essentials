@@ -30,14 +30,12 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.6.3
+## What's New in 1.6.4
 
-- **Resizable HUD:** scroll the mouse wheel over any HUD box in **Edit HUD Layout** to make it bigger or smaller (50% to 250%). Right-click a box to put its position and size back. Sizes are saved in your HUD profiles
-- **Scoreboard:** the sidebar scoreboard now has a card in the HUD menu. **Hide** it with the toggle, or resize it with the new button row in Edit HUD Layout
-- **Spawn Escape and TP Danger Escape boxes:** their status boxes are now normal HUD boxes. Hide, drag and resize them like the others. The modules keep working while the box is hidden
-- **Hide the escape boxes with a key:** press `U` (rebindable) to hide or show the **Spawn Escape** and **TP Danger Escape** boxes. Both modules keep working while the boxes are hidden
-- **Delete HUD profiles:** every profile in the HUD menu sidebar has an **x** button now. The last profile can't be deleted
-- **Removed the Right Alt spawn key:** Spawn Escape now only has the automatic pit guard. The radial menu (hold `V`) still has `/spawn`
+- **Terms of Use:** the first time you start the game with the mod, a short agreement opens with two buttons, **I Agree** and **I Disagree**. By agreeing you accept that the mod developers are not held accountable for anything that goes wrong (see [Terms of Use](#terms-of-use))
+  - If you click **I Disagree**, the mod stays off: no feature, key or HUD works, and nothing is recorded or sent
+  - Every time you try to use a feature while the mod is off, the agreement opens again so you can change your mind
+  - Players who update from an older version see it once as well. Your choice is saved in the config file
 
 ## Screenshots
 
@@ -76,9 +74,10 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 ## Quick Start
 
 1. Install the mod (see [Installation](#installation)).
-2. Join MineBerry or MinePeak.
-3. Press **Right Control** to open the Control Center.
-4. Switch on the modules you want. Everything is optional.
+2. Start the game and click **I Agree** in the Terms of Use window (see [Terms of Use](#terms-of-use)). The mod does nothing until you do.
+3. Join MineBerry or MinePeak.
+4. Press **Right Control** to open the Control Center.
+5. Switch on the modules you want. Everything is optional.
 
 ---
 
@@ -288,6 +287,16 @@ Take a screenshot and paste it straight into Discord.
 ### Overworld / Nether Converter
 Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 
+### Terms of Use
+
+The first time you start the game with the mod, a window asks you to agree to a short note. It says, in short:
+
+- The mod is free and community-made, provided "as is"
+- By clicking **I Agree** you accept that the mod developers are not held accountable for anything that goes wrong while you use it
+- Your settings stay on your computer. The only thing the mod contacts is GitHub, to check for a new version (can be turned off in the config)
+
+**I Agree** switches the mod on. **I Disagree** closes the window and the mod stays off: no module, key, HUD box or update check works. Whenever you press one of the mod's keys, or use **Configure** in Mod Menu, the window opens again so you can change your mind. Esc counts as **I Disagree**.
+
 ---
 
 ## Default Keybinds
@@ -341,6 +350,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - Chat commands (Clan, Admin and Party)
 - Extra mention names, mention sound and chat timestamps
 - Whether the reported player's name is copied automatically (`autoCopyReportedName`)
+- `termsAcceptedVersion` is set by the game when you click **I Agree**. Set it back to `0` to see the agreement again
 - The spawn command
 - The theme
 - Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
@@ -357,6 +367,12 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 ---
 
 ## FAQ
+
+**A window with "I Agree" and "I Disagree" opens. What is it?**
+That is the [Terms of Use](#terms-of-use). It opens the first time you start the game with the mod, and again whenever you try to use a feature before agreeing. Click **I Agree** and the mod works normally.
+
+**I clicked "I Disagree" by mistake.**
+Press any of the mod's keys (for example **Right Control**) and the agreement opens again. Click **I Agree**.
 
 **Does it work on other servers?**
 The general tools (waypoints, converter, gradient generator, themes) work anywhere. Features that react to server commands or chat messages are designed for MineBerry and MinePeak and may not trigger elsewhere.
@@ -420,6 +436,15 @@ Rebind it under *Options > Controls > Key Binds*.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.6.3
+
+- **Resizable HUD:** scroll the mouse wheel over any HUD box in **Edit HUD Layout** to make it bigger or smaller (50% to 250%). Right-click a box to put its position and size back. Sizes are saved in your HUD profiles
+- **Scoreboard:** the sidebar scoreboard now has a card in the HUD menu. **Hide** it with the toggle, or resize it with the new button row in Edit HUD Layout
+- **Spawn Escape and TP Danger Escape boxes:** their status boxes are now normal HUD boxes. Hide, drag and resize them like the others. The modules keep working while the box is hidden
+- **Hide the escape boxes with a key:** press `U` (rebindable) to hide or show the **Spawn Escape** and **TP Danger Escape** boxes. Both modules keep working while the boxes are hidden
+- **Delete HUD profiles:** every profile in the HUD menu sidebar has an **x** button now. The last profile can't be deleted
+- **Removed the Right Alt spawn key:** Spawn Escape now only has the automatic pit guard. The radial menu (hold `V`) still has `/spawn`
 
 ### 1.6.2
 

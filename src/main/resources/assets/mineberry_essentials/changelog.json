@@ -1,6 +1,16 @@
 {
   "versions": [
     {
+      "version": "1.6.4",
+      "title": "Terms of Use",
+      "sections": {
+        "New": [
+          "Terms of Use: the first time you start the game with the mod, a short agreement opens. Click I Agree to start using the mod. By agreeing you accept that the mod developers are not held accountable for anything that goes wrong. Players who update from an older version see it once too.",
+          "If you click I Disagree, the mod stays off: no feature, key or HUD works. Every time you try to use a feature, the agreement opens again so you can change your mind."
+        ]
+      }
+    },
+    {
       "version": "1.6.3",
       "title": "Resizable HUD",
       "sections": {

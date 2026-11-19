@@ -21,7 +21,8 @@ public abstract class MineBerryModule {
     public String name() { return name; }
     public String description() { return description; }
 
-    public boolean enabled() { return Config.isEnabled(id); }
+    /** Always false until the player has agreed to the Terms (see Terms), so no feature does anything before that. */
+    public boolean enabled() { return Terms.accepted() && Config.isEnabled(id); }
 
     public void toggle() {
         Config.setEnabled(id, !enabled());

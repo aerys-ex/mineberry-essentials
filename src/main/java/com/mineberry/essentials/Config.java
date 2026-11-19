@@ -49,6 +49,8 @@ public final class Config {
         List<Waypoint> waypoints = new ArrayList<>();
         String lastSeenVersion = "";
         boolean showChangelog = true;
+        int termsAcceptedVersion = 0;     // the Terms version the player agreed to (0 = never agreed)
+        int termsPromptedVersion = 0;     // the Terms version that was already shown automatically on the title screen
         int combatSeconds = 30;
         String safeLogoutMode = "warn";
         String combatEndPattern = DEFAULT_COMBAT_END;
@@ -441,6 +443,26 @@ public final class Config {
     /** Whether the "what's new" popup shows after an update. Edit in the config file to turn it off. */
     public static boolean showChangelog() {
         return data.showChangelog;
+    }
+
+    /** The version of the Terms the player agreed to, 0 if they never did (see Terms). */
+    public static int termsAcceptedVersion() {
+        return data.termsAcceptedVersion;
+    }
+
+    public static void setTermsAcceptedVersion(int version) {
+        data.termsAcceptedVersion = version;
+        save();
+    }
+
+    /** The Terms version that was already offered automatically on the title screen, so it is not shown on every launch. */
+    public static int termsPromptedVersion() {
+        return data.termsPromptedVersion;
+    }
+
+    public static void setTermsPromptedVersion(int version) {
+        data.termsPromptedVersion = version;
+        save();
     }
 
     /** Seconds after the last hit during which Safe Logout guards quitting. Edit in the config file. */

@@ -53,14 +53,15 @@ public class MineBerryEssentials implements ClientModInitializer {
 		Config.load();
 		ClientHud.init();    // HUD + its keybind
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> Config.flushNow());
+		Terms.init();       // the first-launch agreement (must come before Changelog so it opens first)
 		Changelog.init();   // the "What's New" popup after an update
 
-		openPanelKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+		openPanelKey = Terms.registerKey(new KeyMapping(
 				"key.mineberry_essentials.open_panel",
 				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_RIGHT_CONTROL,
 				CATEGORY));
-		toggleHudKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+		toggleHudKey = Terms.registerKey(new KeyMapping(
 				"key.mineberry_essentials.toggle_hud",
 				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_Y,

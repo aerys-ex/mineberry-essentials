@@ -2,6 +2,7 @@ package com.mineberry.essentials.modules;
 
 import com.mineberry.essentials.Clock;
 import com.mineberry.essentials.Config;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -96,7 +97,7 @@ public class TournamentHudModule extends MineBerryModule {
     /** Unlike most modules this one starts OFF. */
     @Override
     public boolean enabled() {
-        return Config.isEnabled(id(), false);
+        return Terms.accepted() && Config.isEnabled(id(), false);
     }
 
     @Override

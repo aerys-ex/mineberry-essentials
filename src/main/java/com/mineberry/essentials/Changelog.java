@@ -81,7 +81,7 @@ public final class Changelog {
     /** Opens the popup once per launch, as soon as the title screen is up and nothing else is covering it. */
     private static void tick(Minecraft mc) {
         Screen t = title;
-        if (shown || t == null || mc.gui.screen() != t) return;
+        if (shown || t == null || mc.gui.screen() != t || !Terms.accepted()) return;
         shown = true;
         title = null;
         Config.setLastSeenVersion(UpdateChecker.installed());           // saved now, so it never shows twice

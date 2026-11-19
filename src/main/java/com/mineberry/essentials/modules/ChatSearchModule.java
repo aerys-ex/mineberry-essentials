@@ -2,6 +2,7 @@ package com.mineberry.essentials.modules;
 
 import com.mineberry.essentials.ChatSearchScreen;
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -41,7 +42,7 @@ public class ChatSearchModule extends MineBerryModule {
 
     @Override
     public void init() {
-        searchKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        searchKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.chat_search",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_F8,

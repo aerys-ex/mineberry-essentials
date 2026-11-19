@@ -3,6 +3,7 @@ package com.mineberry.essentials.modules;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import com.mineberry.essentials.RadialMenuScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -32,7 +33,7 @@ public class RadialMenuModule extends MineBerryModule {
 
     @Override
     public void init() {
-        radialKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        radialKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.radial_menu",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_V,

@@ -65,7 +65,7 @@ public final class LunarHud {
     /** Right Shift opens the HUD menu (like Lunar); change it in Options > Controls. HUD show/hide has its own key in MineBerryEssentials. */
     private static void registerKeys() {
         KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("mineberry_essentials", "lunar_menu"));
-        KeyMapping openMenu = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        KeyMapping openMenu = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.lunar_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenu.consumeClick()) {

@@ -2,6 +2,7 @@ package com.mineberry.essentials.modules;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -20,7 +21,7 @@ public class QuickReplyModule extends MineBerryModule {
 
     @Override
     public void init() {
-        quickReplyKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        quickReplyKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.quick_reply",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_R,

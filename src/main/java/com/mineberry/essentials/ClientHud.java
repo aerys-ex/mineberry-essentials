@@ -86,6 +86,10 @@ public final class ClientHud {
      */
     private static HudElement wrapScoreboard(HudElement vanilla) {
         return (g, tick) -> {
+            if (!Terms.accepted()) {                 // before agreeing the vanilla scoreboard is left completely alone
+                vanilla.extractRenderState(g, tick);
+                return;
+            }
             if (!SCOREBOARD.enabled()) return;
             float s = SCOREBOARD.scale();
             if (s == 1f) {
@@ -109,9 +113,9 @@ public final class ClientHud {
     /** Right Shift opens the HUD menu (like most game clients); change it in Options > Controls. HUD show/hide has its own key in MineBerryEssentials. */
     private static void registerKeys() {
         KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("mineberry_essentials", "client_menu"));
-        KeyMapping openMenu = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        KeyMapping openMenu = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.client_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
-        KeyMapping toggleEscapeBoxes = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        KeyMapping toggleEscapeBoxes = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.toggle_escape_boxes", InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenu.consumeClick()) {
@@ -134,7 +138,7 @@ public final class ClientHud {
     private static void draw(GuiGraphicsExtractor g, DeltaTracker tick) {
         Minecraft mc = Minecraft.getInstance();
         StatusStack.begin(EDGE);   // the status boxes on the right stack below whatever the HUD uses in the top corners
-        if (mc.player == null || Config.hudHidden() || mc.gui.screen() instanceof HudEditScreen) return;
+        if (mc.player == null || !Terms.accepted() || Config.hudHidden() || mc.gui.screen() instanceof HudEditScreen) return;
         if (!logged) { logged = true; MineBerryEssentials.LOGGER.debug("HUD is drawing"); }
         Ui.applyTheme();
         Font font = mc.font;

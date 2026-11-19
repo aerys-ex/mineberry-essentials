@@ -1,6 +1,7 @@
 package com.mineberry.essentials.modules;
 
 import com.mineberry.essentials.Config;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
@@ -28,7 +29,7 @@ public class TournamentModeModule extends MineBerryModule {
     /** Unlike the other modules this one starts OFF. */
     @Override
     public boolean enabled() {
-        return Config.isEnabled(id(), false);
+        return Terms.accepted() && Config.isEnabled(id(), false);
     }
 
     @Override

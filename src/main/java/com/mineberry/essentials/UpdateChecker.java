@@ -97,7 +97,7 @@ public final class UpdateChecker {
 
     /** Starts the automatic background check (once per launch). Does nothing when disabled in the config. */
     public static void check() {
-        if (!Config.checkForUpdates() || !started.compareAndSet(false, true)) return;
+        if (!Terms.accepted() || !Config.checkForUpdates() || !started.compareAndSet(false, true)) return;
         run(true);
     }
 
@@ -106,7 +106,7 @@ public final class UpdateChecker {
      * and can be repeated, so a failed check (offline, rate limited) can simply be tried again.
      */
     public static void checkNow() {
-        if (state == State.CHECKING) return;
+        if (!Terms.accepted() || state == State.CHECKING) return;
         started.set(true);
         run(false);
     }

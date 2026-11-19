@@ -3,6 +3,7 @@ package com.mineberry.essentials.modules;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -39,7 +40,7 @@ public class ClanChatModule extends MineBerryModule {
     @Override
     public void init() {
         instance = this;
-        toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        toggleKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.toggle_clan",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_J,

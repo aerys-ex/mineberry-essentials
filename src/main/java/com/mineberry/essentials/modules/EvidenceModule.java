@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -128,12 +129,12 @@ public class EvidenceModule extends MineBerryModule {
 
     @Override
     public void init() {
-        confirmKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        confirmKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.confirm_abuse",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_MINUS,
                 MineBerryEssentials.CATEGORY));
-        skipKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        skipKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.skip_abuse",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_EQUAL,

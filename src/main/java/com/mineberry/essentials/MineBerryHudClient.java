@@ -27,7 +27,7 @@ public class MineBerryHudClient implements ClientModInitializer {
         if (registered) return;
         registered = true;
         KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("mineberry_essentials", "client_menu"));
-        openMenu = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        openMenu = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.client_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

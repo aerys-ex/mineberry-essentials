@@ -3,6 +3,7 @@ package com.mineberry.essentials.modules;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import com.mineberry.essentials.WaypointScreen;
 import com.mineberry.essentials.render.GizmoDraw;
@@ -47,9 +48,9 @@ public class WaypointsModule extends MineBerryModule {
 
     @Override
     public void init() {
-        addKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        addKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.add_waypoint", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, MineBerryEssentials.CATEGORY));
-        menuKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        menuKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.waypoint_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, MineBerryEssentials.CATEGORY));
 
         HudElementRegistry.addLast(MineBerryEssentials.id("waypoints_hud"), (g, delta) -> drawHud(g));

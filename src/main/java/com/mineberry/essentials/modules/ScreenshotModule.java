@@ -1,6 +1,7 @@
 package com.mineberry.essentials.modules;
 
 import com.mineberry.essentials.MineBerryEssentials;
+import com.mineberry.essentials.Terms;
 import com.mineberry.essentials.MineBerryModule;
 import com.mineberry.essentials.ScreenshotScreen;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -50,12 +51,12 @@ public class ScreenshotModule extends MineBerryModule {
 
     @Override
     public void init() {
-        shotKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        shotKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.screenshot",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_F9,
                 MineBerryEssentials.CATEGORY));
-        menuKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        menuKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.screenshots_menu",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_UNKNOWN,
