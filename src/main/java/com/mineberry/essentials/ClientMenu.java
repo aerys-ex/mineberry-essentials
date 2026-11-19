@@ -86,17 +86,28 @@ public class ClientMenu extends Screen {
 
     private void sidebar() {
         int x = px + PAD, y = bodyY;
+        boolean canDelete = Config.profiles().size() > 1;   // the last profile can't be deleted
         for (String name : new ArrayList<>(Config.profiles().keySet())) {
             Button b = add(Button.builder(Component.literal(name), btn -> {
                 ClientHud.apply(name); this.rebuildWidgets();
-            }).bounds(x, y, SIDE_W, 18).build());
+            }).bounds(x, y, canDelete ? SIDE_W - 20 : SIDE_W, 18).build());
             fancy.put(b, 3);
             flag.put(b, name.equals(Config.activeProfile()));
+            if (canDelete) {
+                add(Button.builder(Component.literal("x"), btn -> {
+                    boolean wasActive = name.equals(Config.activeProfile());
+                    if (!Config.deleteProfile(name)) return;
+                    if (wasActive) ClientHud.apply(Config.activeProfile());   // load the profile that took over
+                    this.rebuildWidgets();
+                }).bounds(x + SIDE_W - 18, y, 18, 18).build());
+            }
             y += 20;
         }
         boolean room = Config.profiles().size() < 6;
         Button save = add(Button.builder(Component.literal("Save as new profile"), btn -> {
-            String name = "Profile " + Config.profiles().size();
+            int n = Config.profiles().size();
+            String name = "Profile " + n;
+            while (Config.profiles().containsKey(name)) name = "Profile " + (++n);   // names stay unique after deletions
             Config.profiles().put(name, ClientHud.snapshot());
             Config.setActiveProfile(name);
             this.rebuildWidgets();
@@ -152,10 +163,12 @@ public class ClientMenu extends Screen {
             HudMod mod = pageMods.get(i);
             int cx = mainX + (i % COLS) * (cardW + GAP), cy = gridY + (i / COLS) * (CARD_H + GAP);
             int by = cy + CARD_H - 4 - BTN;
-            add(Button.builder(Component.literal(ClientHud.CORNERS[mod.corner()].toUpperCase(Locale.ROOT)), btn -> {
-                mod.nextCorner(); ClientHud.sync();
-                btn.setMessage(Component.literal(ClientHud.CORNERS[mod.corner()].toUpperCase(Locale.ROOT)));
-            }).bounds(cx + 4, by - BTN - 2, cardW - 8, BTN).build());
+            if (!mod.virtual()) {   // the scoreboard is placed by the game: no corner to pick
+                add(Button.builder(Component.literal(ClientHud.CORNERS[mod.corner()].toUpperCase(Locale.ROOT)), btn -> {
+                    mod.nextCorner(); ClientHud.sync();
+                    btn.setMessage(Component.literal(ClientHud.CORNERS[mod.corner()].toUpperCase(Locale.ROOT)));
+                }).bounds(cx + 4, by - BTN - 2, cardW - 8, BTN).build());
+            }
             Button t = add(Button.builder(Component.literal("T"), btn -> {
                 mod.setEnabled(!mod.enabled()); ClientHud.sync();
                 flag.put(btn, mod.enabled());
@@ -265,6 +278,16 @@ public class ClientMenu extends Screen {
                 Ui.fill(g, x + 8, y + 8, x + 16, y + 16, c); Ui.fill(g, x + 14, y + 14, x + 24, y + 24, c);
                 Ui.fill(g, x + 20, y + 2, x + 26, y + 8, c); }
             case "tournament" -> { for (int i = 0; i < 3; i++) { int ry = y + 3 + i * 9; Ui.fill(g, x + 3, ry + 1, x + 8, ry + 6, c); Ui.fill(g, x + 12, ry + 2, x + 25, ry + 5, c); } }
+            case "scoreboard" -> { Ui.fill(g, x + 6, y + 2, x + 24, y + 4, c); Ui.fill(g, x + 6, y + 26, x + 24, y + 28, c);
+                Ui.fill(g, x + 6, y + 2, x + 8, y + 28, c); Ui.fill(g, x + 22, y + 2, x + 24, y + 28, c);
+                for (int i = 0; i < 3; i++) { Ui.fill(g, x + 10, y + 7 + i * 7, x + 15, y + 9 + i * 7, c); Ui.fill(g, x + 17, y + 7 + i * 7, x + 20, y + 9 + i * 7, c); } }
+            case "spawn_escape" -> { Ui.fill(g, x + 12, y + 2, x + 16, y + 6, c); Ui.fill(g, x + 8, y + 6, x + 20, y + 10, c);
+                Ui.fill(g, x + 4, y + 10, x + 24, y + 14, c); Ui.fill(g, x + 6, y + 14, x + 22, y + 28, c);
+                Ui.fill(g, x + 11, y + 19, x + 17, y + 28, Ui.BTN); }
+            case "tp_danger_escape" -> { Ui.fill(g, x + 12, y + 2, x + 16, y + 6, c); Ui.fill(g, x + 10, y + 6, x + 18, y + 12, c);
+                Ui.fill(g, x + 8, y + 12, x + 20, y + 18, c); Ui.fill(g, x + 6, y + 18, x + 22, y + 24, c);
+                Ui.fill(g, x + 3, y + 24, x + 25, y + 28, c);
+                Ui.fill(g, x + 13, y + 10, x + 15, y + 18, Ui.BTN); Ui.fill(g, x + 13, y + 20, x + 15, y + 22, Ui.BTN); }
             default -> Ui.txt(g, this.font, id.substring(0, 1).toUpperCase(Locale.ROOT), cxm - 3, y + 10, c, false);
         }
     }

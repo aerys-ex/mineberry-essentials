@@ -26,11 +26,14 @@ https://github.com/user-attachments/assets/ccc7c064-3c12-48be-99bb-f2ba63870f59
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.6.2
+## What's New in 1.6.3
 
-- **New website link:** the Website button in Mod Menu now opens the new Modrinth page, [modrinth.com/mod/mineberryessentials](https://modrinth.com/mod/mineberryessentials)
-- **New mod description:** *An essential Fabric mod for MineBerry and MinePeak*
-- **WorldEditCUI removed:** the mod no longer includes WorldEditCUI
+- **Resizable HUD:** scroll the mouse wheel over any HUD box in **Edit HUD Layout** to make it bigger or smaller (50% to 250%). Right-click a box to put its position and size back. Sizes are saved in your HUD profiles
+- **Scoreboard:** the sidebar scoreboard now has a card in the HUD menu. **Hide** it with the toggle, or resize it with the new button row in Edit HUD Layout
+- **Spawn Escape and TP Danger Escape boxes:** their status boxes are now normal HUD boxes. Hide, drag and resize them like the others. The modules keep working while the box is hidden
+- **Hide the escape boxes with a key:** press `U` (rebindable) to hide or show the **Spawn Escape** and **TP Danger Escape** boxes. Both modules keep working while the boxes are hidden
+- **Delete HUD profiles:** every profile in the HUD menu sidebar has an **x** button now. The last profile can't be deleted
+- **Removed the Right Alt spawn key:** Spawn Escape now only has the automatic pit guard. The radial menu (hold `V`) still has `/spawn`
 
 ## Screenshots
 
@@ -92,11 +95,11 @@ One panel with a card for every module.
 - Adapts to your window size and GUI scale
 - Smooth fade in/out animations
 - Optional auto-close when you take damage or PvP danger is detected
-- The status boxes on the right side of the screen (Tournament Mode, Spawn Escape, Safe Logout, chat badges and so on) stack under each other and under the HUD boxes, so they never overlap
+- The status boxes on the right side of the screen (Tournament Mode, Safe Logout, chat badges and so on) stack under each other and under the HUD boxes, so they never overlap
 
 ### MineBerry Client (HUD)
 A separate menu for the on-screen HUD. Press **Right Shift** to open it.
-- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass**, **Biome / Time** and the **Watermark**
+- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass**, **Biome / Time**, **Spawn Escape**, **TP Danger Escape**, the **Scoreboard** and the **Watermark**
 - Filter the list with **All**, **New** and **HUD**, or use the search box
 - **Keystrokes / CPS:** W, A, S, D, both mouse buttons and Space light up while held, with the clicks per second of each mouse button
 - **Armor Status:** your armor as item icons with the durability left (green, yellow, red). A held tool or bow is shown too
@@ -105,11 +108,15 @@ A separate menu for the on-screen HUD. Press **Right Shift** to open it.
 - **Biome / Time:** the biome you are in and, in the overworld, the in-game time and Day / Dusk / Night / Dawn
 - **Watermark:** a small *MineBerry Essentials* label with no box, top left by default. **On by default**, switch it off or move it like any other module
 - The five new modules (Keystrokes / CPS, Armor Status, Potion Effects, Compass, Biome / Time) are **off by default**. Turn them on from their cards
+- **Spawn Escape** and **TP Danger Escape** show their status box while the module is on. They are **on by default**, and hiding the box does not turn the module off. Press `U` to hide or show both boxes at once
+- **Scoreboard:** the sidebar scoreboard the server shows on the right. It has no corner to pick, only the **Enabled** switch (turn it off to hide it) and a size
 - Use the `<` `>` buttons or the mouse wheel to change page
-- **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**. Free positions are saved in the profile too
+- **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**. Free positions are saved in the profile too. Press the **x** next to a profile to delete it (the last one can't be deleted)
 - **Edit HUD Layout** shows every box where it really is:
   - **Drag** a box anywhere. It snaps to the screen edges, the centre and other boxes, and guide lines show what it lines up with
-  - **Right-click** a box to put it back in the automatic stack, or press **Reset all**
+  - **Scroll the mouse wheel** over a box to resize it in 10% steps (50% to 250%). The size shows next to its name while you hover it
+  - **Right-click** a box to put it back in the automatic stack at normal size, or press **Reset all**
+  - The **Scoreboard** row at the bottom hides or shows the scoreboard and sets its size. The real scoreboard is visible behind the dim layer, so you see the change live
   - Overlapping boxes get a **red outline**
   - A box stays attached to the corner nearest to where you drop it, so it keeps its place when the window or GUI scale changes
 - **Settings** and **Waypoints** tabs are also in this menu
@@ -193,10 +200,11 @@ Run common commands without typing. Great for showcase videos too.
 
 ### Spawn Escape
 Get out of trouble instantly.
-- Press **Right Alt** to send `/spawn`
 - **Pit guard:** after a sudden large teleport, the mod detects whether you were dropped into a tight pit and escapes automatically
 - Ordinary caves and corners will not trigger it
-- **Note:** it works well, but the pit guard can sometimes send `/spawn` when a **friend teleports you to them** (tpa). The Control Center shows this note when you switch the module on. Switch the module off if you are about to do a lot of friendly teleporting. The **Right Alt** key keeps working either way
+- **Note:** it works well, but the pit guard can sometimes send `/spawn` when a **friend teleports you to them** (tpa). The Control Center shows this note when you switch the module on. Switch the module off if you are about to do a lot of friendly teleporting
+- The status box can be hidden, moved and resized in the HUD menu (**Spawn Escape**). Hiding it does not switch the module off. Press `U` to hide or show it together with the TP Danger Escape box
+- Since 1.6.3 there is no key for `/spawn` any more. Use the radial menu (hold `V`) if you want a manual `/spawn`
 
 ### Safe Logout
 Don't quit in the middle of a fight by accident.
@@ -243,6 +251,7 @@ Protection against `/tpahere` traps.
 - After you accept an incoming `/tpahere`, a nearby player lining up to hit you triggers an automatic `/spawn`
 - It only arms briefly after an accepted request, so it never interferes with normal play
 - Has its own separate toggle
+- The status box can be hidden, moved and resized in the HUD menu (**TP Danger Escape**). Hiding it does not switch the module off. Press `U` to hide or show it together with the Spawn Escape box
 - **Note:** it works well, but it can't tell friends from enemies, so it can sometimes send `/spawn` when a **friend teleports you to them** and stands close to you. The Control Center shows this note when you switch the module on. Switch it off when you are teleporting with friends
 
 ### Evidence Recorder and Abuse Alert
@@ -283,13 +292,13 @@ Enter X/Z and convert with one click (÷8 or ×8). Find it in the **Tools** tab.
 |---|---|
 | Open Control Center | `Right Control` |
 | Open MineBerry Client (HUD) | `Right Shift` |
-| Spawn Escape (`/spawn`) | `Right Alt` |
 | Toggle Clan Chat | `J` |
 | Toggle Admin Chat | `K` |
 | Toggle Party Chat | `X` |
 | Quick Reply (`/r`) | `R` |
 | Radial Menu (hold, release on a slice) | `V` |
 | Show / Hide HUD | `Y` |
+| Show / Hide Spawn Escape and TP Danger Escape boxes | `U` |
 | Screenshot (copy to clipboard) | `F9` |
 | Search Chat | `F8` |
 | Add Waypoint Here | `B` |
@@ -397,7 +406,7 @@ Not at the moment. The slices are fixed: `/spawn`, `/tpa` and `/tpaccept`.
 Let go while the mouse points at a slice (it lights up in the accent colour). In the middle circle nothing is picked. If the slice is lit and still nothing happens, Tournament Mode is on or you are in PvP mode, and the command was blocked. A chat line tells you.
 
 **Spawn Escape or TP Danger Escape sent me to spawn when a friend teleported me.**
-That can happen. Both modules react to teleports and nearby players, and they can't tell a friend from an enemy. Switch the module off in the Control Center while you teleport with friends, and back on afterwards. The **Right Alt** spawn key does not depend on it.
+That can happen. Both modules react to teleports and nearby players, and they can't tell a friend from an enemy. Switch the module off in the Control Center while you teleport with friends, and back on afterwards.
 
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
@@ -407,6 +416,12 @@ Rebind it under *Options > Controls > Key Binds*.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.6.2
+
+- **New website link:** the Website button in Mod Menu now opens the new Modrinth page, [modrinth.com/mod/mineberryessentials](https://modrinth.com/mod/mineberryessentials)
+- **New mod description:** *An essential Fabric mod for MineBerry and MinePeak*
+- **WorldEditCUI removed:** the mod no longer includes WorldEditCUI
 
 ### 1.6.1
 

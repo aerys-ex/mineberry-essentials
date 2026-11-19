@@ -20,4 +20,12 @@ interface HudWidget {
     default boolean plain() {
         return false;
     }
+
+    /**
+     * True for elements the layout never places or draws (the vanilla scoreboard): they only get a card with an on/off switch
+     * and a size, and whoever draws the real thing reads those settings.
+     */
+    default boolean virtual() {
+        return false;
+    }
 }

@@ -2,49 +2,36 @@ package com.mineberry.essentials.modules;
 
 import com.mineberry.essentials.Clock;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mineberry.essentials.Config;
-import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-import org.lwjgl.glfw.GLFW;
 
 /**
- * Sends /spawn on a rebindable key, and protects against a sudden teleport into a
- * tight pit.  The automatic check is deliberately armed only after a large server
- * position change, so ordinary caves and corners cannot trigger it.
+ * Protects against a sudden teleport into a tight pit by sending /spawn.  The check is
+ * deliberately armed only after a large server position change, so ordinary caves and
+ * corners cannot trigger it.  (There used to be a Right Alt key for /spawn; it was removed in 1.6.3.)
  */
 public class SpawnEscapeModule extends MineBerryModule {
 
     private static final int TELEPORT_GRACE_TICKS = 60;
-    private KeyMapping spawnKey;
     private double previousX, previousY, previousZ;
     private boolean havePreviousPosition;
     private int teleportGraceTicks;
     private long lastSpawnMs;
+    private static SpawnEscapeModule instance;
 
     public SpawnEscapeModule() {
-        super("spawn_escape", "Spawn Escape", "Right Alt: /spawn + pit guard. Can fire when a friend teleports you (tpa)");
+        super("spawn_escape", "Spawn Escape", "Pit guard: sends /spawn if a teleport drops you in a tight pit. Can fire when a friend teleports you (tpa)");
+        instance = this;
     }
 
     @Override
     public void init() {
-        spawnKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-                "key.mineberry_essentials.spawn_escape",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_RIGHT_ALT,
-                MineBerryEssentials.CATEGORY));
-
-        HudElementRegistry.addLast(MineBerryEssentials.id("spawn_escape_status"), (g, delta) -> drawHud(g));
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
     }
 
@@ -63,11 +50,6 @@ public class SpawnEscapeModule extends MineBerryModule {
     }
 
     private void tick(Minecraft mc) {
-        while (spawnKey.consumeClick()) {
-            // The manual escape key is intentionally independent of the module
-            // switch; disabling the module only turns off automatic pit detection.
-            sendSpawn(mc, false);
-        }
         if (mc.player == null || mc.level == null) {
             havePreviousPosition = false;
             teleportGraceTicks = 0;
@@ -132,20 +114,14 @@ public class SpawnEscapeModule extends MineBerryModule {
         }
     }
 
-    private void drawHud(GuiGraphicsExtractor g) {
-        if (MineBerryEssentials.hudHidden() || !enabled()) return;
-        Minecraft mc = Minecraft.getInstance();
-        var font = mc.font;
-        String title = "SPAWN ESCAPE: ON";
-        String subtitle = "[" + spawnKey.getTranslatedKeyMessage().getString() + "] /" + Config.spawnCommand()
-                + "  |  pit guard armed";
-        int w = Math.max(font.width(title), font.width(subtitle)) + 18;
-        int x = mc.getWindow().getGuiScaledWidth() - w - 6;
-        int y = com.mineberry.essentials.StatusStack.take(29);
-        g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
-        g.fill(x, y, x + w, y + 29, 0xE0182534);
-        g.fill(x + w - 3, y, x + w, y + 29, 0xFF48A9FF);
-        g.text(font, title, x + 8, y + 5, 0xFF67BEFF, true);
-        g.text(font, subtitle, x + 8, y + 17, 0xFFE0E0E0, false);
+    /**
+     * The two lines of the status box (title, subtitle), or null while the module is off. The box itself is drawn by the HUD layout
+     * (ClientHud, "Spawn Escape"), so it can be hidden, moved and resized like the other HUD boxes.
+     */
+    public static String[] hudStatus() {
+        SpawnEscapeModule m = instance;
+        if (m == null || !m.enabled()) return null;
+        return new String[]{"SPAWN ESCAPE: ON",
+                "Pit guard armed  |  /" + Config.spawnCommand()};
     }
 }

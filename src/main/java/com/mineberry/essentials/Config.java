@@ -29,6 +29,7 @@ public final class Config {
         String partyCommand = "pc";
         String spawnCommand = "spawn";
         boolean hudHidden = false;
+        boolean escapeBoxesHidden = false;
         boolean autoClosePanelOnDanger = true;
         boolean chatTimestamps = false;
         boolean mentionSound = true;
@@ -41,6 +42,7 @@ public final class Config {
         int gradientStyles = 0;
         Map<String, Integer> hudCorner = new HashMap<>();
         Map<String, int[]> hudPos = new HashMap<>();   // free HUD positions: {dx, dy} from the mod's corner
+        Map<String, Integer> hudScale = new HashMap<>();   // HUD box size in percent (100 = normal), only stored when changed
         Map<String, Map<String, Integer>> profiles = new java.util.LinkedHashMap<>();
         String activeProfile = "Default";
         String pvpModePattern = DEFAULT_PVP_MODE;
@@ -153,6 +155,8 @@ public final class Config {
             if (data.hudCorner == null) data.hudCorner = new HashMap<>();
             if (data.hudPos == null) data.hudPos = new HashMap<>();
             data.hudPos.values().removeIf(p -> p == null || p.length != 2);
+            if (data.hudScale == null) data.hudScale = new HashMap<>();
+            data.hudScale.values().removeIf(p -> p == null || p < HUD_SCALE_MIN || p > HUD_SCALE_MAX);
             if (data.waypoints == null) data.waypoints = new ArrayList<>();
             if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
             if (data.pvpModePattern == null || data.pvpModePattern.isBlank()
@@ -260,6 +264,25 @@ public final class Config {
 
     public static boolean hudHidden() {
         return data.hudHidden;
+    }
+
+    /** True while the Spawn Escape / TP Danger Escape status boxes are hidden with their key. The modules keep running. */
+    public static boolean escapeBoxesHidden() {
+        return data.escapeBoxesHidden;
+    }
+
+    public static void setEscapeBoxesHidden(boolean hidden) {
+        data.escapeBoxesHidden = hidden;
+        save();
+    }
+
+    /** Removes a HUD profile. Returns false (and does nothing) for the last remaining one. */
+    public static boolean deleteProfile(String name) {
+        if (data.profiles.size() <= 1 || !data.profiles.containsKey(name)) return false;
+        data.profiles.remove(name);
+        if (name.equals(data.activeProfile)) data.activeProfile = data.profiles.keySet().iterator().next();
+        save();
+        return true;
     }
 
     /** Persists the HUD choice between game sessions. */
@@ -370,6 +393,20 @@ public final class Config {
 
     public static void clearHudPos(String id) {
         if (data.hudPos.remove(id) != null) save();
+    }
+
+    public static final int HUD_SCALE_MIN = 50, HUD_SCALE_MAX = 250;
+
+    /** Size of a HUD box in percent (100 = normal). Works for every HUD mod id and for the vanilla scoreboard ("scoreboard"). */
+    public static int hudScalePct(String id) {
+        return data.hudScale.getOrDefault(id, 100);
+    }
+
+    public static void setHudScalePct(String id, int pct) {
+        pct = Math.max(HUD_SCALE_MIN, Math.min(HUD_SCALE_MAX, pct));
+        if (pct == 100) data.hudScale.remove(id);
+        else data.hudScale.put(id, pct);
+        save();
     }
 
     /** HUD profiles: name -> saved state ("on_<id>" 0/1 and "c_<id>" corner). */

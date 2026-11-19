@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "version": "1.6.3",
+      "title": "Resizable HUD",
+      "sections": {
+        "New": [
+          "Scoreboard: the sidebar scoreboard now has a card in the HUD menu (Right Shift). Hide it with the toggle, or resize it from 50% to 250% with the new row of buttons in Edit HUD Layout.",
+          "Spawn Escape and TP Danger Escape: their status boxes are now regular HUD boxes. Hide them, drag them anywhere and resize them like the other HUD boxes. The modules keep working while the box is hidden.",
+          "Resize any HUD box: scroll the mouse wheel over it in Edit HUD Layout. Right-click a box to put its position and size back. Sizes are saved in your HUD profiles.",
+          "Hide the two escape boxes with a key: a new key (U by default) hides or shows the Spawn Escape and TP Danger Escape boxes. Both modules keep working while the boxes are hidden. Rebind it under Options > Controls > Key Binds.",
+          "Delete HUD profiles: every profile in the HUD menu sidebar now has an x button. The last profile can't be deleted."
+        ],
+        "Removed": [
+          "The Right Alt key for /spawn was removed. Spawn Escape now only has the automatic pit guard. The radial menu (hold V) still has /spawn."
+        ]
+      }
+    },
+    {
       "version": "1.6.2",
       "title": "New website link",
       "sections": {

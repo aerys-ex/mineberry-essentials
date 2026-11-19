@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 
 /** The multi-line HUD mods: Keystrokes/CPS, Armor Status, Potion Effects, Compass, Biome/Time and Tournament Players. */
 final class HudWidgets {
@@ -49,6 +50,56 @@ final class HudWidgets {
         @Override
         public boolean plain() {
             return true;
+        }
+    }
+
+    // ---------------------------------------------------------------- vanilla scoreboard
+
+    /**
+     * The vanilla sidebar scoreboard. ClientHud wraps the vanilla element and reads this mod's on/off switch and size, so this widget
+     * only gives it a card in the HUD menu. The layout never places or draws it.
+     */
+    static final class Scoreboard implements HudWidget {
+
+        @Override
+        public int[] size(Minecraft mc, Font font) {
+            return null;
+        }
+
+        @Override
+        public void draw(GuiGraphicsExtractor g, Minecraft mc, Font font, int x, int y) {}
+
+        @Override
+        public boolean virtual() {
+            return true;
+        }
+    }
+
+    // ---------------------------------------------------------------- Spawn Escape / TP Danger Escape
+
+    /** The two-line status box of Spawn Escape and TP Danger Escape: a coloured title and a grey line under it. null lines = the module is off. */
+    static final class EscapeStatus implements HudWidget {
+
+        private final Supplier<String[]> lines;
+        private final int titleColor;
+        private String[] now;
+
+        EscapeStatus(Supplier<String[]> lines, int titleColor) {
+            this.lines = lines;
+            this.titleColor = titleColor;
+        }
+
+        @Override
+        public int[] size(Minecraft mc, Font font) {
+            now = lines.get();
+            if (now == null) return null;
+            return new int[]{Math.max(font.width(now[0]), font.width(now[1])), 21};
+        }
+
+        @Override
+        public void draw(GuiGraphicsExtractor g, Minecraft mc, Font font, int x, int y) {
+            Ui.txt(g, font, now[0], x, y + 1, titleColor, true);
+            Ui.txt(g, font, now[1], x, y + 12, SOFT, false);
         }
     }
 

@@ -1,8 +1,11 @@
 package com.mineberry.essentials;
 
+import com.mineberry.essentials.modules.SpawnEscapeModule;
+import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
@@ -22,6 +25,12 @@ public final class ClientHud {
 
     static final String[] CORNERS = {"Top left", "Top right", "Bottom left", "Bottom right"};
     private static final DateTimeFormatter CLOCK = DateTimeFormatter.ofPattern("HH:mm");
+
+    /**
+     * The vanilla sidebar scoreboard: not drawn by us (see init()), it only has a switch to hide it and a size (50-250%).
+     * On by default so nothing changes until the player touches it.
+     */
+    static final HudMod SCOREBOARD = new HudMod("scoreboard", "Scoreboard", 1, true, null, new HudWidgets.Scoreboard(), true);
 
     static final List<HudMod> MODS = List.of(
             // the watermark: on by default, top left, drawn without a box. Switch it off or move it in the HUD menu
@@ -46,7 +55,13 @@ public final class ClientHud {
             HudMod.widget("compass", "Compass", 0, new HudWidgets.Compass()),
             HudMod.widget("biome", "Biome / Time", 3, new HudWidgets.BiomeTime()),
             // follows the Tournament HUD module (off by default), so its HUD switch starts on
-            new HudMod("tournament", "Tournament Players", 3, true, null, new HudWidgets.TournamentPlayers(), true));
+            new HudMod("tournament", "Tournament Players", 3, true, null, new HudWidgets.TournamentPlayers(), true),
+            // the status boxes of the two escape modules: they show while the module is on, like before, but can now be hidden, moved and resized here
+            new HudMod("spawn_escape", "Spawn Escape", 1, true, null,
+                    new HudWidgets.EscapeStatus(SpawnEscapeModule::hudStatus, 0xFF67BEFF), true),
+            new HudMod("tp_danger_escape", "TP Danger Escape", 1, true, null,
+                    new HudWidgets.EscapeStatus(TpDangerEscapeModule::hudStatus, 0xFFFFB066), true),
+            SCOREBOARD);
 
     private static final int PAD = 4, GAP = 3, EDGE = 6;
 
@@ -62,6 +77,33 @@ public final class ClientHud {
         MineBerryEssentials.LOGGER.info("HUD registered");
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,
                 Identifier.fromNamespaceAndPath("mineberry_essentials", "client_hud"), ClientHud::draw);
+        HudElementRegistry.replaceElement(VanillaHudElements.SCOREBOARD, ClientHud::wrapScoreboard);
+    }
+
+    /**
+     * The vanilla scoreboard, hidden when its switch is off and scaled around the middle of the right screen edge (where vanilla puts it)
+     * otherwise. The Y key (HUD hidden) deliberately does not touch it: it is not one of our boxes.
+     */
+    private static HudElement wrapScoreboard(HudElement vanilla) {
+        return (g, tick) -> {
+            if (!SCOREBOARD.enabled()) return;
+            float s = SCOREBOARD.scale();
+            if (s == 1f) {
+                vanilla.extractRenderState(g, tick);
+                return;
+            }
+            Minecraft mc = Minecraft.getInstance();
+            float ax = mc.getWindow().getGuiScaledWidth(), ay = mc.getWindow().getGuiScaledHeight() / 2f;
+            g.pose().pushMatrix();
+            g.pose().translate(ax, ay);
+            g.pose().scale(s, s);
+            g.pose().translate(-ax, -ay);
+            try {
+                vanilla.extractRenderState(g, tick);
+            } finally {
+                g.pose().popMatrix();
+            }
+        };
     }
 
     /** Right Shift opens the HUD menu (like most game clients); change it in Options > Controls. HUD show/hide has its own key in MineBerryEssentials. */
@@ -69,9 +111,22 @@ public final class ClientHud {
         KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("mineberry_essentials", "client_menu"));
         KeyMapping openMenu = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.mineberry_essentials.client_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
+        KeyMapping toggleEscapeBoxes = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.mineberry_essentials.toggle_escape_boxes", InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenu.consumeClick()) {
                 if (client.gui.screen() == null) client.gui.setScreen(new ClientMenu(null));
+            }
+            // hides / shows only the Spawn Escape and TP Danger Escape boxes. The modules themselves are not touched and keep working
+            while (toggleEscapeBoxes.consumeClick()) {
+                Config.setEscapeBoxesHidden(!Config.escapeBoxesHidden());
+                if (client.player != null) {
+                    client.player.sendSystemMessage(net.minecraft.network.chat.Component.literal("[MineBerry] ")
+                            .withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE)
+                            .append(net.minecraft.network.chat.Component.literal(Config.escapeBoxesHidden()
+                                    ? "Escape boxes hidden (modules still active)" : "Escape boxes shown")
+                                    .withStyle(Config.escapeBoxesHidden() ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.GREEN)));
+                }
             }
         });
     }
@@ -87,17 +142,33 @@ public final class ClientHud {
         for (Placed p : layout(mc, font, sw, sh, false, null)) drawBox(g, mc, font, p);
     }
 
-    /** One HUD box and the place it is drawn at. size is null for one-line text boxes (and for empty placeholders in the editor). */
-    record Placed(HudMod mod, int x, int y, int w, int h, String text, int[] size, boolean free) {}
+    /**
+     * One HUD box and the place it is drawn at. size is null for one-line text boxes (and for empty placeholders in the editor).
+     * w and h are the size on screen, already multiplied by scale (the box's size setting, 1 = normal).
+     */
+    record Placed(HudMod mod, int x, int y, int w, int h, String text, int[] size, boolean free, float scale) {}
 
     static void drawBox(GuiGraphicsExtractor g, Minecraft mc, Font font, Placed p) {
+        float s = p.scale();
+        boolean scaled = s != 1f;
+        int x = p.x(), y = p.y(), w = p.w(), h = p.h();
+        if (scaled) {   // draw the box at its normal size in its own coordinates, scaled around its top-left corner
+            g.pose().pushMatrix();
+            g.pose().translate(x, y);
+            g.pose().scale(s, s);
+            x = 0;
+            y = 0;
+            w = Math.round(w / s);
+            h = Math.round(h / s);
+        }
         boolean plain = p.size() != null && p.mod().widget().plain();
         if (!plain) {
-            Ui.fill(g, p.x(), p.y(), p.x() + p.w(), p.y() + p.h(), 0x90000000);
-            Ui.fill(g, p.x(), p.y(), p.x() + 1, p.y() + p.h(), Ui.ACCENT);
+            Ui.fill(g, x, y, x + w, y + h, 0x90000000);
+            Ui.fill(g, x, y, x + 1, y + h, Ui.ACCENT);
         }
-        if (p.size() != null) p.mod().widget().draw(g, mc, font, p.x() + PAD, p.y() + PAD);
-        else Ui.txt(g, font, p.text(), p.x() + PAD, p.y() + PAD + 1, 0xFFFFFFFF, true);
+        if (p.size() != null) p.mod().widget().draw(g, mc, font, x + PAD, y + PAD);
+        else Ui.txt(g, font, p.text(), x + PAD, y + PAD + 1, 0xFFFFFFFF, true);
+        if (scaled) g.pose().popMatrix();
     }
 
     /**
@@ -112,7 +183,8 @@ public final class ClientHud {
         int[] shift = new int[4];    // how far the current column is moved away from the screen edge
         int[] colW = new int[4];     // width of the widest box in the current column
         for (HudMod mod : MODS) {
-            if (!mod.enabled()) continue;
+            if (!mod.enabled() || mod.virtual()) continue;
+            if (!editing && Config.escapeBoxesHidden() && isEscapeBox(mod)) continue;   // hidden with its key; the module keeps running
             String text = null;
             int[] size = null;
             int cw, ch;
@@ -136,9 +208,10 @@ public final class ClientHud {
                 cw = font.width(text);
                 ch = 9;
             }
-            int corner = mod.corner(), w = cw + PAD * 2, h = ch + PAD * 2;
+            float sc = mod.scale();
+            int corner = mod.corner(), w = Math.round((cw + PAD * 2) * sc), h = Math.round((ch + PAD * 2) * sc);
             if (mod == skip) {
-                out.add(new Placed(mod, 0, 0, w, h, text, size, true));
+                out.add(new Placed(mod, 0, 0, w, h, text, size, true, sc));
                 continue;
             }
             int[] pos = Config.hudPos(mod.id());
@@ -147,7 +220,7 @@ public final class ClientHud {
                 int fy = corner < 2 ? pos[1] : sh - h - pos[1];
                 fx = Math.max(0, Math.min(fx, sw - w));
                 fy = Math.max(0, Math.min(fy, sh - h));
-                out.add(new Placed(mod, fx, fy, w, h, text, size, true));
+                out.add(new Placed(mod, fx, fy, w, h, text, size, true, sc));
                 continue;
             }
             if (used[corner] > 0 && used[corner] + h > sh - EDGE * 2) {   // the column is full: start the next one
@@ -163,9 +236,13 @@ public final class ClientHud {
                 if (corner == 1) StatusStack.rightTop = EDGE + used[1];
                 else if (corner == 0) StatusStack.leftTop = EDGE + used[0];
             }
-            out.add(new Placed(mod, x, y, w, h, text, size, false));
+            out.add(new Placed(mod, x, y, w, h, text, size, false, sc));
         }
         return out;
+    }
+
+    private static boolean isEscapeBox(HudMod mod) {
+        return mod.id().equals("spawn_escape") || mod.id().equals("tp_danger_escape");
     }
 
     // ---------------------------------------------------------------- profiles
@@ -175,6 +252,7 @@ public final class ClientHud {
         for (HudMod m : MODS) {
             out.put("on_" + m.id(), m.enabled() ? 1 : 0);
             out.put("c_" + m.id(), m.corner());
+            out.put("s_" + m.id(), m.scalePct());
             int[] pos = Config.hudPos(m.id());
             if (pos != null) { out.put("p_" + m.id(), 1); out.put("px_" + m.id(), pos[0]); out.put("py_" + m.id(), pos[1]); }
         }
@@ -199,6 +277,7 @@ public final class ClientHud {
             m.setEnabled(p.getOrDefault("on_" + m.id(), m.defaultOn() ? 1 : 0) == 1);
             int corner = p.getOrDefault("c_" + m.id(), m.defaultCorner());
             Config.setHudCorner(m.id(), corner);
+            Config.setHudScalePct(m.id(), p.getOrDefault("s_" + m.id(), 100));
             if (p.getOrDefault("p_" + m.id(), 0) == 1) Config.setHudPos(m.id(), corner, p.getOrDefault("px_" + m.id(), 0), p.getOrDefault("py_" + m.id(), 0));
             else Config.clearHudPos(m.id());
         }

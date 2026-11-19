@@ -3,14 +3,11 @@ package com.mineberry.essentials.modules;
 import com.mineberry.essentials.Clock;
 
 import com.mineberry.essentials.Config;
-import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.MineBerryModule;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
@@ -29,14 +26,15 @@ public class TpDangerEscapeModule extends MineBerryModule {
     private long requestTime;
     private long dangerWindowEnds;
     private long lastSpawnMs;
+    private static TpDangerEscapeModule instance;
 
     public TpDangerEscapeModule() {
         super("tp_danger_escape", "TP Danger Escape", "Auto /spawn after a tp if a player lines up to hit you. Can fire on friends' tpa");
+        instance = this;
     }
 
     @Override
     public void init() {
-        HudElementRegistry.addLast(MineBerryEssentials.id("tp_danger_escape_status"), (g, delta) -> drawHud(g));
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> { if (!overlay) handleTeleportMessage(message); });
         ClientReceiveMessageEvents.CHAT.register((message, signed, sender, params, timestamp) -> handleTeleportMessage(message));
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
@@ -86,21 +84,16 @@ public class TpDangerEscapeModule extends MineBerryModule {
                         .withStyle(ChatFormatting.GREEN)));
     }
 
-    private void drawHud(GuiGraphicsExtractor g) {
-        if (MineBerryEssentials.hudHidden() || !enabled()) return;
-        Minecraft mc = Minecraft.getInstance();
-        var font = mc.font;
-        long leftMs = dangerWindowEnds - Clock.ms();
-        String title = "TP DANGER ESCAPE: ON";
-        String subtitle = leftMs > 0 ? "Guard armed: " + ((leftMs + 999) / 1000) + "s" : "Waiting for an accepted TP request";
-        int w = Math.max(font.width(title), font.width(subtitle)) + 18;
-        int x = mc.getWindow().getGuiScaledWidth() - w - 6;
-        int y = com.mineberry.essentials.StatusStack.take(29);
-        g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
-        g.fill(x, y, x + w, y + 29, 0xE0341A12);
-        g.fill(x + w - 3, y, x + w, y + 29, 0xFFFF8A3D);
-        g.text(font, title, x + 8, y + 5, 0xFFFFB066, true);
-        g.text(font, subtitle, x + 8, y + 17, 0xFFE0E0E0, false);
+    /**
+     * The two lines of the status box (title, subtitle), or null while the module is off. The box itself is drawn by the HUD layout
+     * (ClientHud, "TP Danger Escape"), so it can be hidden, moved and resized like the other HUD boxes.
+     */
+    public static String[] hudStatus() {
+        TpDangerEscapeModule m = instance;
+        if (m == null || !m.enabled()) return null;
+        long leftMs = m.dangerWindowEnds - Clock.ms();
+        return new String[]{"TP DANGER ESCAPE: ON",
+                leftMs > 0 ? "Guard armed: " + ((leftMs + 999) / 1000) + "s" : "Waiting for an accepted TP request"};
     }
 
     /** Off: forget any pending request. On: tell the player it can't tell a friend from an enemy. */

@@ -7,7 +7,6 @@
   "key.mineberry_essentials.toggle_party": "Toggle party chat",
   "key.mineberry_essentials.quick_reply": "Quick reply (/r)",
   "key.mineberry_essentials.radial_menu": "Radial menu (hold)",
-  "key.mineberry_essentials.spawn_escape": "Spawn escape",
   "key.mineberry_essentials.add_waypoint": "Add waypoint here",
   "key.mineberry_essentials.waypoint_menu": "Open waypoint list",
   "key.mineberry_essentials.confirm_abuse": "Evidence: confirm report",
@@ -16,5 +15,6 @@
   "key.mineberry_essentials.screenshots_menu": "Open screenshots",
   "key.mineberry_essentials.chat_search": "Search chat history",
   "key.category.mineberry_essentials.client_menu": "MineBerry Client (HUD)",
-  "key.mineberry_essentials.client_menu": "Open MineBerry Client (HUD)"
+  "key.mineberry_essentials.client_menu": "Open MineBerry Client (HUD)",
+  "key.mineberry_essentials.toggle_escape_boxes": "Show / hide Spawn Escape and TP Danger Escape boxes"
 }

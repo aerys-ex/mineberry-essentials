@@ -14,13 +14,15 @@ import java.util.List;
  * "Edit HUD Layout": every enabled box is shown where it really is. Drag a box anywhere (it snaps to the screen edges, the
  * centre and the other boxes, with guide lines), right-click a box to put it back in the automatic stack. A box stays
  * attached to the corner nearest to where you drop it, so the layout survives window and GUI scale changes. Boxes that overlap
- * get a red outline.
+ * get a red outline. Scroll the mouse wheel over a box to resize it (50-250%); right-click puts position and size back.
+ * The vanilla scoreboard has no box here (the game draws it, you can see it behind the dim layer): its switch and size are the
+ * buttons at the bottom.
  *
  * Mouse buttons are polled from GLFW once per frame (like the radial menu does) instead of overriding the Screen click methods.
  */
 public class HudEditScreen extends Screen {
 
-    private static final int EDGE = 6, GAP = 3, H = 20, SNAP = 5, MIN_MOVE = 3;
+    private static final int EDGE = 6, GAP = 3, H = 20, SNAP = 5, MIN_MOVE = 3, SCALE_STEP = 10;
     private static final int RED = 0xFFFF4D4D;
 
     private final Screen parent;
@@ -32,6 +34,7 @@ public class HudEditScreen extends Screen {
     private boolean moved;
     private boolean prevLeft, prevRight;
     private final List<Integer> guideX = new ArrayList<>(), guideY = new ArrayList<>();
+    private Button sbToggle, sbSmaller, sbSize, sbBigger;   // the scoreboard row
 
     public HudEditScreen(Screen parent) {
         super(Component.literal("Edit HUD Layout"));
@@ -48,7 +51,7 @@ public class HudEditScreen extends Screen {
 
         this.addRenderableOnly((g, mx, my, d) -> {
             Ui.fill(g, 0, 0, this.width, this.height, Ui.DIM);
-            String hint = "Drag a box to move it   |   Right-click a box to reset it";
+            String hint = "Drag a box to move it   |   Scroll over it to resize   |   Right-click to reset";
             Ui.txt(g, this.font, hint, (this.width - this.font.width(hint)) / 2, this.height / 2 - 4, Ui.TEXT, true);
 
             placed = ClientHud.layout(this.minecraft, this.font, this.width, this.height, true, grabbed);
@@ -56,15 +59,19 @@ public class HudEditScreen extends Screen {
             if (grabbed != null) {   // show the dragged box at the cursor
                 for (int i = 0; i < placed.size(); i++) {
                     ClientHud.Placed p = placed.get(i);
-                    if (p.mod() == grabbed) placed.set(i, new ClientHud.Placed(p.mod(), dragX, dragY, p.w(), p.h(), p.text(), p.size(), true));
+                    if (p.mod() == grabbed) placed.set(i, new ClientHud.Placed(p.mod(), dragX, dragY, p.w(), p.h(), p.text(), p.size(), true, p.scale()));
                 }
             }
             drawBoxes(g, mx, my);
         });
 
         Button reset = Button.builder(Component.literal("Reset all"), btn -> {
-            for (HudMod mod : ClientHud.MODS) Config.clearHudPos(mod.id());
+            for (HudMod mod : ClientHud.MODS) {
+                Config.clearHudPos(mod.id());
+                Config.setHudScalePct(mod.id(), 100);
+            }
             ClientHud.sync();
+            refreshScoreboardRow();
         }).bounds(this.width / 2 - 84, this.height / 2 + 12, 80, H).build();
         Button done = Button.builder(Component.literal("Done"), btn -> onClose())
                 .bounds(this.width / 2 + 4, this.height / 2 + 12, 80, H).build();
@@ -72,10 +79,54 @@ public class HudEditScreen extends Screen {
         widgets.add(done);
         this.addRenderableWidget(reset);
         this.addRenderableWidget(done);
+
+        // the vanilla scoreboard: hide / show, smaller, size (click = 100%), bigger
+        int rowY = this.height / 2 + 12 + H + 6, rowX = this.width / 2 - 105;
+        sbToggle = Button.builder(Component.literal(""), btn -> {
+            ClientHud.SCOREBOARD.setEnabled(!ClientHud.SCOREBOARD.enabled());
+            ClientHud.sync();
+            refreshScoreboardRow();
+        }).bounds(rowX, rowY, 110, H).build();
+        sbSmaller = Button.builder(Component.literal("-"), btn -> changeScoreboardSize(-SCALE_STEP)).bounds(rowX + 114, rowY, 20, H).build();
+        sbSize = Button.builder(Component.literal(""), btn -> changeScoreboardSize(100 - ClientHud.SCOREBOARD.scalePct()))
+                .bounds(rowX + 136, rowY, 48, H).build();
+        sbBigger = Button.builder(Component.literal("+"), btn -> changeScoreboardSize(SCALE_STEP)).bounds(rowX + 186, rowY, 24, H).build();
+        for (Button b : List.of(sbToggle, sbSmaller, sbSize, sbBigger)) {
+            widgets.add(b);
+            this.addRenderableWidget(b);
+        }
+        refreshScoreboardRow();
         this.addRenderableOnly((g, mx, my, d) -> Ui.buttons(g, this.font, widgets, new HashMap<>(), mx, my));
     }
 
+    // ---------------------------------------------------------------- scoreboard row
+
+    private void changeScoreboardSize(int deltaPct) {
+        Config.setHudScalePct(ClientHud.SCOREBOARD.id(), ClientHud.SCOREBOARD.scalePct() + deltaPct);
+        ClientHud.sync();
+        refreshScoreboardRow();
+    }
+
+    private void refreshScoreboardRow() {
+        boolean on = ClientHud.SCOREBOARD.enabled();
+        sbToggle.setMessage(Component.literal(on ? "Scoreboard: Shown" : "Scoreboard: Hidden"));
+        sbSize.setMessage(Component.literal(ClientHud.SCOREBOARD.scalePct() + "%"));
+        sbSmaller.active = on;
+        sbSize.active = on;
+        sbBigger.active = on;
+    }
+
     // ---------------------------------------------------------------- mouse
+
+    /** Mouse wheel over a box: 10% bigger / smaller. */
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (scrollY == 0 || grabbed != null) return false;
+        ClientHud.Placed hit = boxAt((int) mouseX, (int) mouseY);
+        if (hit == null) return false;
+        Config.setHudScalePct(hit.mod().id(), hit.mod().scalePct() + (scrollY > 0 ? SCALE_STEP : -SCALE_STEP));
+        ClientHud.sync();
+        return true;
+    }
 
     /** Asks GLFW whether a mouse button is physically down (Minecraft does not track held buttons while a screen is open). */
     private static boolean mouseDown(int button) {
@@ -106,6 +157,7 @@ public class HudEditScreen extends Screen {
             ClientHud.Placed hit = boxAt(mx, my);
             if (hit != null) {
                 Config.clearHudPos(hit.mod().id());
+                Config.setHudScalePct(hit.mod().id(), 100);
                 ClientHud.sync();
             }
         }
@@ -194,7 +246,8 @@ public class HudEditScreen extends Screen {
             int color = overlap ? RED : p.mod() == grabbed ? Ui.ACCENT : hover ? 0xFFFFFFFF : 0x55FFFFFF;
             outline(g, p.x() - 1, p.y() - 1, p.x() + p.w() + 1, p.y() + p.h() + 1, color);
             if (hover || p.mod() == grabbed) {
-                Ui.txt(g, this.font, p.mod().name(), p.x(), Math.max(0, p.y() - 11), overlap ? RED : Ui.TEXT, true);
+                String label = p.mod().scalePct() == 100 ? p.mod().name() : p.mod().name() + "  " + p.mod().scalePct() + "%";
+                Ui.txt(g, this.font, label, p.x(), Math.max(0, p.y() - 11), overlap ? RED : Ui.TEXT, true);
             }
         }
     }

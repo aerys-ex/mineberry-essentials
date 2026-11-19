@@ -33,6 +33,20 @@ record HudMod(String id, String name, int defaultCorner, boolean fresh, Function
         return Config.hudCorner(id, defaultCorner);
     }
 
+    /** Size in percent (100 = normal), changed in the layout editor. */
+    int scalePct() {
+        return Config.hudScalePct(id);
+    }
+
+    float scale() {
+        return scalePct() / 100f;
+    }
+
+    /** True for elements that are not laid out by ClientHud (the vanilla scoreboard). */
+    boolean virtual() {
+        return widget != null && widget.virtual();
+    }
+
     void nextCorner() {
         Config.setHudCorner(id, (corner() + 1) % 4);
     }
