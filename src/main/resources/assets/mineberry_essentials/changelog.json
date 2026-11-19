@@ -1,6 +1,17 @@
 {
   "versions": [
     {
+      "version": "1.7.0",
+      "title": "Escape modules removed",
+      "sections": {
+        "Removed": [
+          "Spawn Escape was removed. The automatic pit guard is gone, so a friend's tpa can no longer send you to /spawn by mistake. The radial menu (hold V) still has /spawn for a manual escape.",
+          "TP Danger Escape was removed. It could not tell friends from enemies, so it sometimes sent /spawn when a friend teleported you to them.",
+          "The U key (hide or show the two escape boxes) and their HUD boxes are gone too. Your saved settings for them are cleaned out of the config automatically."
+        ]
+      }
+    },
+    {
       "version": "1.6.4",
       "title": "Terms of Use",
       "sections": {

@@ -281,13 +281,6 @@ public class ClientMenu extends Screen {
             case "scoreboard" -> { Ui.fill(g, x + 6, y + 2, x + 24, y + 4, c); Ui.fill(g, x + 6, y + 26, x + 24, y + 28, c);
                 Ui.fill(g, x + 6, y + 2, x + 8, y + 28, c); Ui.fill(g, x + 22, y + 2, x + 24, y + 28, c);
                 for (int i = 0; i < 3; i++) { Ui.fill(g, x + 10, y + 7 + i * 7, x + 15, y + 9 + i * 7, c); Ui.fill(g, x + 17, y + 7 + i * 7, x + 20, y + 9 + i * 7, c); } }
-            case "spawn_escape" -> { Ui.fill(g, x + 12, y + 2, x + 16, y + 6, c); Ui.fill(g, x + 8, y + 6, x + 20, y + 10, c);
-                Ui.fill(g, x + 4, y + 10, x + 24, y + 14, c); Ui.fill(g, x + 6, y + 14, x + 22, y + 28, c);
-                Ui.fill(g, x + 11, y + 19, x + 17, y + 28, Ui.BTN); }
-            case "tp_danger_escape" -> { Ui.fill(g, x + 12, y + 2, x + 16, y + 6, c); Ui.fill(g, x + 10, y + 6, x + 18, y + 12, c);
-                Ui.fill(g, x + 8, y + 12, x + 20, y + 18, c); Ui.fill(g, x + 6, y + 18, x + 22, y + 24, c);
-                Ui.fill(g, x + 3, y + 24, x + 25, y + 28, c);
-                Ui.fill(g, x + 13, y + 10, x + 15, y + 18, Ui.BTN); Ui.fill(g, x + 13, y + 20, x + 15, y + 22, Ui.BTN); }
             default -> Ui.txt(g, this.font, id.substring(0, 1).toUpperCase(Locale.ROOT), cxm - 3, y + 10, c, false);
         }
     }

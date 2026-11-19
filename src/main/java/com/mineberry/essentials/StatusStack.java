@@ -1,7 +1,7 @@
 package com.mineberry.essentials;
 
 /**
- * Stacks the fixed status boxes on the right edge (clan badge, Tournament Mode, Spawn Escape, ...) one under the other,
+ * Stacks the fixed status boxes on the right edge (clan badge, Tournament Mode, ...) one under the other,
  * below the HUD boxes that live in the top-right corner, so nothing is drawn on top of anything else.
  * ClientHud calls begin() first every frame (it draws before the other HUD elements); each box then asks take() for its y.
  */

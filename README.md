@@ -30,12 +30,12 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.6.4
+## What's New in 1.7.0
 
-- **Terms of Use:** the first time you start the game with the mod, a short agreement opens with two buttons, **I Agree** and **I Disagree**. By agreeing you accept that the mod developers are not held accountable for anything that goes wrong (see [Terms of Use](#terms-of-use))
-  - If you click **I Disagree**, the mod stays off: no feature, key or HUD works, and nothing is recorded or sent
-  - Every time you try to use a feature while the mod is off, the agreement opens again so you can change your mind
-  - Players who update from an older version see it once as well. Your choice is saved in the config file
+- **Spawn Escape removed:** the automatic pit guard is gone, so a friend's `/tpa` can no longer send you to `/spawn` by mistake. The radial menu (hold `V`) still has `/spawn` if you want to escape by hand
+- **TP Danger Escape removed:** it could not tell friends from enemies, so it sometimes sent `/spawn` when a friend teleported you to them
+- **The `U` key and the two escape boxes are gone** from the HUD menu and the Controls screen too
+- **Config cleanup:** the saved switches, HUD positions and sizes of both modules, and the `spawnCommand` and `escapeBoxesHidden` options, are no longer used. Old configs are cleaned automatically
 
 ## Screenshots
 
@@ -102,7 +102,7 @@ One panel with a card for every module.
 
 ### MineBerry Client (HUD)
 A separate menu for the on-screen HUD. Press **Right Shift** to open it.
-- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass**, **Biome / Time**, **Spawn Escape**, **TP Danger Escape**, the **Scoreboard** and the **Watermark**
+- **Mods tab:** HUD modules shown as cards with an icon, a position and an **Enabled** button. Included modules: **FPS**, **Ping**, **Coordinates**, **Sprint Status**, **Clock**, **Keystrokes / CPS**, **Armor Status**, **Potion Effects**, **Compass**, **Biome / Time**, the **Scoreboard** and the **Watermark**
 - Filter the list with **All**, **New** and **HUD**, or use the search box
 - **Keystrokes / CPS:** W, A, S, D, both mouse buttons and Space light up while held, with the clicks per second of each mouse button
 - **Armor Status:** your armor as item icons with the durability left (green, yellow, red). A held tool or bow is shown too
@@ -111,7 +111,6 @@ A separate menu for the on-screen HUD. Press **Right Shift** to open it.
 - **Biome / Time:** the biome you are in and, in the overworld, the in-game time and Day / Dusk / Night / Dawn
 - **Watermark:** a small *MineBerry Essentials* label with no box, top left by default. **On by default**, switch it off or move it like any other module
 - The five new modules (Keystrokes / CPS, Armor Status, Potion Effects, Compass, Biome / Time) are **off by default**. Turn them on from their cards
-- **Spawn Escape** and **TP Danger Escape** show their status box while the module is on. They are **on by default**, and hiding the box does not turn the module off. Press `U` to hide or show both boxes at once
 - **Scoreboard:** the sidebar scoreboard the server shows on the right. It has no corner to pick, only the **Enabled** switch (turn it off to hide it) and a size
 - Use the `<` `>` buttons or the mouse wheel to change page
 - **Profiles:** keep several HUD setups and switch between them, or use **Save as new profile**. Free positions are saved in the profile too. Press the **x** next to a profile to delete it (the last one can't be deleted)
@@ -201,14 +200,6 @@ Run common commands without typing. Great for showcase videos too.
 - It works with the safety modules: **Tournament Mode** and **PvP Command Lock** block radial commands like any other command, with a chat line saying what was blocked
 - Rebind the key under *Options > Controls > Key Binds*
 
-### Spawn Escape
-Get out of trouble instantly.
-- **Pit guard:** after a sudden large teleport, the mod detects whether you were dropped into a tight pit and escapes automatically
-- Ordinary caves and corners will not trigger it
-- **Note:** it works well, but the pit guard can sometimes send `/spawn` when a **friend teleports you to them** (tpa). The Control Center shows this note when you switch the module on. Switch the module off if you are about to do a lot of friendly teleporting
-- The status box can be hidden, moved and resized in the HUD menu (**Spawn Escape**). Hiding it does not switch the module off. Press `U` to hide or show it together with the TP Danger Escape box
-- Since 1.6.3 there is no key for `/spawn` any more. Use the radial menu (hold `V`) if you want a manual `/spawn`
-
 ### Safe Logout
 Don't quit in the middle of a fight by accident.
 - Follows the server's PvP mode messages: you are guarded from *"You've entered PvP mode!"* until *"You're out of PvP mode!"*. The mod does not count time itself. It also ends if you die or disconnect
@@ -236,7 +227,7 @@ Stops commands from teleporting you out of a fight.
 ### Tournament Mode
 Switch it on before a tournament and no command can be sent at all.
 - One card in the **Safety** tab. It is **off by default** and stays on until you switch it off
-- Blocks commands you type, commands from clickable chat messages and the ones the mod sends itself (Spawn Escape, TP Danger Escape, Clan / Admin / Party chat). Normal chat messages still work
+- Blocks commands you type, commands from clickable chat messages and the ones the mod sends itself (Clan / Admin / Party chat). Normal chat messages still work
 - A red **TOURNAMENT MODE** box on the HUD reminds you it is on, and a chat line tells you which command was blocked
 - Let specific commands through with `tournamentAllowedCommands` in the config file (empty by default)
 
@@ -248,14 +239,6 @@ See which of your friends are still alive, and what they say, while tournament c
 - Statuses start fresh when you join a server, when the server says a round, match or game started, and when you press **Reset statuses** in the friends screen
 - Move or hide the box in the HUD menu (**Tournament Players**, bottom right by default). It only reads what you already receive and sends nothing
 - Change how long messages stay with `tournamentMessageSeconds` and the round start line with `tournamentStartPattern` (empty turns the automatic reset off) in the config file
-
-### TP Danger Escape
-Protection against `/tpahere` traps.
-- After you accept an incoming `/tpahere`, a nearby player lining up to hit you triggers an automatic `/spawn`
-- It only arms briefly after an accepted request, so it never interferes with normal play
-- Has its own separate toggle
-- The status box can be hidden, moved and resized in the HUD menu (**TP Danger Escape**). Hiding it does not switch the module off. Press `U` to hide or show it together with the Spawn Escape box
-- **Note:** it works well, but it can't tell friends from enemies, so it can sometimes send `/spawn` when a **friend teleports you to them** and stands close to you. The Control Center shows this note when you switch the module on. Switch it off when you are teleporting with friends
 
 ### Evidence Recorder and Abuse Alert
 Everything you need for a staff report, captured automatically.
@@ -311,7 +294,6 @@ The first time you start the game with the mod, a window asks you to agree to a 
 | Quick Reply (`/r`) | `R` |
 | Radial Menu (hold, release on a slice) | `V` |
 | Show / Hide HUD | `Y` |
-| Show / Hide Spawn Escape and TP Danger Escape boxes | `U` |
 | Screenshot (copy to clipboard) | `F9` |
 | Search Chat | `F8` |
 | Add Waypoint Here | `B` |
@@ -351,7 +333,6 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - Extra mention names, mention sound and chat timestamps
 - Whether the reported player's name is copied automatically (`autoCopyReportedName`)
 - `termsAcceptedVersion` is set by the game when you click **I Agree**. Set it back to `0` to see the agreement again
-- The spawn command
 - The theme
 - Safe Logout: the mode (`safeLogoutMode`: `warn` or `block`), the PvP mode start line (`pvpModePattern`) and the PvP mode end line (`combatEndPattern`). `combatSeconds` is no longer used
 - `pvpModePattern` is also used by PvP Command Lock and the Abuse Alert. Since 1.6.0 its default is `entered pvp mode|entered combat|combat mode|combat tag` and it no longer matches every line containing "PvP mode". Old configs that still have the previous default are updated automatically, a custom pattern is kept as it is
@@ -425,9 +406,6 @@ Not at the moment. The slices are fixed: `/spawn`, `/tpa` and `/tpaccept`.
 **I release the radial menu key and nothing happens.**
 Let go while the mouse points at a slice (it lights up in the accent colour). In the middle circle nothing is picked. If the slice is lit and still nothing happens, Tournament Mode is on or you are in PvP mode, and the command was blocked. A chat line tells you.
 
-**Spawn Escape or TP Danger Escape sent me to spawn when a friend teleported me.**
-That can happen. Both modules react to teleports and nearby players, and they can't tell a friend from an enemy. Switch the module off in the Control Center while you teleport with friends, and back on afterwards.
-
 **A key does not work or clashes with another mod.**
 Rebind it under *Options > Controls > Key Binds*.
 
@@ -436,6 +414,13 @@ Rebind it under *Options > Controls > Key Binds*.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.6.4
+
+- **Terms of Use:** the first time you start the game with the mod, a short agreement opens with two buttons, **I Agree** and **I Disagree**. By agreeing you accept that the mod developers are not held accountable for anything that goes wrong (see [Terms of Use](#terms-of-use))
+  - If you click **I Disagree**, the mod stays off: no feature, key or HUD works, and nothing is recorded or sent
+  - Every time you try to use a feature while the mod is off, the agreement opens again so you can change your mind
+  - Players who update from an older version see it once as well. Your choice is saved in the config file
 
 ### 1.6.3
 
@@ -472,7 +457,7 @@ Earlier release notes. The newest ones are at the top of this page.
   - `/tpa` opens chat with `/tpa ` already typed, so you only add the player's name
   - Let go in the middle or press `Esc` to cancel
   - It follows your theme, Tournament Mode and PvP Command Lock, so a blocked command stays blocked
-- **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them (see [Spawn Escape](#spawn-escape) and [TP Danger Escape](#tp-danger-escape))
+- **Heads-up notes:** Spawn Escape and TP Danger Escape now show a note when you switch them on: they work well, but can sometimes send `/spawn` when a friend teleports you to them 
 - **Fixed false PvP mode alarms:** the server's line *"Player X has left the game while in PvP mode and was killed"* is about someone else, but it used to switch on Safe Logout and PvP Command Lock for you. Announcements about other players (left the game, was killed, combat logging) are now ignored
 - **Chat can't trigger PvP mode anymore:** a player typing "entered pvp mode" (or similar) in chat used to switch on Safe Logout, PvP Command Lock and the abuse alert. Only the server's own messages count now
 - **Config:** the default `pvpModePattern` is now `entered pvp mode|entered combat|combat mode|combat tag`. It no longer matches every line that contains "PvP mode". Configs that still have the old default are updated automatically, a pattern you changed yourself is left alone (see [Configuration](#configuration))

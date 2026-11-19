@@ -40,7 +40,7 @@ public class PanelScreen extends Screen {
     private static final Map<String, String> CATEGORY_OF = Map.ofEntries(
             Map.entry("clan_chat", "Chat"), Map.entry("admin_chat", "Chat"), Map.entry("party_chat", "Chat"),
             Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"), Map.entry("chat_search", "Chat"),
-            Map.entry("spawn_escape", "Safety"), Map.entry("tp_danger_escape", "Safety"), Map.entry("safe_logout", "Safety"),
+            Map.entry("safe_logout", "Safety"),
             Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"),
             Map.entry("evidence", "Tools"), Map.entry("waypoints", "Tools"),
             Map.entry("radial_menu", "Tools"), Map.entry("tournament_hud", "Tools"));

@@ -1,7 +1,5 @@
 package com.mineberry.essentials;
 
-import com.mineberry.essentials.modules.SpawnEscapeModule;
-import com.mineberry.essentials.modules.TpDangerEscapeModule;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -56,11 +54,6 @@ public final class ClientHud {
             HudMod.widget("biome", "Biome / Time", 3, new HudWidgets.BiomeTime()),
             // follows the Tournament HUD module (off by default), so its HUD switch starts on
             new HudMod("tournament", "Tournament Players", 3, true, null, new HudWidgets.TournamentPlayers(), true),
-            // the status boxes of the two escape modules: they show while the module is on, like before, but can now be hidden, moved and resized here
-            new HudMod("spawn_escape", "Spawn Escape", 1, true, null,
-                    new HudWidgets.EscapeStatus(SpawnEscapeModule::hudStatus, 0xFF67BEFF), true),
-            new HudMod("tp_danger_escape", "TP Danger Escape", 1, true, null,
-                    new HudWidgets.EscapeStatus(TpDangerEscapeModule::hudStatus, 0xFFFFB066), true),
             SCOREBOARD);
 
     private static final int PAD = 4, GAP = 3, EDGE = 6;
@@ -115,22 +108,9 @@ public final class ClientHud {
         KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("mineberry_essentials", "client_menu"));
         KeyMapping openMenu = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.client_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
-        KeyMapping toggleEscapeBoxes = Terms.registerKey(new KeyMapping(
-                "key.mineberry_essentials.toggle_escape_boxes", InputConstants.Type.KEYSYM, InputConstants.KEY_U, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenu.consumeClick()) {
                 if (client.gui.screen() == null) client.gui.setScreen(new ClientMenu(null));
-            }
-            // hides / shows only the Spawn Escape and TP Danger Escape boxes. The modules themselves are not touched and keep working
-            while (toggleEscapeBoxes.consumeClick()) {
-                Config.setEscapeBoxesHidden(!Config.escapeBoxesHidden());
-                if (client.player != null) {
-                    client.player.sendSystemMessage(net.minecraft.network.chat.Component.literal("[MineBerry] ")
-                            .withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE)
-                            .append(net.minecraft.network.chat.Component.literal(Config.escapeBoxesHidden()
-                                    ? "Escape boxes hidden (modules still active)" : "Escape boxes shown")
-                                    .withStyle(Config.escapeBoxesHidden() ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.GREEN)));
-                }
             }
         });
     }
@@ -188,7 +168,6 @@ public final class ClientHud {
         int[] colW = new int[4];     // width of the widest box in the current column
         for (HudMod mod : MODS) {
             if (!mod.enabled() || mod.virtual()) continue;
-            if (!editing && Config.escapeBoxesHidden() && isEscapeBox(mod)) continue;   // hidden with its key; the module keeps running
             String text = null;
             int[] size = null;
             int cw, ch;
@@ -243,10 +222,6 @@ public final class ClientHud {
             out.add(new Placed(mod, x, y, w, h, text, size, false, sc));
         }
         return out;
-    }
-
-    private static boolean isEscapeBox(HudMod mod) {
-        return mod.id().equals("spawn_escape") || mod.id().equals("tp_danger_escape");
     }
 
     // ---------------------------------------------------------------- profiles

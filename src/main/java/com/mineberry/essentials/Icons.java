@@ -208,8 +208,6 @@ final class Icons {
             Map.entry("party_chat", PERSON),
             Map.entry("chat_extras", CHAT),
             Map.entry("quick_reply", REPLY),
-            Map.entry("spawn_escape", DOOR),
-            Map.entry("tp_danger_escape", WARNING),
             Map.entry("safe_logout", DOOR),
             Map.entry("pvp_command_lock", SHIELD),
             Map.entry("tournament_mode", CROWN),

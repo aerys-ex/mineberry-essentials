@@ -27,9 +27,7 @@ public final class Config {
         String clanCommand = "cc";
         String adminChatCommand = "ac";
         String partyCommand = "pc";
-        String spawnCommand = "spawn";
         boolean hudHidden = false;
-        boolean escapeBoxesHidden = false;
         boolean autoClosePanelOnDanger = true;
         boolean chatTimestamps = false;
         boolean mentionSound = true;
@@ -151,7 +149,6 @@ public final class Config {
             if (data.clanCommand == null || data.clanCommand.isBlank()) data.clanCommand = "cc";
             if (data.adminChatCommand == null || data.adminChatCommand.isBlank()) data.adminChatCommand = "ac";
             if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
-            if (data.spawnCommand == null || data.spawnCommand.isBlank()) data.spawnCommand = "spawn";
             if (data.profiles == null) data.profiles = new java.util.LinkedHashMap<>();
             if (data.activeProfile == null) data.activeProfile = "Default";
             if (data.hudCorner == null) data.hudCorner = new HashMap<>();
@@ -177,6 +174,7 @@ public final class Config {
             data.tournamentFriends = cleanFriends(data.tournamentFriends);
             if (data.tournamentMessageSeconds < 3 || data.tournamentMessageSeconds > 120) data.tournamentMessageSeconds = 15;
             if (data.tournamentStartPattern == null) data.tournamentStartPattern = DEFAULT_TOURNAMENT_START;
+            dropRemovedModules();   // Spawn Escape and TP Danger Escape were removed in 1.7.0
             writeNow(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
             // never overwrite a file we could not read: keep it as a backup so the player's waypoints and profiles are not lost
@@ -259,23 +257,22 @@ public final class Config {
         return data.partyCommand.startsWith("/") ? data.partyCommand.substring(1) : data.partyCommand;
     }
 
-    /** Command used by Spawn Escape, without the slash. Edit in the config file to change it. */
-    public static String spawnCommand() {
-        return data.spawnCommand.startsWith("/") ? data.spawnCommand.substring(1) : data.spawnCommand;
+    /** 1.7.0 removed Spawn Escape and TP Danger Escape: forget their saved switches and HUD settings so old configs stay clean. */
+    private static void dropRemovedModules() {
+        for (String id : new String[]{"spawn_escape", "tp_danger_escape"}) {
+            data.modules.remove(id);
+            data.hudCorner.remove(id);
+            data.hudPos.remove(id);
+            data.hudScale.remove(id);
+            for (Map<String, Integer> profile : data.profiles.values()) {
+                if (profile == null) continue;
+                profile.keySet().removeIf(k -> k.endsWith("_" + id));
+            }
+        }
     }
 
     public static boolean hudHidden() {
         return data.hudHidden;
-    }
-
-    /** True while the Spawn Escape / TP Danger Escape status boxes are hidden with their key. The modules keep running. */
-    public static boolean escapeBoxesHidden() {
-        return data.escapeBoxesHidden;
-    }
-
-    public static void setEscapeBoxesHidden(boolean hidden) {
-        data.escapeBoxesHidden = hidden;
-        save();
     }
 
     /** Removes a HUD profile. Returns false (and does nothing) for the last remaining one. */

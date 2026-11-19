@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
  * accident and get sent to another gamemode in the middle of a tournament.
  *
  * This covers commands typed in chat, commands run from clickable chat messages, and the commands this mod sends
- * itself (Spawn Escape, TP Danger Escape, Clan / Admin / Party chat). Normal chat messages are not affected.
+ * itself (Clan / Admin / Party chat). Normal chat messages are not affected.
  * Off by default, and it stays on until you switch it off. Use "tournamentAllowedCommands" in the config file
  * to let specific commands through (empty by default).
  */

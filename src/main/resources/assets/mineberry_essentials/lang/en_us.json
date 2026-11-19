@@ -15,6 +15,5 @@
   "key.mineberry_essentials.screenshots_menu": "Open screenshots",
   "key.mineberry_essentials.chat_search": "Search chat history",
   "key.category.mineberry_essentials.client_menu": "MineBerry Client (HUD)",
-  "key.mineberry_essentials.client_menu": "Open MineBerry Client (HUD)",
-  "key.mineberry_essentials.toggle_escape_boxes": "Show / hide Spawn Escape and TP Danger Escape boxes"
+  "key.mineberry_essentials.client_menu": "Open MineBerry Client (HUD)"
 }
