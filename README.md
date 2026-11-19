@@ -22,7 +22,11 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 ![Java](https://img.shields.io/badge/Java-25%2B-e76f00)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-https://youtu.be/5_LAKmCn0x0
+<div align="center">
+  <a href="https://youtu.be/5_LAKmCn0x0">
+    <img src="https://img.youtube.com/vi/5_LAKmCn0x0/maxresdefault.jpg" alt="Watch the MineBerry Essentials trailer on YouTube" width="720">
+  </a>
+</div>
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
