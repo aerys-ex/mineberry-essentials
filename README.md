@@ -22,7 +22,7 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 ![Java](https://img.shields.io/badge/Java-25%2B-e76f00)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-https://github.com/user-attachments/assets/ccc7c064-3c12-48be-99bb-f2ba63870f59
+https://youtu.be/5_LAKmCn0x0
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
