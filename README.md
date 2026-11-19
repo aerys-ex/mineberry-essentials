@@ -1,7 +1,21 @@
+<div align="center">
+
 # MineBerry - Essentials
 
-**An essential mod for MineBerry and MinePeak.**
+**An essential Fabric mod for MineBerry and MinePeak.**
 Chat shortcuts, safety tools, a tournament mode, evidence reports, waypoints, a gradient generator and a coordinate converter, all in one clean dashboard.
+
+<a href="https://modrinth.com/mod/mineberryessentials">
+  <img src="https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/assets/download-button.svg" alt="Download on Modrinth" width="420">
+</a>
+
+You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) installed.
+
+<a href="#installation">Install guide</a> ·
+<a href="https://modrinth.com/mod/mineberryessentials">Modrinth</a> ·
+<a href="https://discord.gg/ApRvuNsX3j">Discord</a>
+
+</div>
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-26.2-62b47a)
 ![Loader](https://img.shields.io/badge/Fabric-0.20.1%2B-dbd0b4)
