@@ -28,8 +28,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * How it works: GitHub's API returns your newest published Release (https://github.com/aerys-ex/mineberry-essentials/releases).
  * The release's tag (e.g. "v1.3.0") is compared with the version of the installed mod. If the tag is higher, the player
- * gets one chat message when they join a world, and the Control Center shows an "Update" button.
- * Nothing is downloaded or installed automatically, the player just gets a link.
+ * gets a popup on the title screen (once per launch), or one chat message when they join a world, and the Control Center
+ * shows update buttons. The popup, the chat message and the Tools tab all offer two links: the GitHub release and the
+ * Modrinth page.
+ * The popup has a "Don't remind me" checkbox: it saves that version, and the popup and chat message stay quiet until a
+ * newer version than that one is released.
+ * Nothing is downloaded or installed automatically, the player just gets links.
  *
  * Turn it off by setting "checkForUpdates": false in config/mineberry_essentials.json.
  */
@@ -38,6 +42,8 @@ public final class UpdateChecker {
     private static final String REPO = "aerys-ex/mineberry-essentials";
     private static final String API_URL = "https://api.github.com/repos/" + REPO + "/releases/latest";
     private static final String RELEASES_URL = "https://github.com/" + REPO + "/releases/latest";
+    /** The Modrinth page of the mod, shown next to the GitHub link. */
+    private static final String MODRINTH_URL = "https://modrinth.com/mod/mineberryessentials";
     /** The "id" in fabric.mod.json. If yours differs, the fallback below still finds a mod whose id contains "mineberry". */
     private static final String MOD_ID = "mineberry-essentials";
 
@@ -55,6 +61,11 @@ public final class UpdateChecker {
 
     private UpdateChecker() {}
 
+    /** The Modrinth page of the mod (the GitHub link of a result is {@link Result#url()}). */
+    public static String modrinthUrl() {
+        return MODRINTH_URL;
+    }
+
     /** Call once from your client initializer, after Config.load(). Safe to call more than once. */
     public static void init() {
         if (!Config.checkForUpdates()) return;
@@ -71,11 +82,16 @@ public final class UpdateChecker {
         check();
     }
 
-    /** Opens the update popup once per launch, as soon as both the title screen and the result are there. */
+    /**
+     * Opens the update popup once per launch, as soon as both the title screen and the result are there, and nothing
+     * else (the Terms of Use or the What's New popup) is covering the title screen.
+     */
     private static void tick(Minecraft mc) {
+        if (!started.get() && Terms.accepted()) check();        // first launch: start the check once "I Agree" was clicked
         Result r = result;
         Screen t = title;
-        if (popupShown || r == null || !r.updateAvailable() || t == null) return;
+        if (popupShown || r == null || !r.updateAvailable() || t == null || skipped(r)) return;
+        if (mc.gui.screen() != t || !Terms.accepted()) return;  // wait until the title screen is free again
         popupShown = true;
         title = null;
         mc.gui.setScreen(new UpdateScreen(t, r));
@@ -195,16 +211,28 @@ public final class UpdateChecker {
     /** Chat fallback: only when the popup was not shown (e.g. the answer arrived after the player was already in a world). */
     private static void announce(Minecraft mc) {
         Result r = result;
-        if (announced || popupShown || r == null || !r.updateAvailable() || mc.player == null) return;
+        if (announced || popupShown || r == null || !r.updateAvailable() || skipped(r) || mc.player == null) return;
         announced = true;
-        Component link = Component.literal("[Download]").withStyle(style -> style
-                .applyFormat(ChatFormatting.AQUA)
-                .withUnderlined(true)
-                .withClickEvent(new ClickEvent.OpenUrl(URI.create(r.url()))));
         mc.player.sendSystemMessage(Component.literal("[MineBerry] ").withStyle(ChatFormatting.LIGHT_PURPLE)
                 .append(Component.literal("Update available: v" + r.latest() + " (you have v" + r.current() + ") ")
                         .withStyle(ChatFormatting.WHITE))
-                .append(link));
+                .append(link("[GitHub]", r.url()))
+                .append(Component.literal(" "))
+                .append(link("[Modrinth]", MODRINTH_URL)));
+    }
+
+    /** True when the player ticked "Don't remind me" for this version and no newer one has come out since. */
+    private static boolean skipped(Result r) {
+        String skip = Config.skippedUpdateVersion();
+        return !skip.isEmpty() && !isNewer(r.latest(), skip);
+    }
+
+    /** A clickable, underlined chat link. */
+    private static Component link(String label, String url) {
+        return Component.literal(label).withStyle(style -> style
+                .applyFormat(ChatFormatting.AQUA)
+                .withUnderlined(true)
+                .withClickEvent(new ClickEvent.OpenUrl(URI.create(url))));
     }
 
     // ---------------------------------------------------------------- versions

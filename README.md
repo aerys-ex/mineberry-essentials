@@ -30,12 +30,13 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.7.0
+## What's New in 1.7.1
 
-- **Spawn Escape removed:** the automatic pit guard is gone, so a friend's `/tpa` can no longer send you to `/spawn` by mistake. The radial menu (hold `V`) still has `/spawn` if you want to escape by hand
-- **TP Danger Escape removed:** it could not tell friends from enemies, so it sometimes sent `/spawn` when a friend teleported you to them
-- **The `U` key and the two escape boxes are gone** from the HUD menu and the Controls screen too
-- **Config cleanup:** the saved switches, HUD positions and sizes of both modules, and the `spawnCommand` and `escapeBoxesHidden` options, are no longer used. Old configs are cleaned automatically
+- **Update popup fixed:** the "new version" popup now really opens on the title screen when a newer version is out, and you get the chat message when you join a world. Before, the update was only found after you opened the Control Center
+- **Modrinth link:** the popup, the chat message and the Tools tab now show a **GitHub** and a **Modrinth** button side by side, so you can download from the site you prefer
+- **Don't remind me:** the update popup has a checkbox. Tick it and the popup and chat message stay quiet for that version. When a newer version comes out, you get notified again
+- **No more overlapping popups:** the update popup waits until the Terms of Use and What's New windows are closed
+- **First launch:** the update check starts as soon as you click **I Agree**
 
 ## Screenshots
 
@@ -92,7 +93,7 @@ One panel with a card for every module.
 - **Settings gear** on cards that have settings (Waypoints, Safe Logout, Screenshot, Chat Search)
 - Scrollbar and mouse wheel scrolling when there are more modules than fit on screen
 - **Screenshots tab:** opens your screenshot list (see [Screenshot](#screenshot))
-- **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons. A small orange dot on the tab shows when an update is available
+- **Tools tab:** coordinate converter, evidence export, **Theme**, **Gradient** and **Update** buttons (GitHub and Modrinth). A small orange dot on the tab shows when an update is available
 - **Close on danger** and **Chat timestamps** are regular cards in the grid
 - Themes: the default **dark grey with orange**, plus **Aurora**, **Ember** and **Midnight**
 - Adapts to your window size and GUI scale
@@ -146,8 +147,11 @@ Make colorful chat text without hand-writing color codes. Open it from the **Gra
 Know when there is a new version without checking GitHub yourself.
 - Checks the latest [GitHub release](https://github.com/aerys-ex/mineberry-essentials/releases) when the game starts
 - Press **Check for updates** in the Tools tab to check any time. It shows "Checking...", then "You're up to date" or the new version, and "Couldn't reach GitHub. Try again" if the check failed
-- If a newer version exists, you get a popup on the title screen, one chat message with a **[Download]** link when you join a world, and an **Update** button in the Tools tab
-- Nothing is downloaded or installed automatically, you only get a link
+- If a newer version exists, you get a popup on the title screen with **GitHub**, **Modrinth** and **Later** buttons. It shows once every time you start the game, until you update
+- Tick **Don't remind me about vX** in the popup to stop it for that version. A newer version still notifies you, and you can always check by hand in the Tools tab
+- If the answer arrives after you already joined a world, you get one chat message with **[GitHub]** and **[Modrinth]** links instead
+- The Tools tab also has **GitHub** and **Modrinth** buttons next to the new version
+- Nothing is downloaded or installed automatically, you only get links
 - Turn it off any time with `"checkForUpdates": false` in the config file
 
 ### What's New Popup
@@ -341,7 +345,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - Tournament HUD: your friends (`tournamentFriends`, also editable in the friends screen), how long a message stays (`tournamentMessageSeconds`, 15 by default) and the round start line (`tournamentStartPattern`)
 - The failsafe time for Safe Logout and PvP Command Lock (`pvpFailsafeSeconds`, 180 by default)
 - The What's New popup (`showChangelog`, on by default)
-- Update checking (`checkForUpdates`, on by default)
+- Update checking (`checkForUpdates`, on by default) and the version you chose **Don't remind me** for (`skippedUpdateVersion`, empty by default)
 - Gradient generator colors, format and styles (saved automatically when you use it)
 - Your waypoints
 
@@ -374,7 +378,7 @@ That server does not understand the selected format. Press **Format** in the gen
 Chat is limited to 256 characters and every colored letter adds a color code. Use shorter text or fewer colors, or pick a shorter format. The counter turns red when you are over the limit.
 
 **I do not want update notifications.**
-Set `"checkForUpdates": false` in `config/mineberry_essentials.json`. You can still check by hand with the **Check for updates** button in the Tools tab.
+Tick **Don't remind me** in the update popup to stop the reminders for that version. To turn the check off for good, set `"checkForUpdates": false` in `config/mineberry_essentials.json`. You can still check by hand with the **Check for updates** button in the Tools tab.
 
 **The update check says "Couldn't reach GitHub".**
 You are offline, or GitHub is blocked on your network. Press **Check for updates** again later. You can always look at the [releases page](https://github.com/aerys-ex/mineberry-essentials/releases) yourself.
@@ -414,6 +418,13 @@ Rebind it under *Options > Controls > Key Binds*.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.7.0
+
+- **Spawn Escape removed:** the automatic pit guard is gone, so a friend's `/tpa` can no longer send you to `/spawn` by mistake. The radial menu (hold `V`) still has `/spawn` if you want to escape by hand
+- **TP Danger Escape removed:** it could not tell friends from enemies, so it sometimes sent `/spawn` when a friend teleported you to them
+- **The `U` key and the two escape boxes are gone** from the HUD menu and the Controls screen too
+- **Config cleanup:** the saved switches, HUD positions and sizes of both modules, and the `spawnCommand` and `escapeBoxesHidden` options, are no longer used. Old configs are cleaned automatically
 
 ### 1.6.4
 

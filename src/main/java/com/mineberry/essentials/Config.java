@@ -34,6 +34,7 @@ public final class Config {
         List<String> mentionNames = new ArrayList<>();
         boolean autoCopyReportedName = true;
         boolean checkForUpdates = true;
+        String skippedUpdateVersion = "";   // "Don't remind me" in the update popup: stay quiet up to this version
         String panelTheme = "default";
         List<String> gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
         int gradientFormat = 0;
@@ -165,6 +166,7 @@ public final class Config {
             if ("lunar".equals(data.panelTheme)) data.panelTheme = "default";   // old id of the default theme
             if (data.panelTheme == null || !data.panelTheme.matches("default|aurora|ember|midnight")) data.panelTheme = "default";
             if (data.lastSeenVersion == null) data.lastSeenVersion = "";
+            if (data.skippedUpdateVersion == null) data.skippedUpdateVersion = "";
             if (data.combatSeconds < 1 || data.combatSeconds > 300) data.combatSeconds = 30;
             if (data.safeLogoutMode == null || !data.safeLogoutMode.matches("warn|block")) data.safeLogoutMode = "warn";
             if (data.combatEndPattern == null || data.combatEndPattern.isBlank()) data.combatEndPattern = DEFAULT_COMBAT_END;
@@ -434,6 +436,16 @@ public final class Config {
 
     public static void setLastSeenVersion(String version) {
         data.lastSeenVersion = version == null ? "" : version;
+        save();
+    }
+
+    /** The version the player chose "Don't remind me" for in the update popup; empty if none. Newer versions still notify. */
+    public static String skippedUpdateVersion() {
+        return data.skippedUpdateVersion;
+    }
+
+    public static void setSkippedUpdateVersion(String version) {
+        data.skippedUpdateVersion = version == null ? "" : version;
         save();
     }
 

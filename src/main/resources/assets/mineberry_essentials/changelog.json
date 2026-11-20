@@ -1,6 +1,21 @@
 {
   "versions": [
     {
+      "version": "1.7.1",
+      "title": "Update popup fixed + Modrinth link",
+      "sections": {
+        "Fixed": [
+          "The update popup now really opens on the title screen when a newer version is out, and you get the chat message when you join a world. Before, the update was only found after opening the Control Center.",
+          "The update popup no longer covers the Terms of Use or this What's New window. It waits until the title screen is free.",
+          "On your very first launch, the update check now starts as soon as you click I Agree."
+        ],
+        "New": [
+          "Modrinth link: the update popup, the chat message and the Tools tab now show a GitHub and a Modrinth button side by side, so you can download from the site you prefer.",
+          "Don't remind me: the update popup has a checkbox. Tick it and the popup and chat message stay quiet for that version. When a newer version comes out, you get notified again. You can still check by hand in the Tools tab."
+        ]
+      }
+    },
+    {
       "version": "1.7.0",
       "title": "Escape modules removed",
       "sections": {

@@ -53,6 +53,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> Config.flushNow());
 		Terms.init();       // the first-launch agreement (must come before Changelog so it opens first)
 		Changelog.init();   // the "What's New" popup after an update
+		UpdateChecker.init();   // update check at launch: title screen popup + chat link
 
 		openPanelKey = Terms.registerKey(new KeyMapping(
 				"key.mineberry_essentials.open_panel",

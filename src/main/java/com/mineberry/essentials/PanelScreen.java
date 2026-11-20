@@ -66,7 +66,7 @@ public class PanelScreen extends Screen {
     private final List<Button> pageTabs = new ArrayList<>();
     private final List<Button> catTabs = new ArrayList<>();
     private final List<Button> plain = new ArrayList<>();     // buttons painted in the normal outlined style
-    private Button closeBtn, checkBtn, updateBtn;
+    private Button closeBtn, checkBtn, updateBtn, modrinthBtn;
     private EditBox searchBox, xInput, zInput;
 
     private int page = 0;                // 0 = MODULES, 1 = TOOLS
@@ -97,7 +97,7 @@ public class PanelScreen extends Screen {
         if (zInput != null) zText = zInput.getValue();
         if (searchBox != null) search = searchBox.getValue();
         entries.clear(); shown.clear(); pageTabs.clear(); catTabs.clear(); plain.clear();
-        closeBtn = null; checkBtn = null; updateBtn = null; searchBox = null; xInput = null; zInput = null;
+        closeBtn = null; checkBtn = null; updateBtn = null; modrinthBtn = null; searchBox = null; xInput = null; zInput = null;
 
         buildEntries();
 
@@ -273,15 +273,19 @@ public class PanelScreen extends Screen {
             addPlain(Button.builder(Component.literal("What's New"), button -> this.minecraft.gui.setScreen(Changelog.screen(this)))
                     .bounds(left + 188, py + APP_Y, 90, BTN_H).build());
         }
-        // updates: manual check, plus the download button once a newer version is known
+        // updates: manual check, plus the GitHub and Modrinth buttons once a newer version is known
         int uy = py + UPD_Y;
         checkBtn = addPlain(Button.builder(Component.literal("Check for updates"), button -> UpdateChecker.checkNow())
                 .bounds(left, uy, 120, BTN_H).build());
-        updateBtn = addPlain(Button.builder(Component.literal("Update"), button -> {
+        updateBtn = addPlain(Button.builder(Component.literal("GitHub"), button -> {
             UpdateChecker.Result r = UpdateChecker.result();
             if (r != null) net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(r.url()));
-        }).bounds(right - 140, uy, 140, BTN_H).build());
+        }).bounds(right - 130, uy, 60, BTN_H).build());
+        modrinthBtn = addPlain(Button.builder(Component.literal("Modrinth"), button ->
+                net.minecraft.util.Util.getPlatform().openUri(java.net.URI.create(UpdateChecker.modrinthUrl())))
+                .bounds(right - 66, uy, 66, BTN_H).build());
         updateBtn.visible = false;
+        modrinthBtn.visible = false;
     }
 
     // ---------------------------------------------------------------- grid + filter
@@ -463,10 +467,8 @@ public class PanelScreen extends Screen {
         UpdateChecker.Result update = UpdateChecker.result();
         boolean hasUpdate = updateAvailable();
         if (checkBtn != null) checkBtn.active = state != UpdateChecker.State.CHECKING;
-        if (updateBtn != null) {
-            updateBtn.visible = hasUpdate;
-            if (hasUpdate) updateBtn.setMessage(Component.literal("Update: v" + update.latest()));
-        }
+        if (updateBtn != null) updateBtn.visible = hasUpdate;
+        if (modrinthBtn != null) modrinthBtn.visible = hasUpdate;
         String status;
         int statusColor = Ui.MUTED;
         switch (state) {
@@ -477,7 +479,7 @@ public class PanelScreen extends Screen {
             default -> status = "You have v" + UpdateChecker.installed();
         }
         int statusX = left + 120 + 8;
-        int statusMax = (hasUpdate ? right - 140 - 8 : right) - statusX;
+        int statusMax = (hasUpdate ? right - 130 - 8 : right) - statusX;
         Ui.txt(g, this.font, this.font.plainSubstrByWidth(status, Math.max(0, statusMax)), statusX, py + UPD_Y + 6, statusColor, false);
     }
 
