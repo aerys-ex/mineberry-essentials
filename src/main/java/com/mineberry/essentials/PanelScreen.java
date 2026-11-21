@@ -41,7 +41,7 @@ public class PanelScreen extends Screen {
             Map.entry("clan_chat", "Chat"), Map.entry("admin_chat", "Chat"), Map.entry("party_chat", "Chat"),
             Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"), Map.entry("chat_search", "Chat"),
             Map.entry("safe_logout", "Safety"),
-            Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"),
+            Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"), Map.entry("send_guard", "Safety"),
             Map.entry("evidence", "Tools"), Map.entry("waypoints", "Tools"),
             Map.entry("radial_menu", "Tools"), Map.entry("tournament_hud", "Tools"));
 

@@ -1,6 +1,23 @@
 {
   "versions": [
     {
+      "version": "1.7.3",
+      "title": "Send Guard, /rtp and screenshot fixes",
+      "sections": {
+        "New": [
+          "Send Guard: a new card in the Safety tab. /suicide and any message with a risky word (a short list, editable in the config file) are not sent the first time. Send the exact same thing again within 5 seconds to confirm (press Up, then Enter). It also covers Clan, Admin and Party chat, private messages and the radial menu.",
+          "Radial menu: a fourth slice, RTP, runs /rtp. Hold V, flick towards it and let go.",
+          "Copied popup: after you take a screenshot with F2, a small Copied to clipboard box appears in the top right for a couple of seconds, so you know the image is ready to paste with Ctrl+V. If the image can't be copied, a yellow Copy failed box and a chat line tell you the file path was copied instead."
+        ],
+        "Fixed": [
+          "The game could crash when you deleted a screenshot in the screenshot gallery. It no longer does."
+        ],
+        "Improved": [
+          "Copying a screenshot now tries a second time if the clipboard is busy with another app, so copies fail less often."
+        ]
+      }
+    },
+    {
       "version": "1.7.2",
       "title": "Screenshot gallery + F2 copies to clipboard",
       "sections": {

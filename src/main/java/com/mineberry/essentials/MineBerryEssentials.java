@@ -12,6 +12,7 @@ import com.mineberry.essentials.modules.RadialMenuModule;
 import com.mineberry.essentials.modules.QuickReplyModule;
 import com.mineberry.essentials.modules.SafeLogoutModule;
 import com.mineberry.essentials.modules.ScreenshotModule;
+import com.mineberry.essentials.modules.SendGuardModule;
 import com.mineberry.essentials.modules.TournamentHudModule;
 import com.mineberry.essentials.modules.TournamentModeModule;
 import com.mineberry.essentials.modules.WaypointsModule;
@@ -76,6 +77,7 @@ public class MineBerryEssentials implements ClientModInitializer {
 		register(new SafeLogoutModule());
 		register(new PvpCommandLockModule());
 		register(new TournamentModeModule());
+		register(new SendGuardModule());
 		register(new EvidenceModule());
 		register(new WaypointsModule());
 		register(new ScreenshotModule());

@@ -211,6 +211,7 @@ final class Icons {
             Map.entry("safe_logout", DOOR),
             Map.entry("pvp_command_lock", SHIELD),
             Map.entry("tournament_mode", CROWN),
+            Map.entry("send_guard", WARNING),
             Map.entry("evidence", CAMERA),
             Map.entry("waypoints", PIN),
             Map.entry("radial_menu", RADIAL),

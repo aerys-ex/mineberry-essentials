@@ -30,13 +30,13 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.7.2
+## What's New in 1.7.3
 
-- **Screenshot gallery:** the **Screenshots** tab is now a grid of thumbnails. **Right-click** a picture to **Copy image**, **Open**, **Show folder** or **Delete** (it asks you to click twice). Double-click opens a picture, and the mouse wheel changes page
-- **F2 copies to the clipboard:** take a screenshot with the normal Minecraft key (`F2`) and the image is also copied to your clipboard, ready to paste into Discord with `Ctrl+V`. Nothing is taken twice
-- **Gradient color picker:** click the bar under any color box in the Gradient Generator to open a picker with a saturation / brightness square, a hue slider and quick colors. The `?` button picks a random color. Typing a hex code still works
-- **HUD key reminder:** the MineBerry Client menu now always shows the key that hides and shows the whole HUD (`Y` by default), in the header and in the **Settings** tab. It follows the key if you rebind it
-- **Changed:** the `F9` screenshot key is now an optional **Extra screenshot key**, unbound by default. If you already use `F9`, it keeps working
+- **Send Guard:** a new card in the **Safety** tab. `/suicide` and any message with a risky word are **not sent the first time**. Send the exact same thing again within 5 seconds to confirm (press `Up`, then `Enter`). It also covers Clan, Admin and Party chat, private messages and the radial menu. Both lists are in the config file (see [Send Guard](#send-guard))
+- **`/rtp` in the radial menu:** a fourth slice. Hold `V`, flick towards **RTP** and let go
+- **"Copied to clipboard" popup:** after you take a screenshot with `F2`, a small box appears in the top right for a couple of seconds, so you know the image is ready to paste with `Ctrl+V`. If the image can't be copied, a yellow **Copy failed** box and a chat line tell you the file path was copied instead
+- **Fixed a crash in the screenshot gallery:** the game could crash when you deleted a screenshot. It no longer does
+- **Fewer failed copies:** if the clipboard is busy with another app, the mod now waits a moment and tries once more
 
 ## Screenshots
 
@@ -199,7 +199,7 @@ Find something you saw in chat.
 Run common commands without typing. Great for showcase videos too.
 - **Hold `V`** and a pie menu appears around your crosshair. **Move the mouse towards a slice and let go of the key** to run it
 - The slice is picked by direction, so a quick flick is enough. Let go in the middle, or press `Esc`, to cancel
-- Slices: `/spawn`, `/tpa <player>` and `/tpaccept`. They are fixed and can't be changed
+- Slices: `/spawn`, `/tpa <player>`, `/tpaccept` and `/rtp`. They are fixed and can't be changed
 - **`/tpa`:** chat opens with `/tpa ` already typed, so you only add the name
 - It uses your selected theme, and it never pauses singleplayer
 - It works with the safety modules: **Tournament Mode** and **PvP Command Lock** block radial commands like any other command, with a chat line saying what was blocked
@@ -236,6 +236,15 @@ Switch it on before a tournament and no command can be sent at all.
 - A red **TOURNAMENT MODE** box on the HUD reminds you it is on, and a chat line tells you which command was blocked
 - Let specific commands through with `tournamentAllowedCommands` in the config file (empty by default)
 
+### Send Guard
+Some things you only want to send on purpose.
+- One card in the **Safety** tab, **on by default**
+- The first time you send a guarded command (`/suicide` by default) or a message that contains a guarded word, **nothing is sent** and a chat line tells you. Send the **exact same thing again within 5 seconds** (press `Up`, then `Enter`) and it goes through. A third send has to be confirmed again
+- The word list is a short default list of slurs that get players muted or banned. Words only count as **whole words**, in any case, with an optional plural `s` or `z`. A longer word that merely starts with one of them is left alone
+- It works in normal chat, in Clan / Admin / Party chat mode, for `/msg` and `/r`, and for radial menu commands
+- **Tournament Mode** and **PvP Command Lock** come first: a command they block is blocked, not asked about
+- Change it in the config file: `guardedCommands` (no slash), `guardedWords` and `guardConfirmSeconds` (2 to 30, default 5). Empty a list to guard nothing of that kind, or switch the whole card off
+
 ### Tournament HUD
 See which of your friends are still alive, and what they say, while tournament chat flies by.
 - One card in the **Tools** tab, **off by default**. Press its gear button to add friends by username (up to 30) or remove them
@@ -260,7 +269,8 @@ Everything you need for a staff report, captured automatically.
 ### Screenshot
 Take a screenshot and paste it straight into Discord.
 - Press `F2` (the normal Minecraft screenshot key) to take a screenshot. Minecraft saves it in `screenshots/` as always, and the mod **also copies it to your clipboard as an image**, so `Ctrl+V` pastes it. Nothing is taken twice
-- It is silent when it works. If the image can't be copied, you get a chat line and the file path is copied instead
+- A small **Copied to clipboard** box pops up in the top right for a couple of seconds when it worked. If the image can't be copied, you get a yellow **Copy failed** box and a chat line, and the file path is copied instead. The popup follows the HUD hide key (`Y`)
+- If the clipboard is busy with another app, the copy is tried a second time before it gives up
 - Want a second key? Bind **Extra screenshot key** under *Options > Controls > Key Binds*. It saves to `screenshots/mineberry` and copies too. It is unbound by default
 - The **Screenshots** tab (or the gear on the Screenshot card) opens the gallery: a grid of thumbnails of your screenshots, newest first, including the normal `F2` ones. **Right-click** a picture to **Copy image**, **Open**, **Show folder** or **Delete** (it asks you to click twice). Double-click opens a picture, and the mouse wheel changes page
 - **Open folder** and **Refresh** buttons sit at the top of the gallery
@@ -345,6 +355,7 @@ Settings are stored in `config/mineberry_essentials.json`. You can change:
 - `pvpModePattern` is also used by PvP Command Lock and the Abuse Alert. Since 1.6.0 its default is `entered pvp mode|entered combat|combat mode|combat tag` and it no longer matches every line containing "PvP mode". Old configs that still have the previous default are updated automatically, a custom pattern is kept as it is
 - PvP Command Lock: the commands that still work in PvP mode (`pvpAllowedCommands`)
 - Tournament Mode: commands that still work while it is on (`tournamentAllowedCommands`, empty by default)
+- Send Guard: the commands that need a second send (`guardedCommands`, `suicide` by default), the words that do (`guardedWords`, a short default list of slurs) and how long you have to confirm (`guardConfirmSeconds`, 5 by default)
 - Tournament HUD: your friends (`tournamentFriends`, also editable in the friends screen), how long a message stays (`tournamentMessageSeconds`, 15 by default) and the round start line (`tournamentStartPattern`)
 - The failsafe time for Safe Logout and PvP Command Lock (`pvpFailsafeSeconds`, 180 by default)
 - The What's New popup (`showChangelog`, on by default)
@@ -392,6 +403,12 @@ Set `"showChangelog": false` in `config/mineberry_essentials.json`.
 **Safe Logout blocks me even though the fight is over.**
 It waits for the server's *"You're out of PvP mode!"* message. If your server words it differently, change `combatEndPattern` in `config/mineberry_essentials.json`. Set `safeLogoutMode` to `block` or `warn` to change how it reacts.
 
+**My message or command was not sent and a yellow line says to send it again.**
+That is [Send Guard](#send-guard). It holds back `/suicide` and messages with risky words until you send the exact same thing a second time within 5 seconds. Press `Up`, then `Enter`. Change what it guards with `guardedCommands` and `guardedWords` in `config/mineberry_essentials.json`, or switch the card off in the **Safety** tab.
+
+**I pressed F2 and did not see the "Copied to clipboard" box.**
+Check that the **Screenshot** module is switched on in the Control Center, that you agreed to the [Terms of Use](#terms-of-use), and that the HUD is not hidden with `Y`. The box appears about a second after the screenshot, once the copy is done. Paste with `Ctrl+V` to check. If you also run another screenshot mod, try switching its screenshot feature off in case the two get in each other's way.
+
 **The screenshot was not copied as an image.**
 Your system's copy tool may be missing. On Linux install `xclip` (or `wl-copy` on Wayland). The file path is copied as text instead, and the screenshot is still saved in `screenshots/mineberry`.
 
@@ -408,7 +425,7 @@ Update to 1.6.0. Older versions reacted to *"Player X has left the game while in
 Press `Esc` and click **I'm safe - unlock**. The guard also lets go by itself after 180 seconds.
 
 **Can I put my own commands in the radial menu?**
-Not at the moment. The slices are fixed: `/spawn`, `/tpa` and `/tpaccept`.
+Not at the moment. The slices are fixed: `/spawn`, `/tpa`, `/tpaccept` and `/rtp`.
 
 **I release the radial menu key and nothing happens.**
 Let go while the mouse points at a slice (it lights up in the accent colour). In the middle circle nothing is picked. If the slice is lit and still nothing happens, Tournament Mode is on or you are in PvP mode, and the command was blocked. A chat line tells you.
@@ -421,6 +438,14 @@ Rebind it under *Options > Controls > Key Binds*.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.7.2
+
+- **Screenshot gallery:** the **Screenshots** tab is now a grid of thumbnails. **Right-click** a picture to **Copy image**, **Open**, **Show folder** or **Delete** (it asks you to click twice). Double-click opens a picture, and the mouse wheel changes page
+- **F2 copies to the clipboard:** take a screenshot with the normal Minecraft key (`F2`) and the image is also copied to your clipboard, ready to paste into Discord with `Ctrl+V`. Nothing is taken twice
+- **Gradient color picker:** click the bar under any color box in the Gradient Generator to open a picker with a saturation / brightness square, a hue slider and quick colors. The `?` button picks a random color. Typing a hex code still works
+- **HUD key reminder:** the MineBerry Client menu now always shows the key that hides and shows the whole HUD (`Y` by default), in the header and in the **Settings** tab. It follows the key if you rebind it
+- **Changed:** the `F9` screenshot key is now an optional **Extra screenshot key**, unbound by default. If you already use `F9`, it keeps working
 
 ### 1.7.1
 

@@ -8,11 +8,13 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -41,6 +43,8 @@ import java.util.stream.Stream;
  * watcher notices it and copies it, so no screenshot is taken twice. There is also an optional extra key (unbound by
  * default) that takes one into screenshots/mineberry/. The Screenshots screen lists them all and can copy any of them again.
  *
+ * When the copy is done a small "Copied to clipboard" box pops up in the top-right corner for a couple of seconds.
+ *
  * The clipboard copy uses the system's own tools (PowerShell on Windows, osascript on macOS, wl-copy / xclip on Linux),
  * because Minecraft runs without AWT. If that fails, the file path is copied as text instead.
  */
@@ -51,6 +55,11 @@ public class ScreenshotModule extends MineBerryModule {
     private static final int MAX_LISTED = 200;
 
     private KeyMapping shotKey, menuKey;
+
+    // the little popup: set from any thread, drawn on the render thread
+    private static final long POPUP_MS = 2500;
+    private static volatile boolean popupOk;
+    private static volatile long popupUntil;
 
     public ScreenshotModule() {
         super("screenshot", "Screenshot", "Press F2 to screenshot and copy it to the clipboard");
@@ -77,6 +86,7 @@ public class ScreenshotModule extends MineBerryModule {
                 if (enabled() && client.gui.screen() == null) client.gui.setScreen(new ScreenshotScreen(null));
             }
         });
+        HudElementRegistry.addLast(MineBerryEssentials.id("screenshot_copied"), (g, delta) -> drawPopup(g));
         startWatcher();
     }
 
@@ -129,10 +139,7 @@ public class ScreenshotModule extends MineBerryModule {
             Thread.sleep(150);
         }
         Minecraft mc = Minecraft.getInstance();
-        copyAsync(file, ok -> {
-            // success is silent (the game already says "Saved screenshot as ..."); only tell the player when the copy failed
-            if (!ok) say(mc, "Screenshot saved, but the image couldn't be copied. File path copied instead", ChatFormatting.YELLOW);
-        });
+        copyAsync(file, ok -> notifyCopied(mc, ok));
     }
 
     // ---------------------------------------------------------------- taking one
@@ -169,10 +176,7 @@ public class ScreenshotModule extends MineBerryModule {
                     say(mc, "Couldn't save the screenshot", ChatFormatting.RED);
                     return;
                 }
-                copyAsync(file.toPath(), ok -> {
-                    // success is silent; only tell the player when the image could not be copied
-                    if (!ok) say(mc, "Screenshot saved, but the image couldn't be copied. File path copied instead", ChatFormatting.YELLOW);
-                });
+                copyAsync(file.toPath(), ok -> notifyCopied(mc, ok));
             }, "mineberry-screenshot-writer");
             t.setDaemon(true);
             t.start();
@@ -214,6 +218,10 @@ public class ScreenshotModule extends MineBerryModule {
     public static void copyAsync(Path file, Consumer<Boolean> done) {
         Thread t = new Thread(() -> {
             boolean ok = copyImage(file);
+            if (!ok) {                                         // the clipboard is sometimes locked by another app for a moment
+                try { Thread.sleep(400); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                ok = copyImage(file);
+            }
             if (!ok) {
                 Minecraft mc = Minecraft.getInstance();
                 String path = file.toAbsolutePath().toString();
@@ -294,6 +302,36 @@ public class ScreenshotModule extends MineBerryModule {
         } catch (IOException e) {
             MineBerryEssentials.LOGGER.warn("Could not open {}", path, e);
         }
+    }
+
+    // ---------------------------------------------------------------- "copied" popup
+
+    /** Shows the popup (and a chat line when the copy failed, so it is not missed with the HUD hidden). Any thread. */
+    private static void notifyCopied(Minecraft mc, boolean ok) {
+        popupOk = ok;
+        popupUntil = System.currentTimeMillis() + POPUP_MS;
+        if (!ok) say(mc, "Screenshot saved, but the image couldn't be copied. File path copied instead", ChatFormatting.YELLOW);
+    }
+
+    private static void drawPopup(GuiGraphicsExtractor g) {
+        if (System.currentTimeMillis() >= popupUntil || MineBerryEssentials.hudHidden()) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+        boolean ok = popupOk;
+        var font = mc.font;
+        String title = ok ? "COPIED TO CLIPBOARD" : "COPY FAILED";
+        String subtitle = ok ? "Press Ctrl+V to paste it" : "File path copied instead";
+        int accent = ok ? 0xFF55FF8A : 0xFFFFD24D;
+        int bg = ok ? 0xE0122A1A : 0xE0332A10;
+        int titleColor = ok ? 0xFF7DFFA6 : 0xFFFFE08A;
+        int w = Math.max(font.width(title), font.width(subtitle)) + 18;
+        int x = mc.getWindow().getGuiScaledWidth() - w - 6;
+        int y = com.mineberry.essentials.StatusStack.take(29);
+        g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
+        g.fill(x, y, x + w, y + 29, bg);
+        g.fill(x + w - 3, y, x + w, y + 29, accent);
+        g.text(font, title, x + 8, y + 5, titleColor, true);
+        g.text(font, subtitle, x + 8, y + 17, 0xFFE0E0E0, false);
     }
 
     // ---------------------------------------------------------------- chat feedback

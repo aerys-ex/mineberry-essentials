@@ -59,6 +59,9 @@ public final class Config {
         List<String> tournamentFriends = new ArrayList<>();
         int tournamentMessageSeconds = 15;
         String tournamentStartPattern = DEFAULT_TOURNAMENT_START;
+        List<String> guardedCommands = new ArrayList<>(DEFAULT_GUARDED_COMMANDS);
+        List<String> guardedWords = new ArrayList<>(DEFAULT_GUARDED_WORDS);
+        int guardConfirmSeconds = 5;
     }
 
     /**
@@ -100,7 +103,8 @@ public final class Config {
         return new ArrayList<>(List.of(
                 new RadialSlice("Spawn", "spawn"),
                 new RadialSlice("TPA", "tpa <player>"),
-                new RadialSlice("Accept", "tpaccept")));
+                new RadialSlice("Accept", "tpaccept"),
+                new RadialSlice("RTP", "rtp")));
     }
 
     /** A saved coordinate. dim is the dimension id, e.g. "minecraft:overworld". color is ARGB. */
@@ -126,6 +130,10 @@ public final class Config {
 
     /** Commands that still work while the server has you in PvP mode (PvP Command Lock). Editable in the config file. */
     public static final List<String> DEFAULT_PVP_ALLOWED = List.of("r", "reply", "msg", "m", "w", "tell", "cc");
+    /** Send Guard: commands that need to be sent twice. */
+    public static final List<String> DEFAULT_GUARDED_COMMANDS = List.of("suicide");
+    /** Send Guard: words that make a message need to be sent twice. Whole words only, any case, plural s/z allowed. */
+    public static final List<String> DEFAULT_GUARDED_WORDS = List.of("nigga", "nigger", "niger", "faggot");
 
     private static Data data = new Data();
     private static boolean freshInstall = false;
@@ -176,6 +184,9 @@ public final class Config {
             data.tournamentFriends = cleanFriends(data.tournamentFriends);
             if (data.tournamentMessageSeconds < 3 || data.tournamentMessageSeconds > 120) data.tournamentMessageSeconds = 15;
             if (data.tournamentStartPattern == null) data.tournamentStartPattern = DEFAULT_TOURNAMENT_START;
+            if (data.guardedCommands == null) data.guardedCommands = new ArrayList<>(DEFAULT_GUARDED_COMMANDS);
+            if (data.guardedWords == null) data.guardedWords = new ArrayList<>(DEFAULT_GUARDED_WORDS);
+            if (data.guardConfirmSeconds < 2 || data.guardConfirmSeconds > 30) data.guardConfirmSeconds = 5;
             dropRemovedModules();   // Spawn Escape and TP Danger Escape were removed in 1.7.0
             writeNow(); // writes any newly added keys so they can be edited
         } catch (Exception e) {
@@ -538,6 +549,21 @@ public final class Config {
     /** Regex (case-insensitive) for the server's "round started" line. Edit in the config file; empty turns the automatic reset off. */
     public static String tournamentStartPattern() {
         return data.tournamentStartPattern;
+    }
+
+    /** Send Guard: commands that are only sent the second time (no slash, e.g. "suicide"). Edit in the config file. */
+    public static List<String> guardedCommands() {
+        return data.guardedCommands;
+    }
+
+    /** Send Guard: whole words that make a message wait for a second send. Edit in the config file. */
+    public static List<String> guardedWords() {
+        return data.guardedWords;
+    }
+
+    /** Send Guard: how many seconds you have to send the same thing again (2 to 30, default 5). */
+    public static int guardConfirmSeconds() {
+        return data.guardConfirmSeconds;
     }
 
     /** The radial menu slices. They are fixed and can't be changed. */

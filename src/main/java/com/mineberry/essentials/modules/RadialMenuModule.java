@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * Radial menu: hold a key and a pie menu opens around the crosshair with a few quick commands (spawn, tpa,
- * tpaccept). Move towards a slice and let go of the key to run it. The slices are fixed and can't be changed.
+ * tpaccept, rtp). Move towards a slice and let go of the key to run it. The slices are fixed and can't be changed.
  *
  * The menu is a screen so the mouse is free. While a screen is open Minecraft no longer tracks held keys, so this
  * module asks GLFW directly whether the key is still down; the moment it is let go, the highlighted slice runs.

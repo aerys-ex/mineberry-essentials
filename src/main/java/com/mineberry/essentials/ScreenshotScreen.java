@@ -78,6 +78,7 @@ public class ScreenshotScreen extends Screen {
     private List<Path> files = new ArrayList<>();
     private boolean loaded = false;
     private int page = 0;
+    private boolean rebuildPending;            // set while rendering, applied in tick() (see deleteFile)
 
     // thumbnails
     private final Map<Path, Thumb> thumbs = new HashMap<>();
@@ -332,7 +333,19 @@ public class ScreenshotScreen extends Screen {
         selected = -1;
         setStatus("Deleted");
         if (page >= pageCount()) page = pageCount() - 1;
-        this.rebuildWidgets();
+        // Do NOT call rebuildWidgets() here: this runs from handleMouse(), which is called from inside a renderable, i.e.
+        // while Screen.extractRenderState is iterating its renderables list. rebuildWidgets() clears and refills that
+        // list, which throws ConcurrentModificationException. tick() applies it between frames instead.
+        rebuildPending = true;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (rebuildPending) {
+            rebuildPending = false;
+            this.rebuildWidgets();
+        }
     }
 
     // ---------------------------------------------------------------- thumbnails
