@@ -11,7 +11,7 @@
   "key.mineberry_essentials.waypoint_menu": "Open waypoint list",
   "key.mineberry_essentials.confirm_abuse": "Evidence: confirm report",
   "key.mineberry_essentials.skip_abuse": "Evidence: skip report",
-  "key.mineberry_essentials.screenshot": "Screenshot (copy to clipboard)",
+  "key.mineberry_essentials.screenshot": "Extra screenshot key (F2 already copies to clipboard)",
   "key.mineberry_essentials.screenshots_menu": "Open screenshots",
   "key.mineberry_essentials.chat_search": "Search chat history",
   "key.category.mineberry_essentials.client_menu": "MineBerry Client (HUD)",

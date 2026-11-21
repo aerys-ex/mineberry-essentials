@@ -187,9 +187,9 @@ public class ClientMenu extends Screen {
             b.setMessage(Component.literal("Theme: " + Ui.themeName()));
         }).bounds(x, y, w, 20).build());
         y += 26;
-        add(Button.builder(Component.literal("HUD: " + (Config.hudHidden() ? "Hidden" : "Shown")), b -> {
+        add(Button.builder(Component.literal(hudLabel()), b -> {
             Config.setHudHidden(!Config.hudHidden());
-            b.setMessage(Component.literal("HUD: " + (Config.hudHidden() ? "Hidden" : "Shown")));
+            b.setMessage(Component.literal(hudLabel()));
         }).bounds(x, y, w, 20).build());
         y += 26;
         add(Button.builder(Component.literal("Control Center"), b -> this.minecraft.gui.setScreen(new PanelScreen(this)))
@@ -197,6 +197,22 @@ public class ClientMenu extends Screen {
         y += 26;
         add(Button.builder(Component.literal("Gradient Generator"), b -> this.minecraft.gui.setScreen(new GradientScreen(this)))
                 .bounds(x, y, w, 20).build());
+    }
+
+    /** The name of the "toggle HUD" key as the player has it bound (Y by default), or null when it is unbound. */
+    private static String hudKeyName() {
+        try {
+            var key = MineBerryEssentials.toggleHudKey();
+            if (key == null || key.isUnbound()) return null;
+            return key.getTranslatedKeyMessage().getString().toUpperCase(Locale.ROOT);
+        } catch (RuntimeException e) {
+            return "Y";
+        }
+    }
+
+    private static String hudLabel() {
+        String key = hudKeyName();
+        return "HUD: " + (Config.hudHidden() ? "Hidden" : "Shown") + (key == null ? "" : "  (" + key + ")");
     }
 
     private void changePage(int delta) {
@@ -229,9 +245,26 @@ public class ClientMenu extends Screen {
         Ui.txt(g, this.font, "CLIENT", px + PAD + 2 + this.font.width("MINEBERRY ") , py + 1 + (HEADER_H - 8) / 2, Ui.TEXT, false);
         int sel = tab;
         Ui.fill(g, tabX[sel], py + 19, tabX[sel] + tabW[sel], py + 21, Ui.ACCENT);
+        // always-visible reminder of the key that hides / shows the whole HUD (the long form when it fits)
+        String key = hudKeyName();
+        if (key != null) {
+            int free = px + pw - 22 - 6 - (tabX[2] + tabW[2] + 8);
+            String hint = "[" + key + "] Hide / show HUD";
+            if (this.font.width(hint) > free) hint = "[" + key + "] HUD";
+            if (this.font.width(hint) <= free) {
+                int hx = px + pw - 22 - 6 - this.font.width(hint);
+                Ui.txt(g, this.font, hint, hx, py + 1 + (HEADER_H - 8) / 2, Ui.MUTED, false);
+            }
+        }
         // sidebar panel
         Ui.box(g, px + PAD - 2, bodyY - 2, SIDE_W + 4, py + ph - PAD - bodyY + 4, Ui.BTN_BORDER, Ui.INSET, 0, 0);
-        if (tab != 0) return;
+        if (tab != 0) {
+            String k = hudKeyName();
+            if (k != null) {
+                Ui.txt(g, this.font, "Press " + k + " in game to hide or show the whole HUD.", mainX, py + ph - PAD - 10, Ui.MUTED, false);
+            }
+            return;
+        }
         Ui.inputBox(g, box);
         Ui.txt(g, this.font, "/", box.getX() - 10, bodyY + 6, Ui.MUTED, false);
         if (pageCount > 1) {

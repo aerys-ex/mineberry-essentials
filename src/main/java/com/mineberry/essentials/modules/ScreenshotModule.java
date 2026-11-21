@@ -8,6 +8,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -17,8 +18,13 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,9 +36,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
- * Press F9 (rebindable) to take a screenshot that is saved to screenshots/mineberry/ AND copied to the clipboard as an
- * image, so you can paste it straight into Discord with Ctrl+V. The Screenshots screen lists them and can copy any
- * of them again.
+ * Press F2 (the normal Minecraft screenshot key) and the screenshot is also copied to the clipboard as an image, so you
+ * can paste it straight into Discord with Ctrl+V. Minecraft saves the file in screenshots/ as always; a small file
+ * watcher notices it and copies it, so no screenshot is taken twice. There is also an optional extra key (unbound by
+ * default) that takes one into screenshots/mineberry/. The Screenshots screen lists them all and can copy any of them again.
  *
  * The clipboard copy uses the system's own tools (PowerShell on Windows, osascript on macOS, wl-copy / xclip on Linux),
  * because Minecraft runs without AWT. If that fails, the file path is copied as text instead.
@@ -46,7 +53,7 @@ public class ScreenshotModule extends MineBerryModule {
     private KeyMapping shotKey, menuKey;
 
     public ScreenshotModule() {
-        super("screenshot", "Screenshot", "Press F9 to screenshot and copy it to the clipboard");
+        super("screenshot", "Screenshot", "Press F2 to screenshot and copy it to the clipboard");
     }
 
     @Override
@@ -54,7 +61,7 @@ public class ScreenshotModule extends MineBerryModule {
         shotKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.screenshot",
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_F9,
+                GLFW.GLFW_KEY_UNKNOWN,         // F2 does the job through the watcher below; this is an optional extra key
                 MineBerryEssentials.CATEGORY));
         menuKey = Terms.registerKey(new KeyMapping(
                 "key.mineberry_essentials.screenshots_menu",
@@ -69,6 +76,62 @@ public class ScreenshotModule extends MineBerryModule {
             while (menuKey.consumeClick()) {
                 if (enabled() && client.gui.screen() == null) client.gui.setScreen(new ScreenshotScreen(null));
             }
+        });
+        startWatcher();
+    }
+
+    // ---------------------------------------------------------------- F2 (the normal Minecraft screenshot)
+
+    /**
+     * Watches the game's screenshots folder. When Minecraft saves a new picture there (F2 does), it is copied to the
+     * clipboard. Our own screenshots live in a sub-folder, which is not watched, so nothing is copied twice.
+     */
+    private void startWatcher() {
+        Path dir = FabricLoader.getInstance().getGameDir().resolve("screenshots");
+        Thread t = new Thread(() -> {
+            try {
+                Files.createDirectories(dir);
+                try (WatchService ws = FileSystems.getDefault().newWatchService()) {
+                    dir.register(ws, StandardWatchEventKinds.ENTRY_CREATE);
+                    while (true) {
+                        WatchKey key = ws.take();
+                        for (WatchEvent<?> event : key.pollEvents()) {
+                            if (event.kind() != StandardWatchEventKinds.ENTRY_CREATE) continue;
+                            Path file = dir.resolve((Path) event.context());
+                            if (file.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".png")) onGameScreenshot(file);
+                        }
+                        if (!key.reset()) break;
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                MineBerryEssentials.LOGGER.warn("Screenshot watcher stopped", e);
+            }
+        }, "mineberry-screenshot-watcher");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void onGameScreenshot(Path file) throws InterruptedException {
+        if (!enabled()) return;
+        // the file shows up before the game has finished writing it: wait until its size stops changing
+        long last = -1;
+        for (int i = 0; i < 40; i++) {
+            long size;
+            try {
+                size = Files.size(file);
+            } catch (IOException e) {
+                return;                                    // gone again (deleted or renamed)
+            }
+            if (size > 0 && size == last) break;
+            last = size;
+            Thread.sleep(150);
+        }
+        Minecraft mc = Minecraft.getInstance();
+        copyAsync(file, ok -> {
+            // success is silent (the game already says "Saved screenshot as ..."); only tell the player when the copy failed
+            if (!ok) say(mc, "Screenshot saved, but the image couldn't be copied. File path copied instead", ChatFormatting.YELLOW);
         });
     }
 

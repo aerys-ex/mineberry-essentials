@@ -1,6 +1,21 @@
 {
   "versions": [
     {
+      "version": "1.7.2",
+      "title": "Screenshot gallery + F2 copies to clipboard",
+      "sections": {
+        "New": [
+          "Screenshot gallery: the Screenshots tab is now a grid of thumbnails. Right-click a picture to Copy image, Open, Show folder or Delete (it asks you to click twice). Double-click opens a picture, and the mouse wheel changes page.",
+          "F2 copies to the clipboard: take a screenshot with the normal Minecraft key (F2) and the image is also copied to your clipboard, ready to paste into Discord with Ctrl+V. Nothing is taken twice.",
+          "Color picker in the Gradient Generator: click the bar under any color box to open a picker with a saturation / brightness square, a hue slider and a grid of quick colors (the ? button picks a random color). Typing a hex code still works, and the picker follows what you type.",
+          "HUD key reminder: the MineBerry Client menu now always shows which key hides and shows the whole HUD (Y by default). It also appears in the Settings tab, and follows the key if you rebind it."
+        ],
+        "Changed": [
+          "The F9 screenshot key is now an optional Extra screenshot key and is unbound by default. If you already use F9, it keeps working. You can change or remove it under Options > Controls > Key Binds."
+        ]
+      }
+    },
+    {
       "version": "1.7.1",
       "title": "Update popup fixed + Modrinth link",
       "sections": {

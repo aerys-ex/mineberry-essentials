@@ -30,13 +30,13 @@ You need Minecraft: Java Edition with [Fabric](https://fabricmc.net/use/) instal
 
 > Built for the **MineBerry** and **MinePeak** servers. Some features depend on the commands and chat messages those servers use, so they may not behave the same elsewhere.
 
-## What's New in 1.7.1
+## What's New in 1.7.2
 
-- **Update popup fixed:** the "new version" popup now really opens on the title screen when a newer version is out, and you get the chat message when you join a world. Before, the update was only found after you opened the Control Center
-- **Modrinth link:** the popup, the chat message and the Tools tab now show a **GitHub** and a **Modrinth** button side by side, so you can download from the site you prefer
-- **Don't remind me:** the update popup has a checkbox. Tick it and the popup and chat message stay quiet for that version. When a newer version comes out, you get notified again
-- **No more overlapping popups:** the update popup waits until the Terms of Use and What's New windows are closed
-- **First launch:** the update check starts as soon as you click **I Agree**
+- **Screenshot gallery:** the **Screenshots** tab is now a grid of thumbnails. **Right-click** a picture to **Copy image**, **Open**, **Show folder** or **Delete** (it asks you to click twice). Double-click opens a picture, and the mouse wheel changes page
+- **F2 copies to the clipboard:** take a screenshot with the normal Minecraft key (`F2`) and the image is also copied to your clipboard, ready to paste into Discord with `Ctrl+V`. Nothing is taken twice
+- **Gradient color picker:** click the bar under any color box in the Gradient Generator to open a picker with a saturation / brightness square, a hue slider and quick colors. The `?` button picks a random color. Typing a hex code still works
+- **HUD key reminder:** the MineBerry Client menu now always shows the key that hides and shows the whole HUD (`Y` by default), in the header and in the **Settings** tab. It follows the key if you rebind it
+- **Changed:** the `F9` screenshot key is now an optional **Extra screenshot key**, unbound by default. If you already use `F9`, it keeps working
 
 ## Screenshots
 
@@ -123,11 +123,12 @@ A separate menu for the on-screen HUD. Press **Right Shift** to open it.
   - Overlapping boxes get a **red outline**
   - A box stays attached to the corner nearest to where you drop it, so it keeps its place when the window or GUI scale changes
 - **Settings** and **Waypoints** tabs are also in this menu
-- Show or hide the whole HUD with `Y`
+- Show or hide the whole HUD with `Y` (rebindable). A reminder is always shown in the menu header and in the **Settings** tab
 
 ### Gradient Generator
 Make colorful chat text without hand-writing color codes. Open it from the **Gradient** button in the **Tools** tab.
-- Type your text (up to 64 characters) and pick **2 to 6 colors** as hex codes (`#RRGGBB`)
+- Type your text (up to 64 characters) and pick **2 to 6 colors**, by typing a hex code (`#RRGGBB`) or with the color picker
+- **Color picker:** click the bar under a color box. Drag in the square for saturation and brightness, drag the slider for hue, or click a quick color. The `?` button picks a random color. `Esc` or a click outside closes it
 - **Live preview** shows the text colored letter by letter, exactly as it will look
 - Six built-in presets to cycle through: **MineBerry**, **Sunset**, **Ocean**, **Mint**, **Fire** and **Rainbow**
 - Add or remove color stops with the **+ Color** and **- Color** buttons
@@ -258,10 +259,11 @@ Everything you need for a staff report, captured automatically.
 
 ### Screenshot
 Take a screenshot and paste it straight into Discord.
-- Press `F9` to take a screenshot. It is saved in `screenshots/mineberry` **and copied to your clipboard as an image**, so `Ctrl+V` pastes it
-- A chat line confirms the copy. If the image can't be copied, the file path is copied instead
-- The **Screenshots** tab (or the gear on the Screenshot card) lists your screenshots, newest first, including normal `F2` ones
-- **Copy** puts any screenshot on your clipboard, **Open** shows it in your image viewer. There are also **Open folder** and **Refresh** buttons
+- Press `F2` (the normal Minecraft screenshot key) to take a screenshot. Minecraft saves it in `screenshots/` as always, and the mod **also copies it to your clipboard as an image**, so `Ctrl+V` pastes it. Nothing is taken twice
+- It is silent when it works. If the image can't be copied, you get a chat line and the file path is copied instead
+- Want a second key? Bind **Extra screenshot key** under *Options > Controls > Key Binds*. It saves to `screenshots/mineberry` and copies too. It is unbound by default
+- The **Screenshots** tab (or the gear on the Screenshot card) opens the gallery: a grid of thumbnails of your screenshots, newest first, including the normal `F2` ones. **Right-click** a picture to **Copy image**, **Open**, **Show folder** or **Delete** (it asks you to click twice). Double-click opens a picture, and the mouse wheel changes page
+- **Open folder** and **Refresh** buttons sit at the top of the gallery
 - The copy uses your system's tools: PowerShell on Windows, `osascript` on macOS, and `wl-copy` or `xclip` on Linux (install one of them)
 
 ### Waypoints
@@ -298,7 +300,8 @@ The first time you start the game with the mod, a window asks you to agree to a 
 | Quick Reply (`/r`) | `R` |
 | Radial Menu (hold, release on a slice) | `V` |
 | Show / Hide HUD | `Y` |
-| Screenshot (copy to clipboard) | `F9` |
+| Screenshot (copy to clipboard) | `F2` (the normal screenshot key) |
+| Extra screenshot key (optional) | not bound |
 | Search Chat | `F8` |
 | Add Waypoint Here | `B` |
 | Open Waypoint List | `N` |
@@ -418,6 +421,14 @@ Rebind it under *Options > Controls > Key Binds*.
 ## Older Versions
 
 Earlier release notes. The newest ones are at the top of this page.
+
+### 1.7.1
+
+- **Update popup fixed:** the "new version" popup now really opens on the title screen when a newer version is out, and you get the chat message when you join a world. Before, the update was only found after you opened the Control Center
+- **Modrinth link:** the popup, the chat message and the Tools tab now show a **GitHub** and a **Modrinth** button side by side, so you can download from the site you prefer
+- **Don't remind me:** the update popup has a checkbox. Tick it and the popup and chat message stay quiet for that version. When a newer version comes out, you get notified again
+- **No more overlapping popups:** the update popup waits until the Terms of Use and What's New windows are closed
+- **First launch:** the update check starts as soon as you click **I Agree**
 
 ### 1.7.0
 

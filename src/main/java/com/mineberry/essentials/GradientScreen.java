@@ -8,16 +8,22 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Chat gradient generator, in the spirit of Birdflop's RGBirdflop: type some text, pick 2 to 6 hex colors,
  * see a live preview and copy the result in the format your server understands. Same flat MineBerry look as the other screens.
+ *
+ * Click the bar under a color box to open the color picker: a saturation / brightness square, a hue slider and a grid of
+ * quick colors (the last one picks a random color). Typing a hex code still works, and the picker follows what you type.
+ * Mouse buttons for the picker are polled from GLFW once per frame, like the gallery and the HUD editor do.
  */
 public class GradientScreen extends Screen {
 
@@ -29,6 +35,20 @@ public class GradientScreen extends Screen {
 
     /** Output formats, cycled with the Format button. Saved by index in the config. */
     static final String[] FORMATS = {"&#RRGGBB", "<#RRGGBB>", "&x&R&R&G&G&B&B", "MiniMessage"};
+
+    // ---- color picker
+    private static final int PICK_SV = 88, PICK_HUE_W = 10, PICK_PAD = 6, PICK_TITLE_H = 12, PICK_STEP = 2;
+    private static final int PICK_COLS = 5, PICK_ROWS = 3, PICK_CELL_W = 19, PICK_CELL_H = 12, PICK_CELL_GAP = 2;
+    private static final int PICK_INNER_W = PICK_SV + PICK_PAD + PICK_HUE_W;
+    private static final int PICK_W = PICK_INNER_W + 2 * PICK_PAD;
+    private static final int PICK_GRID_H = PICK_ROWS * PICK_CELL_H + (PICK_ROWS - 1) * PICK_CELL_GAP;
+    private static final int PICK_H = PICK_PAD + PICK_TITLE_H + PICK_SV + PICK_PAD + PICK_GRID_H + PICK_PAD;
+    private static final int SWATCH_H = 6;
+    /** Quick colors under the square. -1 is the random button. */
+    private static final int[] PALETTE = {
+            0xF7E9C8, 0xC8E3DF, 0xC6DCF1, 0xDCCFF0, 0xF0C6DF,
+            0xFFCF5C, 0x5EE0C0, 0x4A9BE0, 0x9B5CE6, 0xE5399A,
+            0x000000, 0x555555, 0xAAAAAA, 0xFFFFFF, -1};
 
     private record Preset(String name, List<String> colors) {}
 
@@ -49,7 +69,16 @@ public class GradientScreen extends Screen {
 
     private final String[] hex = new String[MAX_COLORS];
     private int colorCount, format, styles, presetIndex = -1;
-    private String status = "Type text, pick colors, then copy";
+    private String status = "Click a color bar to open the picker";
+
+    // color picker state
+    private int pick = -1;                 // the color slot being edited, -1 = picker closed
+    private int drag;                      // 0 nothing, 1 square, 2 hue slider
+    private float hue, sat = 1f, val = 1f;
+    private String lastWritten = "";       // what the picker last put in the hex field, to notice typing
+    private boolean prevLeft;
+    private int popX, popY;
+    private final Map<AbstractWidget, Boolean> baseActive = new HashMap<>();
 
     // y values relative to py
     private int px, py, pw, ph;
@@ -73,8 +102,11 @@ public class GradientScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
-        widgets.clear(); cards.clear();
+        widgets.clear(); cards.clear(); baseActive.clear();
         java.util.Arrays.fill(hexBoxes, null);
+        pick = -1;
+        drag = 0;
+        prevLeft = mouseDown(GLFW.GLFW_MOUSE_BUTTON_LEFT);   // the click that opened this screen must not count
 
         pw = Math.min(PANEL_W, this.width - 20);
         textLabelY = HEADER_H + 10;
@@ -82,7 +114,7 @@ public class GradientScreen extends Screen {
         colorLabelY = textY + BTN_H + 8;
         colorY = colorLabelY + 14;
         swatchY = colorY + BTN_H + 1;
-        ctrlY = swatchY + 4 + 6;
+        ctrlY = swatchY + SWATCH_H + 6;
         styleY = ctrlY + BTN_H + 6;
         previewLabelY = styleY + CARD_H + 10;
         previewY = previewLabelY + 14;
@@ -92,7 +124,10 @@ public class GradientScreen extends Screen {
         px = (this.width - pw) / 2;
         py = Math.max(6, (this.height - ph) / 2);
 
-        this.addRenderableOnly((g, mouseX, mouseY, delta) -> drawDecor(g));
+        this.addRenderableOnly((g, mouseX, mouseY, delta) -> {
+            handleMouse(mouseX, mouseY);
+            drawDecor(g);
+        });
 
         int left = px + MARGIN, right = px + pw - MARGIN;
 
@@ -157,7 +192,10 @@ public class GradientScreen extends Screen {
                 .bounds(right - 60, py + footerY + 6, 60, BTN_H).build());
 
         // MineBerry look drawn over the vanilla buttons (added last so it renders on top)
+        for (AbstractWidget w : widgets) baseActive.put(w, w.active);
         this.addRenderableOnly((g, mouseX, mouseY, delta) -> Ui.buttons(g, this.font, widgets, cards, mouseX, mouseY));
+        // drawn last so the picker sits on top of everything
+        this.addRenderableOnly((g, mouseX, mouseY, delta) -> drawPicker(g, mouseX, mouseY));
     }
 
     private <T extends AbstractWidget> T add(T widget) {
@@ -311,7 +349,9 @@ public class GradientScreen extends Screen {
             Ui.inputBox(g, box);
             int c = parseHex(hex[i]);
             int sx = left + i * (slotW + 4);
-            Ui.fill(g, sx + 1, py + swatchY, sx + slotW - 1, py + swatchY + 4, c >= 0 ? (c | 0xFF000000) : WARN);
+            int bar = c >= 0 ? (c | 0xFF000000) : WARN;
+            if (i == pick) Ui.rect(g, sx, py + swatchY - 1, slotW, SWATCH_H + 2, Ui.ACCENT, bar);
+            else Ui.fill(g, sx + 1, py + swatchY, sx + slotW - 1, py + swatchY + SWATCH_H, bar);
         }
 
         // live preview
@@ -359,10 +399,223 @@ public class GradientScreen extends Screen {
         return out;
     }
 
+    // ---------------------------------------------------------------- color picker
+
+    private static boolean mouseDown(int button) {
+        long window = GLFW.glfwGetCurrentContext();
+        return window != 0L && GLFW.glfwGetMouseButton(window, button) == GLFW.GLFW_PRESS;
+    }
+
+    private void layoutPopup() {
+        int left = px + MARGIN;
+        popX = Math.max(4, Math.min(left + pick * (slotW + 4), this.width - PICK_W - 4));
+        popY = Math.max(4, Math.min(py + swatchY + 10, this.height - PICK_H - 4));
+    }
+
+    private int svX() { return popX + PICK_PAD; }
+    private int svY() { return popY + PICK_PAD + PICK_TITLE_H; }
+    private int hueX() { return svX() + PICK_SV + PICK_PAD; }
+    private int gridX() { return svX(); }
+    private int gridY() { return svY() + PICK_SV + PICK_PAD; }
+
+    /** The color bar (under a color box) at the cursor, or -1. */
+    private int barAt(int mx, int my) {
+        int left = px + MARGIN;
+        if (my < py + swatchY - 1 || my >= py + swatchY + SWATCH_H + 1) return -1;
+        for (int i = 0; i < colorCount; i++) {
+            int sx = left + i * (slotW + 4);
+            if (mx >= sx && mx < sx + slotW) return i;
+        }
+        return -1;
+    }
+
+    private static boolean inside(int mx, int my, int x, int y, int w, int h) {
+        return mx >= x && mx < x + w && my >= y && my < y + h;
+    }
+
+    /** The quick color under the cursor (index into PALETTE), or -1. */
+    private int paletteAt(int mx, int my) {
+        for (int i = 0; i < PALETTE.length; i++) {
+            int cx = gridX() + (i % PICK_COLS) * (PICK_CELL_W + PICK_CELL_GAP);
+            int cy = gridY() + (i / PICK_COLS) * (PICK_CELL_H + PICK_CELL_GAP);
+            if (inside(mx, my, cx, cy, PICK_CELL_W, PICK_CELL_H)) return i;
+        }
+        return -1;
+    }
+
+    private void openPicker(int slot) {
+        pick = slot;
+        drag = 0;
+        int rgb = parseHex(hex[slot]);
+        setHsvFrom(rgb < 0 ? 0xFFFFFF : rgb);
+        lastWritten = hex[slot];
+    }
+
+    private void setHsvFrom(int rgb) {
+        float[] hsv = rgbToHsv(rgb);
+        // grey, white and black have no real hue: keep the one the slider had, so it doesn't jump to red
+        if (hsv[1] > 0f && hsv[2] > 0f) hue = hsv[0];
+        sat = hsv[1];
+        val = hsv[2];
+    }
+
+    /** Puts the picker's color into the hex box of the slot being edited. */
+    private void commit(int rgb) {
+        String text = String.format(Locale.ROOT, "#%06X", rgb & 0xFFFFFF);
+        hex[pick] = text;
+        if (hexBoxes[pick] != null) hexBoxes[pick].setValue(text);
+        lastWritten = text;
+    }
+
+    private void commitHsv() {
+        commit(hsvToRgb(hue, sat, val));
+    }
+
+    private void applyDrag(int mx, int my) {
+        if (drag == 1) {
+            sat = clamp01((mx - svX()) / (float) (PICK_SV - 1));
+            val = 1f - clamp01((my - svY()) / (float) (PICK_SV - 1));
+        } else if (drag == 2) {
+            hue = clamp01((my - svY()) / (float) (PICK_SV - 1)) * 0.9999f;
+        }
+        commitHsv();
+    }
+
+    private void handleMouse(int mx, int my) {
+        boolean left = mouseDown(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        boolean press = left && !prevLeft;
+        prevLeft = left;
+
+        // buttons underneath the picker must not react while it is open (the hex boxes keep working)
+        boolean open = pick >= 0;
+        for (AbstractWidget w : widgets) {
+            if (w instanceof EditBox) continue;
+            w.active = !open && baseActive.getOrDefault(w, true);
+        }
+
+        if (open) {
+            layoutPopup();
+            // typing in the hex box moves the picker too
+            if (drag == 0 && !hex[pick].equals(lastWritten)) {
+                int rgb = parseHex(hex[pick]);
+                if (rgb >= 0) setHsvFrom(rgb);
+                lastWritten = hex[pick];
+            }
+        }
+
+        if (press) {
+            int bar = barAt(mx, my);
+            if (bar >= 0) {
+                if (bar == pick) { pick = -1; drag = 0; } else openPicker(bar);
+            } else if (open) {
+                if (inside(mx, my, svX(), svY(), PICK_SV, PICK_SV)) { drag = 1; applyDrag(mx, my); }
+                else if (inside(mx, my, hueX(), svY(), PICK_HUE_W, PICK_SV)) { drag = 2; applyDrag(mx, my); }
+                else {
+                    int cell = paletteAt(mx, my);
+                    if (cell >= 0) {
+                        if (PALETTE[cell] < 0) {
+                            ThreadLocalRandom r = ThreadLocalRandom.current();
+                            hue = r.nextFloat() * 0.9999f;
+                            sat = 0.55f + 0.45f * r.nextFloat();
+                            val = 0.7f + 0.3f * r.nextFloat();
+                            commitHsv();
+                        } else {
+                            setHsvFrom(PALETTE[cell]);
+                            commit(PALETTE[cell]);
+                        }
+                    } else if (!inside(mx, my, popX, popY, PICK_W, PICK_H)) {
+                        pick = -1;
+                    }
+                }
+            }
+        }
+        if (drag != 0) {
+            if (left && pick >= 0) applyDrag(mx, my); else drag = 0;
+        }
+    }
+
+    private void drawPicker(GuiGraphicsExtractor g, int mx, int my) {
+        if (pick < 0) return;
+        layoutPopup();
+        Ui.rect(g, popX, popY, PICK_W, PICK_H, Ui.BTN_BORDER, Ui.BG | 0xFF000000);
+        Ui.txt(g, this.font, "Color " + (pick + 1), popX + PICK_PAD, popY + PICK_PAD + 1, Ui.MUTED, false);
+
+        // saturation / brightness square for the current hue
+        int sx = svX(), sy = svY();
+        for (int cx = 0; cx < PICK_SV; cx += PICK_STEP) {
+            float s = cx / (float) (PICK_SV - 1);
+            for (int cy = 0; cy < PICK_SV; cy += PICK_STEP) {
+                float v = 1f - cy / (float) (PICK_SV - 1);
+                Ui.fill(g, sx + cx, sy + cy, sx + cx + PICK_STEP, sy + cy + PICK_STEP, 0xFF000000 | hsvToRgb(hue, s, v));
+            }
+        }
+        int markX = sx + Math.round(sat * (PICK_SV - 1)), markY = sy + Math.round((1f - val) * (PICK_SV - 1));
+        Ui.rect(g, markX - 4, markY - 4, 9, 9, 0xFF000000, 0);
+        Ui.rect(g, markX - 3, markY - 3, 7, 7, 0xFFFFFFFF, 0);
+
+        // hue slider
+        int hx = hueX();
+        for (int cy = 0; cy < PICK_SV; cy += PICK_STEP) {
+            Ui.fill(g, hx, sy + cy, hx + PICK_HUE_W, sy + cy + PICK_STEP, 0xFF000000 | hsvToRgb(cy / (float) (PICK_SV - 1) * 0.9999f, 1f, 1f));
+        }
+        int hy = sy + Math.round(hue / 0.9999f * (PICK_SV - 1));
+        Ui.rect(g, hx - 2, hy - 2, PICK_HUE_W + 4, 5, 0xFF000000, 0);
+        Ui.rect(g, hx - 1, hy - 1, PICK_HUE_W + 2, 3, 0xFFFFFFFF, 0);
+
+        // quick colors; the last one is the random button
+        int hover = paletteAt(mx, my);
+        for (int i = 0; i < PALETTE.length; i++) {
+            int cx = gridX() + (i % PICK_COLS) * (PICK_CELL_W + PICK_CELL_GAP);
+            int cy = gridY() + (i / PICK_COLS) * (PICK_CELL_H + PICK_CELL_GAP);
+            int border = i == hover ? Ui.BTN_BORDER_HOVER : Ui.BTN_BORDER;
+            if (PALETTE[i] < 0) {
+                Ui.rect(g, cx, cy, PICK_CELL_W, PICK_CELL_H, border, i == hover ? Ui.BTN_HOVER : Ui.BTN);
+                Ui.txt(g, this.font, "?", cx + (PICK_CELL_W - this.font.width("?")) / 2, cy + (PICK_CELL_H - 8) / 2 + 1, Ui.TEXT, false);
+            } else {
+                Ui.rect(g, cx, cy, PICK_CELL_W, PICK_CELL_H, border, 0xFF000000 | PALETTE[i]);
+            }
+        }
+    }
+
+    private static float clamp01(float f) {
+        return Math.max(0f, Math.min(1f, f));
+    }
+
+    /** h, s, v in 0..1 (h below 1) to 0xRRGGBB. */
+    static int hsvToRgb(float h, float s, float v) {
+        float h6 = clamp01(h) * 6f;
+        int i = (int) Math.floor(h6) % 6;
+        float f = h6 - (float) Math.floor(h6);
+        float p = v * (1f - s), q = v * (1f - f * s), t = v * (1f - (1f - f) * s);
+        float r, g, b;
+        switch (i) {
+            case 0 -> { r = v; g = t; b = p; }
+            case 1 -> { r = q; g = v; b = p; }
+            case 2 -> { r = p; g = v; b = t; }
+            case 3 -> { r = p; g = q; b = v; }
+            case 4 -> { r = t; g = p; b = v; }
+            default -> { r = v; g = p; b = q; }
+        }
+        return (Math.round(r * 255) << 16) | (Math.round(g * 255) << 8) | Math.round(b * 255);
+    }
+
+    /** 0xRRGGBB to {h, s, v}, each in 0..1. */
+    static float[] rgbToHsv(int rgb) {
+        float r = ((rgb >> 16) & 0xFF) / 255f, g = ((rgb >> 8) & 0xFF) / 255f, b = (rgb & 0xFF) / 255f;
+        float max = Math.max(r, Math.max(g, b)), min = Math.min(r, Math.min(g, b)), d = max - min;
+        float h;
+        if (d == 0f) h = 0f;
+        else if (max == r) h = (((g - b) / d) % 6f + 6f) % 6f / 6f;
+        else if (max == g) h = ((b - r) / d + 2f) / 6f;
+        else h = ((r - g) / d + 4f) / 6f;
+        return new float[]{h, max == 0f ? 0f : d / max, max};
+    }
+
     // ---------------------------------------------------------------- closing (instant)
 
     @Override
     public void onClose() {
+        if (pick >= 0) { pick = -1; drag = 0; return; }       // Esc closes the picker first
         List<String> colors = new ArrayList<>();
         for (int i = 0; i < colorCount; i++) {
             int c = parseHex(hex[i]);
