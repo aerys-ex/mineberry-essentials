@@ -1,0 +1,1067 @@
+{
+ "entries": [
+  {
+   "keywords": [
+    "hi",
+    "hello",
+    "hey",
+    "hiya",
+    "heya",
+    "yo",
+    "sup",
+    "hola",
+    "howdy"
+   ],
+   "answers": [
+    "Hey! What do you want to know?",
+    "Hi there. Ask me anything about {server}.",
+    "Hey, what's up?",
+    "Yo! Need something?"
+   ]
+  },
+  {
+   "keywords": [
+    "good morning",
+    "morning"
+   ],
+   "answers": [
+    "Morning! What can I do for you?",
+    "Morning. Ask away."
+   ]
+  },
+  {
+   "keywords": [
+    "good afternoon",
+    "afternoon"
+   ],
+   "answers": [
+    "Afternoon! What do you need?",
+    "Hey, good afternoon. What's up?"
+   ]
+  },
+  {
+   "keywords": [
+    "good evening",
+    "evening"
+   ],
+   "answers": [
+    "Evening! What can I help with?",
+    "Hey, good evening."
+   ]
+  },
+  {
+   "keywords": [
+    "good night",
+    "goodnight",
+    "gn",
+    "night"
+   ],
+   "answers": [
+    "Night! See you around.",
+    "Sleep well."
+   ]
+  },
+  {
+   "keywords": [
+    "how are you",
+    "how r u",
+    "how are u",
+    "hows it going",
+    "how do you do",
+    "how you doing",
+    "whats up",
+    "wassup",
+    "what up",
+    "hru"
+   ],
+   "answers": [
+    "Doing fine, thanks. You?",
+    "All good here. What's up with you?",
+    "Can't complain. What can I help with?"
+   ]
+  },
+  {
+   "keywords": [
+    "thanks",
+    "thank you",
+    "thx",
+    "ty",
+    "cheers",
+    "appreciate it",
+    "thank u"
+   ],
+   "answers": [
+    "No problem!",
+    "Anytime.",
+    "You're welcome!",
+    "Glad it helped."
+   ]
+  },
+  {
+   "keywords": [
+    "bye",
+    "goodbye",
+    "cya",
+    "see you",
+    "see ya",
+    "gtg",
+    "got to go",
+    "later",
+    "laters"
+   ],
+   "answers": [
+    "See you in game!",
+    "Later!",
+    "Take care, see you around."
+   ]
+  },
+  {
+   "keywords": [
+    "who are you",
+    "what are you",
+    "your name",
+    "who is aerion",
+    "what is aerion",
+    "whats aerion",
+    "aerion"
+   ],
+   "title": "who are you",
+   "answers": [
+    "I'm Aerion, the guide inside MineBerry Essentials. I'm a small program, not a person, and I answer from a guide the mod team wrote. So I can't see live things like who is online.",
+    "Aerion. I live in the Control Center and answer questions about {server} from a built-in guide. No live server info though, I can't see who's online."
+   ]
+  },
+  {
+   "keywords": [
+    "are you a bot",
+    "are you bot",
+    "you a bot",
+    "are you ai",
+    "are you an ai",
+    "are you a ai",
+    "you a robot",
+    "are you a robot",
+    "are you human",
+    "are you real",
+    "are you a person",
+    "are you a real",
+    "are you chatgpt",
+    "are you gpt",
+    "is this a bot",
+    "is this ai",
+    "bot or human",
+    "r u a bot",
+    "r u bot",
+    "r u human"
+   ],
+   "title": "are you a bot",
+   "answers": [
+    "I'm a bot, yeah. No AI model behind me, I just match your question against a guide the mod team wrote. That's why I'm quick, but I only know what's in it.",
+    "Bot, yes. A small one that reads a guide written by the mod team, nothing fancy. I can't think outside of it."
+   ]
+  },
+  {
+   "keywords": [
+    "who made you",
+    "who built you",
+    "who created you",
+    "who coded you",
+    "who programmed you",
+    "who wrote you",
+    "your creator",
+    "your developer",
+    "who is your dev",
+    "who makes you",
+    "who is your dad",
+    "who owns you",
+    "who is your maker",
+    "who are your devs",
+    "who are your developers",
+    "who made aerion",
+    "who made this mod",
+    "who made the mod",
+    "who made mineberry essentials",
+    "who made essentials"
+   ],
+   "answers": [
+    "Aerys (Agio12) and Nice_EX made me. They build MineBerry Essentials together and keep my guide up to date.",
+    "I was made by Aerys (Agio12) and Nice_EX, the two people behind MineBerry Essentials."
+   ]
+  },
+  {
+   "keywords": [
+    "are you there",
+    "you there",
+    "still there",
+    "anyone there",
+    "hello is anyone"
+   ],
+   "answers": [
+    "Yep, I'm here.",
+    "Right here. What's up?"
+   ]
+  },
+  {
+   "keywords": [
+    "how old are you",
+    "what is your age",
+    "whats your age"
+   ],
+   "answer": "Pretty new. I showed up with MineBerry Essentials 1.8.0."
+  },
+  {
+   "keywords": [
+    "where are you from",
+    "where do you live",
+    "where are you"
+   ],
+   "answer": "Inside your game, in the Control Center. It's cozy."
+  },
+  {
+   "keywords": [
+    "do you play minecraft",
+    "do you play mineberry",
+    "do you play",
+    "can you play"
+   ],
+   "answer": "I live inside the mod, so sort of. I can't actually play though."
+  },
+  {
+   "keywords": [
+    "what time is it",
+    "whats the time",
+    "what day is it",
+    "whats the date",
+    "what is the time",
+    "what is the date",
+    "todays date"
+   ],
+   "answers": [
+    "It's {time} on {date}, going by your computer's clock.",
+    "{time}, {date}. That's your computer's clock, not mine."
+   ]
+  },
+  {
+   "keywords": [
+    "tell me a joke",
+    "joke",
+    "jokes",
+    "make me laugh",
+    "something funny",
+    "say something funny"
+   ],
+   "title": "a joke",
+   "answers": [
+    "Why did the creeper cross the road? To get to the other ssssside.",
+    "What do you call a pig that does karate? A pork chop.",
+    "Why did the Enderman get kicked out of class? He kept teleporting out.",
+    "What's a skeleton's least favorite room? The living room.",
+    "Why don't zombies go to the gym? They already have dead lifts.",
+    "Why don't skeletons fight each other? They don't have the guts.",
+    "What do you call a Minecraft player who never finishes? A work in progress.",
+    "Why did the player bring a ladder to the nether? To get to the next level.",
+    "I told a creeper a joke. It blew up. Tough crowd."
+   ]
+  },
+  {
+   "keywords": [
+    "bored",
+    "im bored",
+    "i am bored",
+    "so bored"
+   ],
+   "answers": [
+    "Same. Ask me what a random thing gets you punished for, see if you knew.",
+    "Go grind something. Or try me on a punishment, some of them are longer than you'd think."
+   ]
+  },
+  {
+   "keywords": [
+    "lol",
+    "lmao",
+    "lmfao",
+    "haha",
+    "hahaha",
+    "hehe",
+    "xd",
+    "rofl"
+   ],
+   "answers": [
+    "Ha.",
+    "Ha, yeah.",
+    "Glad you liked that."
+   ]
+  },
+  {
+   "keywords": [
+    "ok",
+    "okay",
+    "k",
+    "kk",
+    "cool",
+    "nice",
+    "alright",
+    "got it",
+    "i see",
+    "great",
+    "awesome",
+    "sweet",
+    "fine",
+    "ight"
+   ],
+   "answers": [
+    "Cool.",
+    "Alright. Anything else?",
+    "Got it.",
+    "Nice."
+   ]
+  },
+  {
+   "keywords": [
+    "yes",
+    "yeah",
+    "yep",
+    "yup",
+    "yes please"
+   ],
+   "answers": [
+    "Alright. What do you want to know?",
+    "Okay, go ahead."
+   ]
+  },
+  {
+   "keywords": [
+    "no",
+    "nope",
+    "nah",
+    "no thanks"
+   ],
+   "answers": [
+    "Okay. I'm here if you need anything.",
+    "Alright, no worries."
+   ]
+  },
+  {
+   "keywords": [
+    "sorry",
+    "my bad",
+    "oops",
+    "whoops"
+   ],
+   "answers": [
+    "No worries.",
+    "All good."
+   ]
+  },
+  {
+   "keywords": [
+    "good bot",
+    "nice bot",
+    "well done",
+    "good job",
+    "great job",
+    "love you",
+    "you are great",
+    "youre great",
+    "you are smart",
+    "youre smart",
+    "best bot",
+    "thats helpful",
+    "very helpful"
+   ],
+   "answers": [
+    "Thanks, appreciate it.",
+    "Aw, thanks.",
+    "Thanks! What else you got?"
+   ]
+  },
+  {
+   "keywords": [
+    "stupid",
+    "dumb",
+    "useless",
+    "idiot",
+    "trash",
+    "bad bot",
+    "you suck",
+    "worst bot",
+    "you are bad",
+    "youre bad",
+    "stupid bot",
+    "dumb bot",
+    "useless bot"
+   ],
+   "answers": [
+    "Fair, I don't know everything. Tell me what you were after and I'll try again.",
+    "Ouch. I only know what's in my guide, but I'll give it another go. What do you need?"
+   ]
+  },
+  {
+   "keywords": [
+    "i love you",
+    "love u",
+    "marry me"
+   ],
+   "answers": [
+    "Ha, thanks. Let's keep it to store prices and rules though.",
+    "Flattering, but I'm a guide. Ask me something about {server}."
+   ]
+  },
+  {
+   "keywords": [
+    "can you hear me",
+    "do you understand me",
+    "do you understand"
+   ],
+   "answer": "I read what you type, so yes. Keep it short and I'll do better."
+  },
+  {
+   "keywords": [
+    "who is aerys",
+    "who is agio12",
+    "who is agio",
+    "about aerys",
+    "about agio12",
+    "aerys",
+    "agio12",
+    "what does aerys do",
+    "what does agio12 do",
+    "is aerys staff",
+    "aerys staff",
+    "is agio12 staff",
+    "tell me about aerys"
+   ],
+   "title": "who Aerys is",
+   "answers": [
+    "Aerys (Agio12 in game) is a content creator who makes tutorials for MinePeak and MineBerry, and he's a chat cop on the MineBerry Discord. He made MineBerry Essentials, and me, together with Nice_EX. His YouTube is Aerys Minecraft (@AerysMC).",
+    "Aerys, or Agio12 in game. He makes MinePeak and MineBerry tutorials on YouTube (Aerys Minecraft, @AerysMC), he's a chat cop on the MineBerry Discord, and he built this mod with Nice_EX."
+   ]
+  },
+  {
+   "keywords": [
+    "aerys discord",
+    "aerys dc",
+    "agio12 discord",
+    "agio12 dc",
+    "agio discord",
+    "agio dc",
+    "contact aerys",
+    "contact agio12",
+    "dm aerys",
+    "add aerys",
+    "aerys tag",
+    "aerys username"
+   ],
+   "title": "Aerys' Discord",
+   "answers": [
+    "Aerys' Discord is ex.aerys.",
+    "You can find Aerys on Discord as ex.aerys."
+   ]
+  },
+  {
+   "keywords": [
+    "aerys youtube",
+    "aerys yt",
+    "aerys channel",
+    "agio12 youtube",
+    "agio12 yt",
+    "aerys videos",
+    "aerys minecraft",
+    "aerysmc",
+    "youtube",
+    "youtube channel",
+    "yt channel",
+    "your youtube"
+   ],
+   "title": "Aerys' YouTube",
+   "answers": [
+    "Aerys' YouTube channel is Aerys Minecraft, @AerysMC. He makes tutorials for MinePeak and MineBerry.",
+    "It's Aerys Minecraft, @AerysMC on YouTube. Tutorials for MinePeak and MineBerry."
+   ]
+  },
+  {
+   "keywords": [
+    "tutorial",
+    "tutorials",
+    "video guide",
+    "video tutorial",
+    "guide video",
+    "learn minepeak",
+    "learn mineberry",
+    "how to play minepeak",
+    "how to play mineberry",
+    "where can i learn"
+   ],
+   "title": "tutorials",
+   "answers": [
+    "Aerys makes tutorials for MinePeak and MineBerry on YouTube, on the Aerys Minecraft channel (@AerysMC).",
+    "For tutorials, Aerys has MinePeak and MineBerry videos on his channel, Aerys Minecraft (@AerysMC)."
+   ]
+  },
+  {
+   "keywords": [
+    "who is nice ex",
+    "who is niceex",
+    "about nice ex",
+    "what does nice ex do",
+    "who is nice_ex"
+   ],
+   "title": "who Nice_EX is",
+   "answers": [
+    "Nice_EX built MineBerry Essentials together with Aerys, and helped make me too."
+   ]
+  },
+  {
+   "keywords": [
+    "what can you do for me",
+    "can you help me",
+    "help me",
+    "i need help",
+    "need help",
+    "i have a question",
+    "can i ask something",
+    "can i ask you something"
+   ],
+   "answers": [
+    "Sure, ask away. I'm best with prices, rules, punishments and how things work in game. I can also change things for you: try \"turn off compass\" or \"remove waypoint home\".",
+    "Of course. What do you need? Short questions work best."
+   ]
+  },
+  {
+   "keywords": [
+    "are you smart",
+    "are you intelligent",
+    "are you clever",
+    "how smart are you"
+   ],
+   "answers": [
+    "Smart enough for rules and prices. I don't think for myself, I read the guide the mod team wrote.",
+    "I know my guide well. Outside of it, not so much."
+   ]
+  },
+  {
+   "keywords": [
+    "do you sleep",
+    "do you eat",
+    "do you get tired"
+   ],
+   "answers": [
+    "Nope. I only run while your game is open.",
+    "No, I just wait here until someone asks something."
+   ]
+  },
+  {
+   "keywords": [
+    "what is your favorite",
+    "whats your favorite",
+    "your favorite",
+    "favorite color",
+    "favorite food",
+    "favorite game",
+    "favorite mob"
+   ],
+   "answers": [
+    "I'd say the creeper. Quiet, committed, always on time.",
+    "No real favorites, but I respect any block that doesn't get griefed."
+   ]
+  },
+  {
+   "keywords": [
+    "tell me something",
+    "tell me a fact",
+    "fun fact",
+    "random fact",
+    "something interesting"
+   ],
+   "answers": [
+    "Fun fact: the creeper started as a mistake. Notch mixed up the size values while making a pig.",
+    "Fun fact: Minecraft's full release was in November 2011.",
+    "Fun fact: Microsoft bought Mojang in 2014.",
+    "Fun fact: a Minecraft day lasts 20 real minutes."
+   ]
+  },
+  {
+   "keywords": [
+    "tell me a story",
+    "bedtime story",
+    "tell me a tale"
+   ],
+   "answers": [
+    "A player once built a base far from spawn and told nobody. It was never griefed. The end.",
+    "Once there was a chest nobody could find. It's still there. The end."
+   ]
+  },
+  {
+   "keywords": [
+    "a riddle",
+    "give me a riddle",
+    "ask me a riddle"
+   ],
+   "answers": [
+    "What has keys but can't open locks? A crate. Or a keyboard, that works too.",
+    "I'm full of holes but I still hold water. What am I? A sponge."
+   ]
+  },
+  {
+   "keywords": [
+    "i am sad",
+    "im sad",
+    "i feel sad",
+    "i feel bad",
+    "bad day",
+    "i had a bad day",
+    "im depressed",
+    "im upset"
+   ],
+   "answers": [
+    "Sorry to hear that. I'm only a small bot, but I hope your day gets better. Talking to a friend or someone you trust helps too.",
+    "That sounds rough. Take a break if you need one, the server will still be here."
+   ]
+  },
+  {
+   "keywords": [
+    "im angry",
+    "i am angry",
+    "im mad",
+    "so annoying",
+    "this is annoying",
+    "im pissed"
+   ],
+   "answers": [
+    "Understandable. Take a breath, the game will wait. If someone broke a rule, I can tell you what happens to them.",
+    "That's frustrating. If it's a player issue, staff can help on the Discord: https://mineberry.org/discord"
+   ]
+  },
+  {
+   "keywords": [
+    "im new",
+    "i am new",
+    "new player",
+    "new here",
+    "just joined",
+    "first time here",
+    "im a beginner",
+    "beginner"
+   ],
+   "answers": [
+    "Welcome! Ask me about the rules, ranks and prices, or how to claim land and set a home. The Discord is also a good place to start: https://mineberry.org/discord",
+    "Welcome to {server}. Good first steps: read the rules, then ask me how to claim land or set a home."
+   ]
+  },
+  {
+   "keywords": [
+    "welcome",
+    "welcome back"
+   ],
+   "answers": [
+    "Thanks!",
+    "Good to be here."
+   ]
+  },
+  {
+   "keywords": [
+    "good luck",
+    "wish me luck",
+    "gl"
+   ],
+   "answers": [
+    "Good luck!",
+    "You've got this."
+   ]
+  },
+  {
+   "keywords": [
+    "happy birthday",
+    "hbd"
+   ],
+   "answers": [
+    "Happy birthday! Hope it's a good one.",
+    "Happy birthday! Go enjoy it."
+   ]
+  },
+  {
+   "keywords": [
+    "merry christmas",
+    "happy new year",
+    "happy halloween",
+    "happy holidays",
+    "happy eid",
+    "happy diwali"
+   ],
+   "answers": [
+    "Happy holidays! Hope you have a good one.",
+    "Same to you!"
+   ]
+  },
+  {
+   "keywords": [
+    "gg",
+    "good game",
+    "ggs"
+   ],
+   "answers": [
+    "GG!",
+    "GG, well played."
+   ]
+  },
+  {
+   "keywords": [
+    "wtf",
+    "omg",
+    "bruh",
+    "bro",
+    "what the heck",
+    "what the hell",
+    "smh"
+   ],
+   "answers": [
+    "Yeah, I know.",
+    "That's a lot. What happened?",
+    "Rough. Tell me what's up and I'll try to help."
+   ]
+  },
+  {
+   "keywords": [
+    "idk",
+    "i dont know",
+    "not sure",
+    "dunno",
+    "no idea",
+    "maybe"
+   ],
+   "answers": [
+    "No worries. Ask me about rules, prices or punishments and we'll start there.",
+    "That's fine. Take your time."
+   ]
+  },
+  {
+   "keywords": [
+    "never mind",
+    "nevermind",
+    "forget it",
+    "forget that",
+    "nvm"
+   ],
+   "answers": [
+    "Okay, no problem.",
+    "Alright, ask me anything else if you want."
+   ]
+  },
+  {
+   "keywords": [
+    "brb",
+    "one sec",
+    "hold on",
+    "wait a sec",
+    "give me a second",
+    "hang on"
+   ],
+   "answers": [
+    "Take your time.",
+    "Sure, I'll be here."
+   ]
+  },
+  {
+   "keywords": [
+    "afk"
+   ],
+   "answers": [
+    "Alright. Careful, some ranks stop the AFK kick, others don't.",
+    "Okay. I'll be here."
+   ]
+  },
+  {
+   "keywords": [
+    "can you remember me",
+    "do you remember me",
+    "will you remember",
+    "do you remember"
+   ],
+   "answers": [
+    "Only until you close the game. I don't keep anything after that, and nothing leaves your computer.",
+    "Just this session. Close the game and I forget, and nothing is sent online."
+   ]
+  },
+  {
+   "keywords": [
+    "do you speak",
+    "what languages",
+    "other language",
+    "speak spanish",
+    "speak hindi",
+    "speak arabic",
+    "speak french",
+    "speak german",
+    "speak turkish",
+    "speak polish",
+    "speak portuguese"
+   ],
+   "answers": [
+    "English only, sorry. The server chat is English too, other languages work in DMs.",
+    "I only know English. Public chat on {server} is English as well."
+   ]
+  },
+  {
+   "keywords": [
+    "are you online",
+    "are you working",
+    "are you broken",
+    "you are not working",
+    "not working"
+   ],
+   "answers": [
+    "I'm here and working. Try a shorter question with the main word in it, like \"chat rules\" or \"legend rank price\".",
+    "Still here. Short questions work best for me."
+   ]
+  },
+  {
+   "keywords": [
+    "you are wrong",
+    "youre wrong",
+    "thats wrong",
+    "wrong answer",
+    "thats not right",
+    "you are incorrect"
+   ],
+   "answers": [
+    "Could be, I only know what's in my guide. Staff have the final say, ask on the Discord: https://mineberry.org/discord",
+    "Sorry about that. My guide might be out of date, the Discord has the latest: https://mineberry.org/discord"
+   ]
+  },
+  {
+   "keywords": [
+    "sing a song",
+    "sing me a song",
+    "rap",
+    "write a poem",
+    "write me a poem",
+    "make a poem"
+   ],
+   "answers": [
+    "I'll skip the singing, but here's a short one: Dig down, build up, don't grief, and follow the rules.",
+    "Roses are red, creepers are green, read the rules and you'll stay clean."
+   ]
+  },
+  {
+   "keywords": [
+    "what is minecraft",
+    "what is mineberry",
+    "what is this server",
+    "about the server",
+    "about mineberry",
+    "tell me about mineberry",
+    "tell me about the server"
+   ],
+   "answers": [
+    "MineBerry is a Minecraft server with four game modes: Survival, Anarchy, OPSurvival and Minigames. Join at mc.mineberry.org, the website is mineberry.org.",
+    "MineBerry is a Minecraft server, address mc.mineberry.org. Game modes: Survival, Anarchy, OPSurvival and Minigames."
+   ]
+  },
+  {
+   "keywords": [
+    "is it cracked",
+    "cracked account",
+    "cracked",
+    "no premium",
+    "non premium",
+    "offline mode",
+    "do i need minecraft",
+    "do i need premium",
+    "do i need to buy minecraft",
+    "can i play without buying"
+   ],
+   "answers": [
+    "Yes, MineBerry is cracked, so offline accounts can join. That also means someone could join with your username, so link your account to Discord and use a strong password.",
+    "MineBerry is cracked, offline accounts work. Register with /register and link your account to Discord to keep it safe."
+   ]
+  },
+  {
+   "keywords": [
+    "what version",
+    "which version",
+    "minecraft version",
+    "what version should i use",
+    "which minecraft version"
+   ],
+   "answer": "I don't have the supported version in my guide. Check the website or ask on the Discord: https://mineberry.org/discord"
+  },
+  {
+   "keywords": [
+    "register",
+    "how to register",
+    "how do i register",
+    "login",
+    "how to login",
+    "how do i login",
+    "cant login",
+    "cant log in",
+    "need to login"
+   ],
+   "answer": "New account: use /register, then /login each time you join. If the server asks for /login but you never registered, the name may already be taken by someone else, ask staff on the Discord: https://mineberry.org/discord",
+   "title": "register and login"
+  },
+  {
+   "keywords": [
+    "change username",
+    "change my username",
+    "change my name",
+    "change name",
+    "i changed my name",
+    "lost my stats",
+    "lost stats",
+    "stats gone",
+    "new username"
+   ],
+   "answer": "Your account is tied to your username. If you change your Minecraft name, you join as a new player and your old stats stay on the old name. Rank transfers are paused, so ask on the Discord if you need help: https://mineberry.org/discord",
+   "title": "changing username"
+  },
+  {
+   "keywords": [
+    "how to make a nether portal",
+    "nether portal",
+    "build a nether portal",
+    "portal to the nether"
+   ],
+   "answer": "Build a frame of obsidian, 4 wide and 5 tall (the corners can be left out, so 10 blocks), then light the inside with a flint and steel. Obsidian needs a diamond or netherite pickaxe. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "where to find diamonds",
+    "how to find diamonds",
+    "best level for diamonds",
+    "diamond level",
+    "y level for diamonds",
+    "find diamonds",
+    "mine diamonds"
+   ],
+   "answer": "In 1.18 and newer, diamonds are most common deep down around Y -59 to -50. Strip mine or branch mine at about Y -58, bring an iron pickaxe or better, and keep water or blocks handy for lava. Fortune on the pickaxe gives more. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to get netherite",
+    "netherite",
+    "ancient debris",
+    "where to find ancient debris"
+   ],
+   "answer": "Ancient debris is found in the Nether, most often around Y 15 (anything between 8 and 22 works). Mine it with a diamond pickaxe or better. Smelt it into scrap, then 4 scrap + 4 gold ingots makes 1 netherite ingot. Upgrade diamond gear at a smithing table with a netherite upgrade template. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to see coordinates",
+    "show coordinates",
+    "how to check coordinates",
+    "f3 screen",
+    "where am i"
+   ],
+   "answer": "Press F3 (on some laptops Fn+F3). The XYZ line is your position. Y is the height. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to enchant",
+    "enchanting table",
+    "how to use an enchanting table",
+    "enchant my sword"
+   ],
+   "answer": "Put your item and lapis lazuli in an enchanting table. For level 30 enchants, surround the table with 15 bookshelves, one block gap between them and the table. Use an anvil to combine enchanted items or books. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to get mending",
+    "mending"
+   ],
+   "answer": "Mending can't come from an enchanting table. Get it from villager trades (a librarian), fishing, or treasure chests. It repairs the item using XP you pick up. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to get elytra",
+    "elytra",
+    "how to fly with elytra"
+   ],
+   "answer": "Elytra are only found in End Cities, in the item frame on End ships, so you have to reach the outer End islands. Fix them with phantom membranes. Fireworks rockets give you a speed boost while gliding. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to find the end",
+    "end portal",
+    "stronghold",
+    "eye of ender",
+    "how to get to the end"
+   ],
+   "answer": "Craft eyes of ender (blaze powder + ender pearl) and throw them, they float toward the nearest stronghold. Dig down there to find the end portal room. Put an eye in each of the 12 frames to open it. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to beat the ender dragon",
+    "ender dragon",
+    "how to kill the dragon"
+   ],
+   "answer": "Destroy the end crystals on the pillars first (a bow works, watch out for the caged ones), because they heal the dragon. Then hit it with melee when it perches on the portal, or shoot it with a bow. Bring a water bucket for endermen, and a pumpkin on your head helps. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to breed animals",
+    "breeding",
+    "how to breed"
+   ],
+   "answer": "Feed two adults of the same animal their food and they make a baby. Wheat for cows, sheep and mooshrooms, seeds for chickens, carrots for pigs, and golden apples or carrots for horses. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to tame a wolf",
+    "tame a dog",
+    "how to tame a cat",
+    "how to tame a horse",
+    "taming"
+   ],
+   "answer": "Wolves: feed bones until hearts appear. Cats and ocelots: raw cod or salmon, slowly. Horses: keep getting on until they stop bucking you off, then add a saddle. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to make a beacon",
+    "beacon"
+   ],
+   "answer": "Craft it with a nether star, 3 obsidian and 5 glass. The nether star drops from the Wither. Put it on top of a pyramid of iron, gold, diamond, emerald or netherite blocks (1 to 4 layers), and clear the sky above it. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "best sword enchantments",
+    "best sword enchants",
+    "best enchants for sword"
+   ],
+   "answer": "Sharpness V, Unbreaking III, Mending, Looting III and Sweeping Edge III. Fire Aspect is a good extra. Sharpness is the main damage one, you can't have it with Smite or Bane of Arthropods. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "best pickaxe enchantments",
+    "best pickaxe enchants",
+    "best enchants for pickaxe"
+   ],
+   "answer": "Efficiency V, Unbreaking III, Mending and either Fortune III (more drops from ores) or Silk Touch (keeps the ore block). You can't have Fortune and Silk Touch together. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "how to stop creepers",
+    "creeper",
+    "creepers blow up"
+   ],
+   "answer": "A creeper hisses before it explodes, so back away or hit it and retreat. Cats scare them off, and well-lit areas stop them spawning. Shield or blocking with a sword also helps. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "warden",
+    "how to beat the warden",
+    "how to avoid the warden"
+   ],
+   "answer": "Don't fight it. The warden hunts by sound and vibration, so sneak, place wool around sculk sensors and avoid shriekers. If it chases you, run away and block it off. (General Minecraft, not MineBerry-specific.)"
+  },
+  {
+   "keywords": [
+    "fastest way to get xp",
+    "xp farm",
+    "how to get xp fast",
+    "how to get experience"
+   ],
+   "answer": "Mob farms or a spawner farm give the most XP, smelting lots of items in furnaces is easy, and mining ores and breeding animals help too. Enchanted tools with Mending also use up XP orbs, so keep a spare tool off for XP. (General Minecraft, not MineBerry-specific.)"
+  }
+ ]
+}

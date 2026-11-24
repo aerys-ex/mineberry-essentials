@@ -47,6 +47,7 @@ public class LunarMenu extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
+        this.addRenderableOnly((g, mx, my, d) -> Ui.ghostAll(this));   // first thing drawn: hides the vanilla buttons before THEY are drawn (no flash on open)
         LunarHud.ensureProfiles();
         widgets.clear(); fancy.clear(); flag.clear(); shown.clear(); pageMods.clear();
 
@@ -272,20 +273,21 @@ public class LunarMenu extends Screen {
     /** Draws chips, ENABLED buttons, profile rows and the blue layout button over the vanilla widgets, then the rest. */
     private void overlay(GuiGraphicsExtractor g, int mx, int my) {
         Ui.buttons(g, this.font, widgets.stream().filter(w -> !fancy.containsKey(w)).toList(), new HashMap<>(), mx, my);
+        for (var child : this.children()) if (child instanceof Button vanilla) Ui.ghost(vanilla);
         int solid = Ui.BG | 0xFF000000;
         for (Map.Entry<AbstractWidget, Integer> e : fancy.entrySet()) {
             AbstractWidget w = e.getKey();
             int x = w.getX(), y = w.getY(), bw = w.getWidth(), bh = w.getHeight();
             boolean hover = mx >= x && mx < x + bw && my >= y && my < y + bh, on = flag.getOrDefault(w, false);
             String label = w.getMessage().getString();
-            Ui.fill(g, x, y, x + bw, y + bh, solid);
+            Ui.cover(g, x, y, x + bw, y + bh, solid);
             switch (e.getValue()) {
-                case 0 -> { Ui.box(g, x, y, bw, bh, on ? Ui.ACCENT : Ui.BTN_BORDER, on ? Ui.BORDER : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
+                case 0 -> { Ui.box(g, x, y, bw, bh, on ? Ui.ACCENT : Ui.BTN_BORDER, on ? Ui.chipOn() : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
                     Ui.txt(g, this.font, label, x + (bw - this.font.width(label)) / 2, y + (bh - 8) / 2 + 1, on ? 0xFFFFFFFF : Ui.MUTED, false); }
                 case 1 -> { String t = on ? "ENABLED" : "DISABLED";
-                    Ui.box(g, x, y, bw, bh, on ? GREEN_EDGE : Ui.BTN_BORDER, on ? GREEN : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
+                    Ui.box(g, x, y, bw, bh, on ? (Ui.GLASS ? 0xB045C76B : GREEN_EDGE) : Ui.BTN_BORDER, on ? (Ui.GLASS ? 0x702E9E4F : GREEN) : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
                     Ui.txt(g, this.font, t, x + (bw - this.font.width(t)) / 2, y + (bh - 8) / 2 + 1, on ? 0xFFFFFFFF : Ui.MUTED, false); }
-                case 2 -> { Ui.box(g, x, y, bw, bh, Ui.ACCENT, hover ? Ui.ACCENT : Ui.BORDER, 0, 0);
+                case 2 -> { Ui.box(g, x, y, bw, bh, Ui.ACCENT, Ui.primary(hover), 0, 0);
                     Ui.txt(g, this.font, label, x + (bw - this.font.width(label)) / 2, y + (bh - 8) / 2 + 1, 0xFFFFFFFF, false); }
                 default -> { Ui.box(g, x, y, bw, bh, on ? Ui.BTN_BORDER_HOVER : Ui.BTN_BORDER, on ? Ui.BTN_HOVER : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
                     Ui.txt(g, this.font, label, x + 8, y + (bh - 8) / 2 + 1, on ? Ui.TEXT : Ui.MUTED, false); }

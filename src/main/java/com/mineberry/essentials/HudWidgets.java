@@ -128,7 +128,7 @@ final class HudWidgets {
         }
 
         private static void box(GuiGraphicsExtractor g, int x, int y, int w, int h, boolean down) {
-            Ui.rect(g, x, y, w, h, down ? Ui.ACCENT : 0x66FFFFFF, down ? ((Ui.ACCENT & 0xFFFFFF) | 0x99000000) : 0x40000000);
+            Ui.keyBox(g, x, y, w, h, down);
         }
 
         private static void label(GuiGraphicsExtractor g, Font font, String text, int x, int y, int w, int h, boolean down) {

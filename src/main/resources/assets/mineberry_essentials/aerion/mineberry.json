@@ -1,0 +1,2515 @@
+{
+ "server": "MineBerry",
+ "ready": true,
+ "storeNote": "Prices are in USD and may change, check store.mineberry.org for the current ones.",
+ "greeting": "Hey, I'm Aerion, the MineBerry guide. Ask me about store prices, rules or punishments, tap one of the buttons below, or just chat.",
+ "fallback": "I don't have anything on {topic} in my guide, and I'd rather not guess. I'm solid on store prices, rules, punishments, commands and The Council. For the rest, staff can help on the Discord: https://mineberry.org/discord",
+ "clarify": "Which game mode do you mean? Survival, Anarchy, OPSurvival or Minigames.",
+ "suggestions": [
+  {
+   "label": "Chat rules",
+   "ask": "What are the chat rules?"
+  },
+  {
+   "label": "Survival ranks",
+   "ask": "How much are Survival ranks?"
+  },
+  {
+   "label": "Punishments",
+   "ask": "Punishment for tp killing?"
+  },
+  {
+   "label": "Server IP",
+   "ask": "What is the server IP?"
+  },
+  {
+   "label": "Refunds",
+   "ask": "Can I get a refund?"
+  }
+ ],
+ "entries": [
+  {
+   "keywords": [
+    "what can you do",
+    "what can i ask",
+    "what do you know",
+    "commands",
+    "help",
+    "what can you help with",
+    "how do you work",
+    "how to use you"
+   ],
+   "answers": [
+    "I can help with:\n- Store prices: ranks, rank upgrades, crate keys, coins and Grant Reset for Survival, Anarchy, OPSurvival and Minigames\n- Rules: chat, account, hacking, voting, alt accounts, payment and donator rules\n- Punishments: ask \"punishment for tp killing\", \"what happens if I use xray\" and so on\n- Extras: compare ranks (\"legend vs hero\"), add prices up (\"legend + avenger\"), quick math and the time",
+    "Mostly three things:\n- Prices for ranks, upgrades, crate keys, coins and Grant Reset (Survival, Anarchy, OPSurvival, Minigames)\n- The rules: chat, account, hacking, voting, alts, payment, donator\n- Punishments: ask \"what happens if I use xray\" or \"punishment for tp killing\"\n\nYou can also just chat. I'll follow along, so \"and on anarchy?\" works after a price question. I can also compare two ranks (\"legend vs hero\"), add prices up (\"legend + avenger\"), do quick math and tell the time."
+   ],
+   "title": "what can you do"
+  },
+  {
+   "keywords": [
+    "server ip",
+    "ip address",
+    "what ip",
+    "the ip",
+    "ip of",
+    "how to join",
+    "how do i join",
+    "connect"
+   ],
+   "answer": "Join with the server address mc.mineberry.org."
+  },
+  {
+   "keywords": [
+    "website",
+    "link",
+    "url",
+    "store",
+    "shop",
+    "where can i buy",
+    "where to buy"
+   ],
+   "answer": "Website: mineberry.org\nStore: store.mineberry.org\nRules: mineberry.org/rules\nVote: mineberry.org/vote\nHD skins: mineberry.org/hd-skins\nHD capes: mineberry.org/hd-capes"
+  },
+  {
+   "keywords": [
+    "support",
+    "contact",
+    "email",
+    "mail",
+    "contact staff",
+    "discord",
+    "staff"
+   ],
+   "answer": "Need help? Join the MineBerry Discord: https://mineberry.org/discord"
+  },
+  {
+   "keywords": [
+    "game mode",
+    "gamemode",
+    "what modes",
+    "which modes",
+    "what servers",
+    "what can i play"
+   ],
+   "answer": "The MineBerry store lists four game modes: Survival, Anarchy, OPSurvival and Minigames."
+  },
+  {
+   "keywords": [
+    "rule",
+    "rules"
+   ],
+   "then": "rule",
+   "title": "rules",
+   "answers": [
+    "Which rules do you want? I know the chat rules, account rules, hacking rules, voting rules, alt account rules, payment rules and donator rules. You can also ask for the punishment of something, like \"punishment for tp killing\".",
+    "Which ones? I have the chat rules, account rules, hacking rules, voting rules, alt account rules, payment rules and donator rules. Just say the name, like \"chat\"."
+   ]
+  },
+  {
+   "keywords": [
+    "chat rule",
+    "chat rules",
+    "what can i say",
+    "can i swear",
+    "swearing"
+   ],
+   "answer": "I have two versions of the chat rules, so here are both.\n\nChat rules, list 1:\n- English only in public chat, other languages in DMs [warn/mute 5-15min]\n- No spamming letters or repeated phrases [warning/mute 15m-2h]\n- Swearing is allowed, but not at other players [warning/mute 30m-2h]\n- No making fun of mental or physical disorders [warning/mute 30m-2h]\n- Respect others, don't annoy people on purpose [warning/mute 45m/ban 15m]\n- No politics or religion in chat [warning/mute 15m-60m]\n- No advertising other servers, including naming them [mute/IP ban]\n- No begging for rank, fly, coins and so on [warning/mute 30m]\n- No disrespecting staff [warning/mute 30m-1d]\n- No leaking personal information [mute 1-7d/IP ban]\n- No racism or discrimination [mute 1h-3d]\n\nChat rules, list 2:\n- No insults or offensive language, even phrased as questions [mute 30m-2h]\n- No bringing up a player's personal life or family [mute up to 5d]\n- No provoking others to break rules [mute 30m-60m]\n- No begging for anything (rank, coins, unban, unmute) [mute 30m-1h]\n- No spam or flooding, 3+ messages [mute 20m-60m]\n- No impersonating staff [mute 12h-1d]\n- No racism, religious, political or ethnic hate [ban 2d-5d]\n- No misleading other players [mute 30m-60m]\n- No lying to staff or faking conversations [ban 1h-1d]\n- No commercial activity with real money [permanent ban]\n- No advertising other servers or scams [permanent ban]\n- No threats to players or staff [ban 5h]\n- No insulting the server [ban 2d]\n- No insulting or provoking staff [ban up to 7d]\n- No doxxing or leaking personal info [ban up to 10d, then permanent]"
+  },
+  {
+   "keywords": [
+    "account rule",
+    "account rules",
+    "my account",
+    "username rule"
+   ],
+   "answer": "Account rules:\n- Your account is your responsibility. It can be punished whether it was you or not.\n- Selling or sharing your account is strongly prohibited [ban FOREVER + account reset]\n- Impersonating another player or staff is prohibited [warning/ban 1w/ban forever]\n- Inappropriate usernames (offensive, political, religious) [ban forever]"
+  },
+  {
+   "keywords": [
+    "share account",
+    "sharing account",
+    "sell account",
+    "selling account",
+    "account sharing",
+    "account selling",
+    "share my account",
+    "sharing my account",
+    "sell my account",
+    "selling my account",
+    "shared account"
+   ],
+   "answer": "Selling or sharing your account is strongly prohibited [ban FOREVER + account reset]. Accounts that were shared before the rule was added (05/03/2024) can be an exception."
+  },
+  {
+   "keywords": [
+    "hacking rule",
+    "hack rule",
+    "cheat rule",
+    "hack client",
+    "cheat client",
+    "texture pack",
+    "macro",
+    "mods allowed",
+    "are mods allowed",
+    "allowed mods"
+   ],
+   "answer": "Hacking, texture pack, auto clicker and illegal activity rules:\n- No hack clients, cheat texture packs (X-Ray) or auto clickers installed [ban 1d/ban forever]\n- No weight or tape to hold down your mouse [warning]\n- No macro scripts for interval commands or auto joining [warning/ban 1d]"
+  },
+  {
+   "keywords": [
+    "voting rule",
+    "vote rule",
+    "vote",
+    "voting",
+    "vpn"
+   ],
+   "answer": "Voting rule: using a VPN to vote more than once every 24 hours, for an alt or the same account, is not allowed [warning/ban 1-5d + reward reset]. Vote at mineberry.org/vote."
+  },
+  {
+   "keywords": [
+    "alt",
+    "alt account",
+    "alternative account",
+    "second account",
+    "punished account"
+   ],
+   "answer": "If you have a punishment and use an alternative account to enter the server, the alt gets a full ban and your current ban is extended if it isn't permanent already."
+  },
+  {
+   "keywords": [
+    "payment rule",
+    "payment",
+    "paying"
+   ],
+   "answer": "Payment rules:\n- Strict no refund policy, because ranks and items are digital intangible items\n- A chargeback or any legal action against the server bans all your accounts [IP ban FOREVER + account reset]\n- If the payment went through but you did not get your goods, contact staff with the receipt that was emailed to you"
+  },
+  {
+   "keywords": [
+    "refund",
+    "money back"
+   ],
+   "answer": "There is a strict no refund policy, because the ranks and items are digital intangible items. The store checkout is run by Tebex, who handle billing support and refunds."
+  },
+  {
+   "keywords": [
+    "chargeback",
+    "dispute",
+    "legal action"
+   ],
+   "answer": "Issuing a chargeback or any form of legal action against the server bans all your accounts [IP ban FOREVER + account reset]."
+  },
+  {
+   "keywords": [
+    "did not receive",
+    "didn't receive",
+    "not receive",
+    "didnt receive",
+    "not get my",
+    "missing purchase",
+    "payment went through",
+    "paid but"
+   ],
+   "answer": "If the payment went through but you did not get your goods, contact staff with the receipt that was emailed to you after the purchase. You can also ask in the MineBerry Discord: https://mineberry.org/discord"
+  },
+  {
+   "keywords": [
+    "donator rule",
+    "donator rules",
+    "donator command",
+    "prefix",
+    "suffix",
+    "nickname"
+   ],
+   "answer": "Donator command rules:\n- No offensive prefix, suffix or nickname, and no politics, religion or race in them [warning/ban 1w]\n- No using donator perks to damage or lag the server or players [ban 5d/ban forever]"
+  },
+  {
+   "keywords": [
+    "carry over",
+    "carry",
+    "reset",
+    "wipe"
+   ],
+   "answer": "Ranks, rank upgrades, crate keys and coins carry over in a reset. Grant Reset (in Miscellaneous) does not carry over."
+  },
+  {
+   "keywords": [
+    "coin shop",
+    "coinshop",
+    "what are coins",
+    "what is coins",
+    "what coins"
+   ],
+   "answer": "Coins are a currency for perks, items and other things. Spend them in the Coin Shop with /coinshop."
+  },
+  {
+   "keywords": [
+    "what is a crate",
+    "what are crates",
+    "what are crate",
+    "crate",
+    "crates",
+    "crate key",
+    "key"
+   ],
+   "answer": "Crate keys unlock crates in game at /crates. Each crate has different chances to win rewards. Left-click a crate in game to see the possible rewards."
+  },
+  {
+   "keywords": [
+    "what is a rank",
+    "what are rank",
+    "what do rank",
+    "rank perk",
+    "rank benefit",
+    "rank give",
+    "rank come with",
+    "donator rank"
+   ],
+   "answer": "Ranks give you money, blocks and EXP, plus a permanent rank on your account. Ranked players get daily kits, useful perks and commands. Click a package in the store to see what is in it."
+  },
+  {
+   "keywords": [
+    "how upgrade work",
+    "rank upgrade work",
+    "upgrade work",
+    "how to upgrade",
+    "how do i upgrade",
+    "upgrade requirement"
+   ],
+   "answer": "You must already own the first named rank for an upgrade to work. Always double-check before buying an upgrade. Buying an upgrade without owning the first rank isn't swapped for the full rank anymore, unless the rank you want costs the same or less (staff, 19/04/2026)."
+  },
+  {
+   "keywords": [
+    "i dont understand",
+    "dont get it",
+    "what do you mean",
+    "confused",
+    "i am confused",
+    "huh",
+    "not helpful",
+    "that doesnt help",
+    "wrong answer",
+    "thats wrong"
+   ],
+   "title": "how to ask",
+   "answers": [
+    "Sorry about that. I match key words, so short questions work best, like \"legend rank price\" or \"punishment for xray\".",
+    "My bad. Try it with fewer words and the main thing in it, like \"survival ranks\" or \"chat rules\". If I still miss, the Discord has real people: https://mineberry.org/discord"
+   ]
+  },
+  {
+   "keywords": [
+    "i got scammed",
+    "got scammed",
+    "i was scammed",
+    "someone scammed me",
+    "i got hacked",
+    "got hacked",
+    "someone hacked me",
+    "i got griefed",
+    "got griefed",
+    "someone griefed me",
+    "someone stole",
+    "report a player",
+    "report someone",
+    "how do i report",
+    "how to report",
+    "scammed me",
+    "hacked me",
+    "harassed",
+    "harassing me",
+    "harassment",
+    "bullied",
+    "threatened me"
+   ],
+   "victim": true,
+   "title": "getting help from staff",
+   "answers": [
+    "That's one for staff. Message them on the MineBerry Discord: https://mineberry.org/discord. If you want to know what the other player gets for it, ask me something like \"punishment for scamming players\".",
+    "Sorry that happened. Staff can look into it, contact them on the Discord: https://mineberry.org/discord. I can also tell you what a rule break gets punished with if you ask."
+   ]
+  },
+  {
+   "keywords": [
+    "appeal",
+    "ban appeal",
+    "unban",
+    "unmute",
+    "get unbanned",
+    "get unmuted",
+    "i got banned",
+    "i was banned",
+    "i got muted",
+    "i was muted",
+    "wrongly banned",
+    "unfair ban",
+    "unban me"
+   ],
+   "title": "ban and mute appeals",
+   "answers": [
+    "Appeals are for staff, I can't change anything. Ask on the MineBerry Discord: https://mineberry.org/discord",
+    "Staff handle bans and mutes, not me. Bring it to the MineBerry Discord: https://mineberry.org/discord. If you know the rule, I can tell you the listed punishment."
+   ]
+  },
+  {
+   "keywords": [
+    "irl trading",
+    "irl trade",
+    "real money trade",
+    "real money trading",
+    "sell rank for money",
+    "selling rankup",
+    "trade rankup",
+    "trade rankups"
+   ],
+   "answer": "IRL trading is not allowed, and advertising or promoting it isn't either. Paying real money for balance, coins, keys, ranks or rankups, or trading them for items in other games (robux included), gets all players involved banned, and staff actively look for it.\nTrading balance, ranks, rankups or crates for each other, or ranks and rankups for coins, is only punished when someone reports it with proof. Then both players are banned and the seller gets the longer ban.\nFirst time is a temporary ban. Repeat attempts are a permanent ban with no appeal.",
+   "title": "irl trading"
+  },
+  {
+   "keywords": [
+    "rank transfer",
+    "transfer rank",
+    "transfer my rank",
+    "move my rank",
+    "move rank"
+   ],
+   "answer": "Rank transfers have been paused indefinitely (staff post, 15/01/2026). When they were open, a rank could only move between alt accounts of the same player. Check #faq on the Discord if that changes."
+  },
+  {
+   "keywords": [
+    "forgot password",
+    "forgot my password",
+    "lost password",
+    "reset password",
+    "password reset",
+    "passreset",
+    "change password",
+    "changepass",
+    "resetpassword"
+   ],
+   "answer": "If your account is linked to Discord: use /account resetpassword to get a new password, then change it with /changepass [old_pass] [new_pass] in game.\nIf it isn't linked: use /passreset in the Discord or fill in the password reset form. Staff compare the IP you give with the one the account was registered with, and forms are checked about once a week, so it can take days. Send it once, extra forms get deleted.\nStaff never ask for your password.",
+   "title": "password reset"
+  },
+  {
+   "keywords": [
+    "link account",
+    "account link",
+    "link my account",
+    "linking",
+    "unlink",
+    "2fa",
+    "two factor",
+    "link code"
+   ],
+   "answer": "Once your account is linked to Discord you can use these commands (in the account-link channel or in DMs with the bot):\n- /account listnames: shows all linked accounts\n- /account ban lobby: bans your own account from the server\n- /account unban: unbans it (only if you banned it yourself)\n- /account kick: kicks your account from the server\n- /account resetpassword: sets a new password\n- /unlink: unlinks the account\n- /2fa enable, /2fa disable, /2fa notifyjoin: 2FA and join notifications\nTo unlink you need access to the Discord account it is linked to. Never share your link code, staff will never ask for it.",
+   "title": "account linking"
+  },
+  {
+   "keywords": [
+    "account got hacked",
+    "my account was hacked",
+    "hacked account help",
+    "fake server",
+    "fake mineberry",
+    "random ip",
+    "free nitro",
+    "staff ask password",
+    "will staff ask for my password",
+    "someone dmed me"
+   ],
+   "answer": "Staff, mods and owners never ask for your password or link code. Real staff only message you from their main Discord accounts, and identity is checked by IP through the forms.\nDon't join IPs that strangers give you. Fake MineBerry servers steal passwords, and the official IPs are shown with /ip. Don't click links or accept free nitro, rank or coin offers either, those are stolen accounts. Report anyone who asks for your password or link code, and change your passwords if you got hacked.",
+   "title": "scams and hacked accounts"
+  },
+  {
+   "keywords": [
+    "cant connect",
+    "can't connect",
+    "cannot connect",
+    "high ping",
+    "ping issues",
+    "lag",
+    "laggy"
+   ],
+   "answer": "Can't connect but others can, or the ping is bad? Try eu.mineberry.org. It's the most optimized one and often helps players from Asia. The official IPs are shown with /ip."
+  },
+  {
+   "keywords": [
+    "vote reward",
+    "vote rewards",
+    "top voter",
+    "vote top",
+    "monthly voter",
+    "vote leaderboard"
+   ],
+   "answer": "Top 5 monthly voters get a reward 1-7 days after the leaderboard resets, which is the last day of every month. If everyone else got theirs and you didn't, you probably weren't in the top 5. If nobody got it, contact the moderators."
+  },
+  {
+   "keywords": [
+    "become a mod",
+    "become mod",
+    "mod application",
+    "mod applications",
+    "apply for mod",
+    "moderator application",
+    "staff application"
+   ],
+   "answer": "The only way to become a mod is to apply while applications are open, they are announced in #faq. Sometimes players are invited for outstanding activity, a clean history and helping others."
+  },
+  {
+   "keywords": [
+    "anticheat ban",
+    "anti cheat ban",
+    "banned by anticheat",
+    "appeal hacking ban",
+    "unban hacking",
+    "who handles appeals",
+    "who do i appeal to"
+   ],
+   "answer": "Appeals go to the mod who banned you. Ask who it was and ping them only if they haven't replied in over a day.\nBans for hacking can't be appealed. The anti-cheat can misfire sometimes, but its bans aren't lifted, you have to wait them out, unless someone is clearly being targeted for their ping.",
+   "title": "appeals and anticheat bans"
+  },
+  {
+   "keywords": [
+    "scammed for rank",
+    "scammed for rankup",
+    "scammed for a rankup",
+    "rank up scam",
+    "rankup scam",
+    "middleman",
+    "middle man"
+   ],
+   "answer": "Scamming for a rank-up isn't allowed, but the server doesn't settle deals that involve real money (ranks, rankups, coins). Since 21/05/2026 those trades are banned anyway, see \"irl trading\". Rule 7.1 is for in-game item scams in /ah or promised trades that weren't completed by both players.\nIf a mod agrees, you can ask them to be your middleman in a trade. If you can't find one, keep solid proof of every transaction."
+  },
+  {
+   "keywords": [
+    "trolling",
+    "can i troll",
+    "is trolling allowed"
+   ],
+   "answer": "Trolling is allowed, but if someone asks you to stop, you must stop. Annoying players on purpose or abusing commands like kick or warn is abuse and isn't tolerated."
+  },
+  {
+   "keywords": [
+    "what counts as impersonation",
+    "impersonation rule",
+    "similar name",
+    "fake staff name"
+   ],
+   "answer": "Impersonation includes changing a single letter of a name and using prefixes like \"Mob\" or \"Stuff\", because it still confuses newer players. Impersonating a player or staff: warning/ban 1w/ban forever."
+  },
+  {
+   "keywords": [
+    "family insult",
+    "family insults",
+    "family joke",
+    "family jokes",
+    "insult family",
+    "insulting family"
+   ],
+   "answer": "Any family insult counts under chat rules 1.3 and 1.5, even as a joke: mute 3d-30d depending on severity and how often. Insulting someone for their nationality is racism (1.11) and starts at a 7d mute. Racism has zero tolerance, the first offence is a 7d mute in game."
+  },
+  {
+   "keywords": [
+    "false report",
+    "fake proof",
+    "frame someone",
+    "framing",
+    "falsify",
+    "faking proof"
+   ],
+   "answer": "Framing other players or faking information or proof to get them banned gets you banned instead. On Discord you're banned from the server, and if your username is known you're banned in game too."
+  },
+  {
+   "keywords": [
+    "emsg while muted",
+    "admin chat muted",
+    "use emsg",
+    "adminchat muted"
+   ],
+   "answer": "Using admin chat (/emsg) while muted counts as mute bypassing. The ban is as long as the original mute, even if only a couple of hours were left (staff post from 2024)."
+  },
+  {
+   "keywords": [
+    "chunk collector",
+    "chunk hopper"
+   ],
+   "answer": "The Chunk Collector is a craftable item that works like a hopper but collects items from the whole chunk. It only works for the region it's placed in, and staff recommend it over normal hoppers because it's much lighter on the server. F3+G shows the chunk outline."
+  },
+  {
+   "keywords": [
+    "end warp",
+    "warp to end",
+    "go to the end",
+    "ender dragon"
+   ],
+   "answer": "Every Survival server has an end warp. The end islands were cleared and claimed, with pvp disabled at the centre, so the dragon fight is safe."
+  },
+  {
+   "keywords": [
+    "coins wrong gamemode",
+    "coins went to anarchy",
+    "coins opposite gamemode",
+    "negative balance",
+    "negative coins",
+    "coinshop negative",
+    "coin balance bug"
+   ],
+   "answer": "Known bug (Oct 2026): coins can go to the opposite game mode from the one you picked, for example Survival ends up on Anarchy. They transfer to the right one once it's fixed, updates come in #faq.\nNegative balance after buying fast in /coinshop: take your time when buying there. The best fix is buying coins in the online store, or selling in /coinmarket if the bug doesn't affect you."
+  },
+  {
+   "keywords": [
+    "transfer money alt",
+    "send money alt",
+    "move money from alt",
+    "move money to main",
+    "transfer money to main",
+    "mk transfer"
+   ],
+   "answer": "Sell something on your alt account for the amount you want to move, on the MK in Anarchy, then buy it from Survival with your main account. About 20% is lost to tax, so list 1000 to end up with 800."
+  },
+  {
+   "keywords": [
+    "silver perks",
+    "silver perk",
+    "silver rank perks",
+    "perks of silver",
+    "what does silver give",
+    "silver kit",
+    "silver commands"
+   ],
+   "answer": "Silver (Survival) perks: 2 homes, 2 region claims, 4 Auction House slots, 50$ every 5 min for playing.\nNew commands: /kit silver, /ptime, /workbench, /carttable, /grindstone, /ec, /ci, /tpahere, /msgtoggle.\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"silver rank price\".",
+   "title": "silver perks"
+  },
+  {
+   "keywords": [
+    "supreme perks",
+    "supreme perk",
+    "supreme rank perks",
+    "perks of supreme",
+    "what does supreme give",
+    "supreme kit",
+    "supreme commands"
+   ],
+   "answer": "Supreme (Survival) perks: 4 homes, 4 region claims, 6 Auction House slots, 100$ every 5 min.\nNew commands: /kit supreme, /hat, /ignore, /seen, /pweather, /kittycannon, /beezoka, /tptoggle, /nightvision, /stonecutter.\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"supreme rank price\".",
+   "title": "supreme perks"
+  },
+  {
+   "keywords": [
+    "wither perks",
+    "wither perk",
+    "wither rank perks",
+    "perks of wither",
+    "what does wither give",
+    "wither kit",
+    "wither commands"
+   ],
+   "answer": "Wither (Survival) perks: 6 homes, 6 region claims, 8 Auction House slots, 150$ every 5 min.\nNew commands: /kit wither, /ac, /near, /smithtable, /anvil, /feed, /glow, /ext, /gc, /recipe.\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"wither rank price\".",
+   "title": "wither perks"
+  },
+  {
+   "keywords": [
+    "hero perks",
+    "hero perk",
+    "hero rank perks",
+    "perks of hero",
+    "what does hero give",
+    "hero kit",
+    "hero commands"
+   ],
+   "answer": "Hero (Survival) perks: 8 homes, 8 region claims, 12 Auction House slots, 200$ every 5 min.\nNew commands: /kit hero, /mbc, /setname, /particles, /setglow, /player, /invsee, /rg flag (use, block-break, block-place).\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"hero rank price\".",
+   "title": "hero perks"
+  },
+  {
+   "keywords": [
+    "avenger perks",
+    "avenger perk",
+    "avenger rank perks",
+    "perks of avenger",
+    "what does avenger give",
+    "avenger kit",
+    "avenger commands"
+   ],
+   "answer": "Avenger (Survival) perks: 50 homes, 50 region claims, 22 Auction House slots, 250$ every 5 min, silk touch on spawners.\nNew commands: /kit avenger, /fly (at spawn), /nick, /sun, /rain, /day, /night, /loom.\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"avenger rank price\".",
+   "title": "avenger perks"
+  },
+  {
+   "keywords": [
+    "legend perks",
+    "legend perk",
+    "legend rank perks",
+    "perks of legend",
+    "what does legend give",
+    "legend kit",
+    "legend commands",
+    "grant command"
+   ],
+   "answer": "Legend (Survival) perks: 99 homes, 99 region claims, region size up to 300,000 blocks, 30 Auction House slots, 250$ every 5 min, colors in chat and on signs, silk touch on spawners.\nNew commands: /kit legend, /grant (give a player a rank), /fix, /disposal.\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"legend rank price\".",
+   "title": "legend perks"
+  },
+  {
+   "keywords": [
+    "phoenix perks",
+    "phoenix perk",
+    "phoenix rank perks",
+    "perks of phoenix",
+    "what does phoenix give",
+    "phoenix kit",
+    "phoenix commands",
+    "pheonix perks",
+    "pheonix perk",
+    "pheonix rank perks",
+    "perks of pheonix",
+    "what does pheonix give",
+    "pheonix kit",
+    "pheonix commands",
+    "fix all",
+    "fix all unlocked"
+   ],
+   "answer": "Phoenix (Survival) perks: 299 homes, 299 region claims, region size up to 500,000 blocks, 100 Auction House slots, 400$ every 5 min, keep 50% inventory and your exp on death, colors in chat and on signs, silk touch on spawners.\nNew commands: /kit phoenix, /fix all, /heal, /skull, /realname, /feed <player>, /setwarp, /chatcolor (RGB gradient), /grant (3 more).\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"phoenix rank price\".",
+   "title": "phoenix perks"
+  },
+  {
+   "keywords": [
+    "ender perks",
+    "ender perk",
+    "ender rank perks",
+    "perks of ender",
+    "what does ender give",
+    "ender kit",
+    "ender commands"
+   ],
+   "answer": "Ender (Survival) perks: 999 homes, 999 region claims, region size up to 1,000,000 blocks, 200 Auction House slots, 600$ every 5 min, bypass chat cooldown, no AFK kick, join a full server, keep 50% inventory and exp on death.\nNew commands: /kit ender, /fly (also in the overworld), /back, /tab prefix, /chat prefix, RGB colors in /nick, /tab and /chat, /grant (5 more).\nYou get a permanent rank on your account. Each rank also has the perks and commands of the ranks below it. Prices: ask \"ender rank price\".",
+   "title": "ender perks"
+  },
+  {
+   "keywords": [
+    "how to claim",
+    "claim land",
+    "claim",
+    "protect my base",
+    "protect my build",
+    "how to protect",
+    "rg claim",
+    "claim region",
+    "worldguard"
+   ],
+   "answer": "Claim land with /rg claim. Your rank sets how many regions you get: Silver 2, Supreme 4, Wither 6, Hero 8, Avenger 50, Legend 99, Phoenix 299, Ender 999. Hero and above can set region flags with /rg flag (use, block-break, block-place). Griefing builds, claimed or not, isn't allowed.",
+   "title": "claiming land"
+  },
+  {
+   "keywords": [
+    "set home",
+    "sethome",
+    "how to set a home",
+    "set a home",
+    "how many homes",
+    "homes"
+   ],
+   "answer": "Set a home with /sethome. How many you get depends on your rank: Silver 2, Supreme 4, Wither 6, Hero 8, Avenger 50, Legend 99, Phoenix 299, Ender 999. Don't set homes near other players' regions to kill them, that's a ban.",
+   "title": "homes"
+  },
+  {
+   "keywords": [
+    "teleport",
+    "tpa",
+    "tp to",
+    "tp to player",
+    "how to teleport",
+    "tpahere"
+   ],
+   "answer": "Ask a player to teleport to you with /tpahere (Silver and up). Spawn and warps are the other ways around. Using teleports to trap or kill players (tp killing, warp killing) is a ban."
+  },
+  {
+   "keywords": [
+    "auction house",
+    "how to sell",
+    "how do i sell",
+    "sell items",
+    "sell stuff",
+    "sell my items",
+    "auction",
+    "/ah"
+   ],
+   "answer": "The Auction House is /ah. Silver gets 4 slots, Supreme 6, Wither 8, Hero 12, Avenger 22, Legend 30, Phoenix 100, Ender 200. Scamming on the auction is a 1w ban."
+  },
+  {
+   "keywords": [
+    "kit",
+    "kits",
+    "how to get kit",
+    "my kit",
+    "daily kit",
+    "claim kit"
+   ],
+   "answer": "Ranks come with a kit, like /kit silver or /kit legend. Open the rank's package in the store to preview what's inside.",
+   "title": "kits"
+  },
+  {
+   "keywords": [
+    "enderchest",
+    "ender chest",
+    "ec command",
+    "open enderchest"
+   ],
+   "answer": "Silver and above can open their enderchest anywhere with /ec."
+  },
+  {
+   "keywords": [
+    "how to fly",
+    "fly",
+    "can i fly",
+    "flying",
+    "fly command"
+   ],
+   "answer": "Flying is a rank perk. Avenger and Legend and Phoenix can use /fly at spawn, Ender can also fly in the overworld. Fly hacks are a ban."
+  },
+  {
+   "keywords": [
+    "how to get money",
+    "earn money",
+    "make money",
+    "how to earn",
+    "get money fast",
+    "how do i get money"
+   ],
+   "answer": "Playing earns you money: Silver gets 50$ every 5 minutes, up to 600$ for Ender. Selling on the Auction House (/ah) works too. Real money trades with other players are not allowed."
+  },
+  {
+   "keywords": [
+    "how to get coins",
+    "get coins",
+    "earn coins",
+    "free coins",
+    "how do i get coins"
+   ],
+   "answer": "Buy coins in the online store (store.mineberry.org) and spend them in the /coinshop. Trading coins for real money is not allowed."
+  },
+  {
+   "keywords": [
+    "free rank",
+    "get rank free",
+    "how to get a rank for free",
+    "free ranks",
+    "free op",
+    "free fly",
+    "can i get fly",
+    "can i get creative"
+   ],
+   "answer": "Ranks are bought in the store, and begging for rank, fly or creative is against the rules [warning/mute 30m]. Voting gives rewards: mineberry.org/vote."
+  },
+  {
+   "keywords": [
+    "best rank",
+    "which rank",
+    "which rank should i buy",
+    "what rank should i buy",
+    "is it worth it",
+    "worth buying",
+    "is legend worth it",
+    "what should i buy"
+   ],
+   "answer": "Depends on what you want. Silver and Supreme are cheap and give homes, claims and shortcuts. Hero adds region flags, Avenger gives fly at spawn, Legend gives /fix and big claims, Phoenix adds /fix all and keeping 50% inventory on death. Ask me \"legend perks\" or \"survival ranks\" for details."
+  },
+  {
+   "keywords": [
+    "keep inventory",
+    "keep my items",
+    "inventory on death",
+    "lose items on death",
+    "what happens when i die",
+    "keepinv"
+   ],
+   "answer": "Phoenix and Ender keep 50% of their inventory and their exp on death. Other ranks don't have that perk."
+  },
+  {
+   "keywords": [
+    "pvp",
+    "can i pvp",
+    "is pvp on",
+    "pvp rules",
+    "combat log",
+    "combat logging"
+   ],
+   "answer": "I don't have pvp details in my guide. What I know: killing players after a teleport (tp killing, warp killing), spawn killing and kill farming are all bans. Ask me \"punishment for spawn killing\"."
+  },
+  {
+   "keywords": [
+    "clan",
+    "clans",
+    "how to make a clan",
+    "create clan",
+    "clan chat"
+   ],
+   "answer": "I don't have clan commands in my guide, ask on the Discord: https://mineberry.org/discord. Repeated clan advertising in chat counts as flood."
+  },
+  {
+   "keywords": [
+    "the council",
+    "council",
+    "what is the council",
+    "who is the council",
+    "tell me about the council",
+    "council clan",
+    "the council clan",
+    "what is council"
+   ],
+   "answer": "The Council is a clan on MineBerry and MinePeak. It started as a small group on MineBerry Survival and grew into a bigger, organized clan with a two-tier leadership: a Higher Council (Owners) and a Lower Council (Sr. Mods). AdiKan is the Main Leader. Ask me about its history, leader, Higher Council or Lower Council."
+  },
+  {
+   "keywords": [
+    "council leader",
+    "who leads the council",
+    "who is the leader of the council",
+    "council main leader",
+    "who runs the council",
+    "adikan",
+    "who is adikan"
+   ],
+   "answer": "AdiKan is the Main Leader of The Council, and he also sits on the Higher Council."
+  },
+  {
+   "keywords": [
+    "higher council",
+    "council owners",
+    "who is in the higher council",
+    "higher council members"
+   ],
+   "answer": "The Higher Council is the top of The Council. It has 5 members, the clan's Owners: AdiKan, GhostGirl_, HitmanAssasian, Bishwashdaivan and Squidy. They make the big decisions and set the direction of the clan."
+  },
+  {
+   "keywords": [
+    "lower council",
+    "council sr mods",
+    "who is in the lower council",
+    "lower council members",
+    "council members"
+   ],
+   "answer": "The Lower Council has 13 members, the clan's Sr. Mods: Aerys, Nice_EX, Mahadi, Dracula1604, PKcommander, SSRS, Kay, Hardmystery, Serena, d7uzi, demon_13263, gvpwr and Mythic. They help run the clan and keep it organized day to day. The Higher Council (5 Owners) sits above them."
+  },
+  {
+   "keywords": [
+    "council history",
+    "history of the council",
+    "who founded the council",
+    "who started the council",
+    "council founders",
+    "council origin",
+    "how did the council start",
+    "when was the council made"
+   ],
+   "answer": "The Council was founded on MineBerry Survival by AdiKan, Aerys, Nice_EX and a player known as DarkDevil. It began as a small group, then grew into a recognizable, organized clan and later expanded to MinePeak Survival. As it grew it built a formal hierarchy, the Higher Council and the Lower Council."
+  },
+  {
+   "keywords": [
+    "council structure",
+    "how is the council organized",
+    "council ranks",
+    "council hierarchy",
+    "council leadership"
+   ],
+   "answer": "The Council runs on two tiers. The Higher Council (5 Owners) is the highest governing body and makes the major decisions. The Lower Council (13 Sr. Mods) helps manage the clan and its members. AdiKan leads as Main Leader and is also on the Higher Council."
+  },
+  {
+   "keywords": [
+    "council minepeak",
+    "is the council on minepeak",
+    "council servers",
+    "what servers is the council on"
+   ],
+   "answer": "The Council is on both MineBerry and MinePeak. It began on MineBerry Survival and later expanded to MinePeak Survival."
+  },
+  {
+   "keywords": [
+    "spawn",
+    "go to spawn",
+    "how to go to spawn",
+    "warp",
+    "warps",
+    "setwarp"
+   ],
+   "answer": "Spawn and warps are in game. Phoenix and Ender can create their own warps with /setwarp. Don't kill players on warps, that's a 5d ban."
+  },
+  {
+   "keywords": [
+    "hacker",
+    "someone is hacking",
+    "cheater",
+    "someone is cheating",
+    "player is cheating",
+    "hacking report"
+   ],
+   "answer": "Report them on the Discord with a video (https://mineberry.org/discord). For the punishment, ask me \"punishment for hacks\"."
+  },
+  {
+   "keywords": [
+    "lost items",
+    "lost my items",
+    "items disappeared",
+    "item disappearing",
+    "items missing",
+    "lost my stuff",
+    "lost inventory"
+   ],
+   "answer": "Get proof (a video is best) and post on the Discord with the game mode tag, a mod may be able to return it: https://mineberry.org/discord. For OP Survival item disappearing, check #main_chat on the Discord."
+  },
+  {
+   "keywords": [
+    "suggestion",
+    "suggest",
+    "i have a suggestion",
+    "bug report",
+    "report a bug",
+    "found a bug",
+    "bug"
+   ],
+   "answer": "Suggestions and bugs go to the Discord (https://mineberry.org/discord). Suggestions are checked about once a month. Using a bug for your own gain is exploiting, a 2w ban, so report it instead."
+  },
+  {
+   "keywords": [
+    "server owner",
+    "who owns",
+    "who is the owner",
+    "owners",
+    "who runs mineberry",
+    "who made mineberry"
+   ],
+   "answer": "The server owners are SJ and mishutka. They rarely message players, so don't expect a DM from them. Ask staff on the Discord: https://mineberry.org/discord"
+  },
+  {
+   "keywords": [
+    "chat cops",
+    "chat cop",
+    "chatcops",
+    "chatcop",
+    "who are the chat cops",
+    "who are chat cops",
+    "chat cop list",
+    "list of chat cops",
+    "mineberry chat cops",
+    "chat cop names",
+    "chat cop usernames",
+    "chat cop ids"
+   ],
+   "title": "MineBerry chat cops",
+   "answer": "The MineBerry chat cops, the entry rank of the team (in-game name and Discord user ID):\n- Agio12 (Discord ID 1055101878502952980)\n- king1155 (Discord ID 762525382586400780)\n- RoraIcT_ (Discord ID 1488514760826818651)\n- LukyOP007 (Discord ID 899955522168553473)\n- Nice_EX (Discord ID 1419210023589908510)\n- nItR0_ (Discord ID 1193237733150302242)\n- oVelvet (Discord ID 1112348553294135428)\n- creeperblown2009 (Discord ID 1342269617627861105)\n- d7uzi (Discord ID 1411968862903341188)\n- Squidyshu (Discord ID 1522514356405932157)"
+  },
+  {
+   "keywords": [
+    "king1155",
+    "who is king1155",
+    "is king1155 a chat cop",
+    "king1155 chat cop",
+    "king1155 discord id"
+   ],
+   "title": "chat cop king1155",
+   "answer": "king1155 is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 762525382586400780."
+  },
+  {
+   "keywords": [
+    "roraict",
+    "who is roraict",
+    "is roraict a chat cop",
+    "roraict chat cop",
+    "roraict discord id"
+   ],
+   "title": "chat cop RoraIcT_",
+   "answer": "RoraIcT_ is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 1488514760826818651."
+  },
+  {
+   "keywords": [
+    "lukyop007",
+    "who is lukyop007",
+    "is lukyop007 a chat cop",
+    "lukyop007 chat cop",
+    "lukyop007 discord id"
+   ],
+   "title": "chat cop LukyOP007",
+   "answer": "LukyOP007 is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 899955522168553473."
+  },
+  {
+   "keywords": [
+    "nitr0",
+    "who is nitr0",
+    "is nitr0 a chat cop",
+    "nitr0 chat cop",
+    "nitr0 discord id"
+   ],
+   "title": "chat cop nItR0_",
+   "answer": "nItR0_ is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 1193237733150302242."
+  },
+  {
+   "keywords": [
+    "ovelvet",
+    "who is ovelvet",
+    "is ovelvet a chat cop",
+    "ovelvet chat cop",
+    "ovelvet discord id"
+   ],
+   "title": "chat cop oVelvet",
+   "answer": "oVelvet is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 1112348553294135428."
+  },
+  {
+   "keywords": [
+    "creeperblown2009",
+    "who is creeperblown2009",
+    "is creeperblown2009 a chat cop",
+    "creeperblown2009 chat cop",
+    "creeperblown2009 discord id"
+   ],
+   "title": "chat cop creeperblown2009",
+   "answer": "creeperblown2009 is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 1342269617627861105."
+  },
+  {
+   "keywords": [
+    "d7uzi",
+    "who is d7uzi",
+    "is d7uzi a chat cop",
+    "d7uzi chat cop",
+    "d7uzi discord id"
+   ],
+   "title": "chat cop d7uzi",
+   "answer": "d7uzi is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 1411968862903341188."
+  },
+  {
+   "keywords": [
+    "squidyshu",
+    "who is squidyshu",
+    "is squidyshu a chat cop",
+    "squidyshu chat cop",
+    "squidyshu discord id"
+   ],
+   "title": "chat cop Squidyshu",
+   "answer": "Squidyshu is a MineBerry chat cop, the lowest rank of the staff team. Discord user ID: 1522514356405932157."
+  },
+  {
+   "keywords": [
+    "staff list",
+    "list of staff",
+    "who are the staff",
+    "who is staff",
+    "staff team",
+    "staff members",
+    "staff names",
+    "staff usernames",
+    "who are the moderators",
+    "moderators list",
+    "mod list",
+    "list of mods",
+    "who are the mods",
+    "mineberry staff",
+    "mineberry mods",
+    "all staff"
+   ],
+   "title": "MineBerry staff team",
+   "answer": "The MineBerry staff team, highest rank first (in-game names):\n- Staff: GhostGirl_ (manages almost everything)\n- Sr. mods: crysto, dest, ssrs, casualty, pandiai, endercowww\n- Mods: Dzalto, Mikeey_, Moksh_, EndDarkside, Toxciver, demon_13263, VIP\n- Jr. mods: CID, Adikan, Kay, PKcommander, Hardmystery, MrStalyn, Tap100, Amer, _MellowShu, Vault, pixel\n- Chat cops: Agio12, king1155, RoraIcT_, LukyOP007, Nice_EX, nItR0_, oVelvet, creeperblown2009, d7uzi, Squidyshu"
+  },
+  {
+   "keywords": [
+    "staff hierarchy",
+    "staff ranks",
+    "staff rank order",
+    "staff order",
+    "rank order of staff",
+    "mod hierarchy",
+    "who is higher than a mod",
+    "who is above mod",
+    "highest staff rank",
+    "lowest staff rank",
+    "staff structure"
+   ],
+   "title": "staff hierarchy",
+   "answer": "The staff ranks, highest to lowest: Staff > Sr. mod > Mod > Jr. mod > Chat cop. Ask me \"who are the staff\" to see who holds each rank."
+  },
+  {
+   "keywords": [
+    "sr mods",
+    "senior mods",
+    "senior moderators",
+    "who are the sr mods",
+    "sr mod list"
+   ],
+   "title": "Sr. mods",
+   "answer": "MineBerry Sr. mods: crysto, dest, ssrs, casualty, pandiai, endercowww."
+  },
+  {
+   "keywords": [
+    "who are the regular mods",
+    "regular mods",
+    "normal mods",
+    "mod rank list"
+   ],
+   "title": "Mods",
+   "answer": "MineBerry Mods: Dzalto, Mikeey_, Moksh_, EndDarkside, Toxciver, demon_13263, VIP."
+  },
+  {
+   "keywords": [
+    "jr mods",
+    "junior mods",
+    "junior moderators",
+    "who are the jr mods",
+    "jr mod list"
+   ],
+   "title": "Jr. mods",
+   "answer": "MineBerry Jr. mods: CID, Adikan, Kay, PKcommander, Hardmystery, MrStalyn, Tap100, Amer, _MellowShu, Vault, pixel."
+  },
+  {
+   "keywords": [
+    "who is ghostgirl",
+    "is ghostgirl staff",
+    "is ghostgirl a mod",
+    "ghostgirl rank",
+    "ghostgirl staff rank"
+   ],
+   "title": "staff GhostGirl_",
+   "answer": "GhostGirl_ is MineBerry staff and manages almost everything."
+  },
+  {
+   "keywords": [
+    "who is crysto",
+    "is crysto staff",
+    "is crysto a mod",
+    "crysto rank",
+    "crysto staff rank"
+   ],
+   "title": "staff crysto",
+   "answer": "crysto is a MineBerry Sr. mod."
+  },
+  {
+   "keywords": [
+    "who is dest",
+    "is dest staff",
+    "is dest a mod",
+    "dest rank",
+    "dest staff rank"
+   ],
+   "title": "staff dest",
+   "answer": "dest is a MineBerry Sr. mod."
+  },
+  {
+   "keywords": [
+    "who is ssrs",
+    "is ssrs staff",
+    "is ssrs a mod",
+    "ssrs rank",
+    "ssrs staff rank"
+   ],
+   "title": "staff ssrs",
+   "answer": "ssrs is a MineBerry Sr. mod."
+  },
+  {
+   "keywords": [
+    "who is casualty",
+    "is casualty staff",
+    "is casualty a mod",
+    "casualty rank",
+    "casualty staff rank"
+   ],
+   "title": "staff casualty",
+   "answer": "casualty is a MineBerry Sr. mod."
+  },
+  {
+   "keywords": [
+    "who is pandiai",
+    "is pandiai staff",
+    "is pandiai a mod",
+    "pandiai rank",
+    "pandiai staff rank"
+   ],
+   "title": "staff pandiai",
+   "answer": "pandiai is a MineBerry Sr. mod."
+  },
+  {
+   "keywords": [
+    "who is endercowww",
+    "is endercowww staff",
+    "is endercowww a mod",
+    "endercowww rank",
+    "endercowww staff rank"
+   ],
+   "title": "staff endercowww",
+   "answer": "endercowww is a MineBerry Sr. mod."
+  },
+  {
+   "keywords": [
+    "who is dzalto",
+    "is dzalto staff",
+    "is dzalto a mod",
+    "dzalto rank",
+    "dzalto staff rank"
+   ],
+   "title": "staff Dzalto",
+   "answer": "Dzalto is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is mikeey",
+    "is mikeey staff",
+    "is mikeey a mod",
+    "mikeey rank",
+    "mikeey staff rank"
+   ],
+   "title": "staff Mikeey_",
+   "answer": "Mikeey_ is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is moksh",
+    "is moksh staff",
+    "is moksh a mod",
+    "moksh rank",
+    "moksh staff rank"
+   ],
+   "title": "staff Moksh_",
+   "answer": "Moksh_ is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is enddarkside",
+    "is enddarkside staff",
+    "is enddarkside a mod",
+    "enddarkside rank",
+    "enddarkside staff rank"
+   ],
+   "title": "staff EndDarkside",
+   "answer": "EndDarkside is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is toxciver",
+    "is toxciver staff",
+    "is toxciver a mod",
+    "toxciver rank",
+    "toxciver staff rank"
+   ],
+   "title": "staff Toxciver",
+   "answer": "Toxciver is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is demon 13263",
+    "is demon 13263 staff",
+    "is demon 13263 a mod",
+    "demon 13263 rank",
+    "demon 13263 staff rank"
+   ],
+   "title": "staff demon_13263",
+   "answer": "demon_13263 is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is vip",
+    "is vip staff",
+    "is vip a mod",
+    "vip rank",
+    "vip staff rank"
+   ],
+   "title": "staff VIP",
+   "answer": "VIP is a MineBerry mod."
+  },
+  {
+   "keywords": [
+    "who is cid",
+    "is cid staff",
+    "is cid a mod",
+    "cid rank",
+    "cid staff rank"
+   ],
+   "title": "staff CID",
+   "answer": "CID is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is adikan",
+    "is adikan staff",
+    "is adikan a mod",
+    "adikan rank",
+    "adikan staff rank"
+   ],
+   "title": "staff Adikan",
+   "answer": "Adikan is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is kay",
+    "is kay staff",
+    "is kay a mod",
+    "kay rank",
+    "kay staff rank"
+   ],
+   "title": "staff Kay",
+   "answer": "Kay is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is pkcommander",
+    "is pkcommander staff",
+    "is pkcommander a mod",
+    "pkcommander rank",
+    "pkcommander staff rank"
+   ],
+   "title": "staff PKcommander",
+   "answer": "PKcommander is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is hardmystery",
+    "is hardmystery staff",
+    "is hardmystery a mod",
+    "hardmystery rank",
+    "hardmystery staff rank",
+    "is hardmystery a mouse",
+    "hardmystery mouse",
+    "what is hardmystery",
+    "hardmystery animal",
+    "is hardmystery a rat"
+   ],
+   "title": "staff Hardmystery",
+   "answers": [
+    "Hardmystery is a MineBerry Jr. mod. Fun fact: he's also a mouse. A mouse with ban powers, so keep the cheese away from the chat rules.",
+    "Hardmystery is a Jr. mod, and yes, also officially a mouse. Don't tell him I told you."
+   ]
+  },
+  {
+   "keywords": [
+    "who is mrstalyn",
+    "is mrstalyn staff",
+    "is mrstalyn a mod",
+    "mrstalyn rank",
+    "mrstalyn staff rank"
+   ],
+   "title": "staff MrStalyn",
+   "answer": "MrStalyn is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is tap100",
+    "is tap100 staff",
+    "is tap100 a mod",
+    "tap100 rank",
+    "tap100 staff rank"
+   ],
+   "title": "staff Tap100",
+   "answer": "Tap100 is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is amer",
+    "is amer staff",
+    "is amer a mod",
+    "amer rank",
+    "amer staff rank"
+   ],
+   "title": "staff Amer",
+   "answer": "Amer is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is mellowshu",
+    "is mellowshu staff",
+    "is mellowshu a mod",
+    "mellowshu rank",
+    "mellowshu staff rank"
+   ],
+   "title": "staff _MellowShu",
+   "answer": "_MellowShu is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is vault",
+    "is vault staff",
+    "is vault a mod",
+    "vault rank",
+    "vault staff rank"
+   ],
+   "title": "staff Vault",
+   "answer": "Vault is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "who is pixel",
+    "is pixel staff",
+    "is pixel a mod",
+    "pixel rank",
+    "pixel staff rank"
+   ],
+   "title": "staff pixel",
+   "answer": "pixel is a MineBerry Jr. mod."
+  },
+  {
+   "keywords": [
+    "freecam",
+    "free cam"
+   ],
+   "answer": "I don't have a rule about freecam in my guide. Ask staff on the Discord before using it: https://mineberry.org/discord"
+  },
+  {
+   "keywords": [
+    "how to join discord",
+    "discord link",
+    "discord invite",
+    "join the discord"
+   ],
+   "answer": "https://mineberry.org/discord"
+  },
+  {
+   "keywords": [
+    "store link",
+    "how to buy",
+    "how to purchase",
+    "buy a rank",
+    "how do i buy",
+    "buy rank",
+    "buy a rank"
+   ],
+   "answer": "Buy at store.mineberry.org. Checkout is run by Tebex. If the payment went through but you didn't get your purchase, send your Tebex ID (it's in the emailed receipt) and username on the Discord."
+  },
+  {
+   "keywords": [
+    "online players",
+    "how many players",
+    "player count",
+    "how many online",
+    "who is online"
+   ],
+   "answer": "I can't see the player count. The MineBerry website shows how many are online: mineberry.org"
+  }
+ ],
+ "commands": {
+  "servers": {
+   "Survival": "surv",
+   "OPSurvival": "opsurv"
+  },
+  "permanent": ""
+ },
+ "rules": [
+  {
+   "id": "1.1",
+   "text": "English only in public chat, other languages in DMs [warn/mute 5-15min]",
+   "keywords": [
+    "english",
+    "language",
+    "other language",
+    "dm"
+   ]
+  },
+  {
+   "id": "1.2",
+   "text": "No spamming letters or repeated phrases [warning/mute 15m-2h]",
+   "keywords": [
+    "spam",
+    "flood",
+    "repeated phrase"
+   ],
+   "punishes": "spamming the chat"
+  },
+  {
+   "id": "1.3",
+   "text": "Swearing is allowed, but not at other players [warning/mute 30m-2h]",
+   "keywords": [
+    "swear",
+    "curse",
+    "insult",
+    "offensive"
+   ],
+   "punishes": "insulting others"
+  },
+  {
+   "id": "1.4",
+   "text": "No making fun of mental or physical disorders [warning/mute 30m-2h]",
+   "keywords": [
+    "disorder",
+    "disability",
+    "make fun",
+    "mental"
+   ]
+  },
+  {
+   "id": "1.5",
+   "text": "Respect others, don't annoy people on purpose [warning/mute 45m/ban 15m]",
+   "keywords": [
+    "respect",
+    "annoy",
+    "insult",
+    "toxic",
+    "harass",
+    "provoke"
+   ],
+   "punishes": "insulting others"
+  },
+  {
+   "id": "1.6",
+   "text": "No politics or religion in chat [warning/mute 15m-60m]",
+   "keywords": [
+    "politic",
+    "religion"
+   ]
+  },
+  {
+   "id": "1.7",
+   "text": "No advertising other servers, including naming them [mute/IP ban]",
+   "keywords": [
+    "advertise",
+    "other server",
+    "server name"
+   ],
+   "punishes": "advertising"
+  },
+  {
+   "id": "1.8",
+   "text": "No begging for rank, fly, coins and so on [warning/mute 30m]",
+   "keywords": [
+    "beg",
+    "ask for rank"
+   ],
+   "punishes": "begging"
+  },
+  {
+   "id": "1.9",
+   "text": "No disrespecting staff [warning/mute 30m-1d]",
+   "keywords": [
+    "disrespect staff",
+    "insult staff",
+    "staff"
+   ]
+  },
+  {
+   "id": "1.10",
+   "text": "No leaking personal information [mute 1-7d/IP ban]",
+   "keywords": [
+    "leak",
+    "personal info",
+    "personal information",
+    "dox",
+    "doxx"
+   ],
+   "punishes": "doxxing"
+  },
+  {
+   "id": "1.11",
+   "text": "No racism or discrimination [mute 1h-3d]",
+   "keywords": [
+    "racism",
+    "racist",
+    "discrimination",
+    "slur"
+   ],
+   "punishes": "racism"
+  },
+  {
+   "id": "7.1",
+   "text": "Scamming in /ah, or with promised trades that were not completed by both players",
+   "keywords": [
+    "scam",
+    "auction",
+    "trade",
+    "promised trade"
+   ],
+   "punishes": "scamming players"
+  }
+ ],
+ "punishments": [
+  {
+   "name": "advertising",
+   "value": "mute/ban 100d",
+   "aliases": []
+  },
+  {
+   "name": "begging",
+   "value": "warn/mute 20m",
+   "aliases": []
+  },
+  {
+   "name": "flooding the chat",
+   "value": "mute 1h",
+   "aliases": [
+    "flood"
+   ]
+  },
+  {
+   "name": "impersonating",
+   "value": "warn/ban 1d",
+   "aliases": [
+    "impersonate staff"
+   ]
+  },
+  {
+   "name": "insulting others",
+   "value": "mute 3h/1w",
+   "aliases": [
+    "insult"
+   ]
+  },
+  {
+   "name": "racism",
+   "value": "mute 1w",
+   "aliases": [
+    "racist",
+    "discrimination"
+   ]
+  },
+  {
+   "name": "spamming the chat",
+   "value": "mute 1h",
+   "aliases": [
+    "spam"
+   ]
+  },
+  {
+   "name": "abusing exploits",
+   "value": "ban 2w",
+   "aliases": [
+    "exploit"
+   ]
+  },
+  {
+   "name": "auto clicker",
+   "value": "ban 30d",
+   "aliases": [
+    "autoclicker",
+    "auto click"
+   ]
+  },
+  {
+   "name": "block glitching",
+   "value": "ban 2w",
+   "aliases": [
+    "block glitch"
+   ]
+  },
+  {
+   "name": "kill farming",
+   "value": "ban 1w + 1d per 20 kills",
+   "aliases": [
+    "kill farm"
+   ]
+  },
+  {
+   "name": "major griefing",
+   "value": "ban 2w",
+   "aliases": [
+    "major grief"
+   ]
+  },
+  {
+   "name": "minor griefing",
+   "value": "ban 4d/1w",
+   "aliases": [
+    "minor grief"
+   ]
+  },
+  {
+   "name": "nsfw images",
+   "value": "ban 60d",
+   "aliases": [
+    "nsfw"
+   ]
+  },
+  {
+   "name": "pscale abuse",
+   "value": "ban 2w",
+   "aliases": [
+    "pscale"
+   ]
+  },
+  {
+   "name": "rg abuse",
+   "value": "ban 1w",
+   "aliases": []
+  },
+  {
+   "name": "scamming on auction",
+   "value": "ban 1w",
+   "aliases": [
+    "auction scam"
+   ]
+  },
+  {
+   "name": "scamming players",
+   "value": "ban 1w",
+   "aliases": [
+    "scam"
+   ]
+  },
+  {
+   "name": "setting home near other rgs",
+   "value": "warn/ban 1d",
+   "aliases": [
+    "home near"
+   ]
+  },
+  {
+   "name": "spawn killing",
+   "value": "ban 3d",
+   "aliases": [
+    "spawn kill",
+    "spawnkill"
+   ]
+  },
+  {
+   "name": "tp killing",
+   "value": "ban 5d",
+   "aliases": [
+    "tp kill",
+    "tpkill",
+    "tp trap",
+    "tp trapping",
+    "death trap"
+   ]
+  },
+  {
+   "name": "trespassing/naughty player",
+   "value": "kick/ban 1d",
+   "aliases": [
+    "naughty"
+   ]
+  },
+  {
+   "name": "warp killing",
+   "value": "ban 5d",
+   "aliases": [
+    "warp kill"
+   ]
+  },
+  {
+   "name": "auto reconnect",
+   "value": "ban 1w",
+   "aliases": [
+    "autoreconnect"
+   ]
+  },
+  {
+   "name": "encouraging to hack",
+   "value": "ban 2w",
+   "aliases": [
+    "encourage hack"
+   ]
+  },
+  {
+   "name": "ban bypass",
+   "value": "ban forever",
+   "aliases": [
+    "ban evasion",
+    "ban evade"
+   ]
+  },
+  {
+   "name": "bots",
+   "value": "ban forever",
+   "aliases": [
+    "bot"
+   ]
+  },
+  {
+   "name": "distribution of duped items",
+   "value": "ban forever",
+   "aliases": [
+    "dupe",
+    "duping"
+   ]
+  },
+  {
+   "name": "doxxing",
+   "value": "ban forever",
+   "aliases": [
+    "dox",
+    "doxing",
+    "doxx"
+   ]
+  },
+  {
+   "name": "hacked account",
+   "value": "ban forever",
+   "aliases": []
+  },
+  {
+   "name": "hacks",
+   "value": "ban 1yr",
+   "aliases": [
+    "hack client",
+    "cheat",
+    "hacking"
+   ]
+  },
+  {
+   "name": "helping hackers",
+   "value": "ban 100d",
+   "aliases": [
+    "help hack"
+   ]
+  },
+  {
+   "name": "inappropriate username",
+   "value": "ban forever",
+   "aliases": [
+    "bad username",
+    "offensive username"
+   ]
+  },
+  {
+   "name": "mute bypass",
+   "value": "ban for original mute time",
+   "aliases": [
+    "mute evasion",
+    "emsg",
+    "admin chat while muted"
+   ]
+  },
+  {
+   "name": "pedophile",
+   "value": "ban forever",
+   "aliases": [
+    "pedo"
+   ]
+  },
+  {
+   "name": "possession of duped items",
+   "value": "ban forever",
+   "aliases": [
+    "dupe",
+    "duping"
+   ]
+  },
+  {
+   "name": "suspicion of duping",
+   "value": "ban forever",
+   "aliases": [
+    "dupe",
+    "duping"
+   ]
+  },
+  {
+   "name": "xray",
+   "value": "ban 180d",
+   "aliases": [
+    "x ray",
+    "x-ray"
+   ]
+  },
+  {
+   "name": "automation",
+   "value": "ban 30d",
+   "aliases": [
+    "baritone",
+    "pathfinding bot",
+    "bot control"
+   ]
+  },
+  {
+   "name": "family insults",
+   "value": "mute 3d-30d",
+   "aliases": [
+    "family insult",
+    "family joke",
+    "family jokes"
+   ]
+  },
+  {
+   "name": "lavacast",
+   "value": "warn/ban 1d",
+   "aliases": [
+    "lava cast",
+    "lavacasts",
+    "lava casts"
+   ]
+  },
+  {
+   "name": "irl trading",
+   "value": "temporary ban, repeat is a permanent ban with no appeal",
+   "aliases": [
+    "irl trade",
+    "real money trading",
+    "real money trade"
+   ]
+  }
+ ],
+ "store": [
+  {
+   "server": "Survival",
+   "type": "rank",
+   "items": [
+    [
+     "SILVER",
+     "2.99"
+    ],
+    [
+     "SUPREME",
+     "5.99"
+    ],
+    [
+     "WITHER",
+     "12.99"
+    ],
+    [
+     "HERO",
+     "21.99"
+    ],
+    [
+     "AVENGER",
+     "29.99"
+    ],
+    [
+     "LEGEND",
+     "39.99"
+    ],
+    [
+     "PHANTOM",
+     "49.99"
+    ],
+    [
+     "PHOENIX",
+     "59.99"
+    ],
+    [
+     "ENDER",
+     "69.99"
+    ]
+   ]
+  },
+  {
+   "server": "Survival",
+   "type": "upgrade",
+   "items": [
+    [
+     "SILVER>SUPREME",
+     "3.00"
+    ],
+    [
+     "SUPREME>WITHER",
+     "7.00"
+    ],
+    [
+     "WITHER>HERO",
+     "9.00"
+    ],
+    [
+     "HERO>AVENGER",
+     "8.00"
+    ],
+    [
+     "AVENGER>LEGEND",
+     "10.00"
+    ],
+    [
+     "LEGEND>PHANTOM",
+     "10.00"
+    ],
+    [
+     "PHANTOM>PHOENIX",
+     "10.00"
+    ],
+    [
+     "PHOENIX>ENDER",
+     "10.00"
+    ]
+   ]
+  },
+  {
+   "server": "Survival",
+   "type": "key",
+   "items": [
+    [
+     "10x Breeze Crate Key (+2 bonus)",
+     "40.99",
+     "breeze"
+    ],
+    [
+     "5x Breeze Crate Key",
+     "21.99",
+     "breeze"
+    ],
+    [
+     "3x Breeze Crate Key",
+     "13.99",
+     "breeze"
+    ],
+    [
+     "1x Breeze Crate Key",
+     "5.99",
+     "breeze"
+    ],
+    [
+     "10x Godly Crate Key (+2 bonus)",
+     "39.99",
+     "godly"
+    ],
+    [
+     "5x Godly Crate Key",
+     "20.99",
+     "godly"
+    ],
+    [
+     "3x Godly Crate Key",
+     "12.99",
+     "godly"
+    ],
+    [
+     "1x Godly Crate Key",
+     "4.99",
+     "godly"
+    ],
+    [
+     "10x Mega Crate Key (+2 bonus)",
+     "23.99",
+     "mega"
+    ],
+    [
+     "5x Mega Crate Key",
+     "12.99",
+     "mega"
+    ],
+    [
+     "3x Mega Crate Key",
+     "7.99",
+     "mega"
+    ],
+    [
+     "1x Mega Crate Key",
+     "2.99",
+     "mega"
+    ],
+    [
+     "10x Epic Crate Key (+2 bonus)",
+     "12.99",
+     "epic"
+    ],
+    [
+     "5x Epic Crate Key",
+     "7.99",
+     "epic"
+    ],
+    [
+     "3x Epic Crate Key",
+     "4.99",
+     "epic"
+    ],
+    [
+     "1x Epic Crate Key",
+     "1.99",
+     "epic"
+    ]
+   ]
+  },
+  {
+   "server": "Survival",
+   "type": "coins",
+   "items": [
+    [
+     "25 Coins",
+     "0.79"
+    ],
+    [
+     "50 Coins (+10 bonus)",
+     "0.99"
+    ],
+    [
+     "100 Coins (+25 bonus)",
+     "1.29"
+    ],
+    [
+     "200 Coins (+50 bonus)",
+     "2.29"
+    ],
+    [
+     "600 Coins (+200 bonus)",
+     "5.99"
+    ],
+    [
+     "1000 Coins (+500 bonus)",
+     "8.99"
+    ],
+    [
+     "2000 Coins (+1K bonus)",
+     "15.99"
+    ],
+    [
+     "4000 Coins (+2K bonus)",
+     "26.99"
+    ]
+   ]
+  },
+  {
+   "server": "Survival",
+   "type": "reset",
+   "items": [
+    [
+     "Grant Reset",
+     "49.99"
+    ]
+   ]
+  },
+  {
+   "server": "Anarchy",
+   "type": "rank",
+   "items": [
+    [
+     "Warrior",
+     "2.99"
+    ],
+    [
+     "Titan",
+     "5.99"
+    ],
+    [
+     "Prince",
+     "12.99"
+    ],
+    [
+     "Hero",
+     "21.99"
+    ],
+    [
+     "Legend",
+     "29.99"
+    ],
+    [
+     "Master",
+     "39.99"
+    ],
+    [
+     "Immortal",
+     "59.99"
+    ]
+   ]
+  },
+  {
+   "server": "Anarchy",
+   "type": "upgrade",
+   "items": [
+    [
+     "Warrior>Titan",
+     "3.00"
+    ],
+    [
+     "Titan>Prince",
+     "7.00"
+    ],
+    [
+     "Prince>Hero",
+     "9.00"
+    ],
+    [
+     "Hero>Legend",
+     "8.00"
+    ],
+    [
+     "Legend>Master",
+     "10.00"
+    ],
+    [
+     "Master>Immortal",
+     "20.00"
+    ]
+   ]
+  },
+  {
+   "server": "Anarchy",
+   "type": "key",
+   "items": [
+    [
+     "10x Breeze Crate Key (+2 bonus)",
+     "39.99",
+     "breeze"
+    ],
+    [
+     "5x Breeze Crate Key",
+     "20.99",
+     "breeze"
+    ],
+    [
+     "3x Breeze Crate Key",
+     "12.99",
+     "breeze"
+    ],
+    [
+     "1x Breeze Crate Key",
+     "4.99",
+     "breeze"
+    ],
+    [
+     "10x Legendary Crate Key (+2 bonus)",
+     "23.99",
+     "legendary"
+    ],
+    [
+     "5x Legendary Crate Key",
+     "12.99",
+     "legendary"
+    ],
+    [
+     "3x Legendary Crate Key",
+     "7.99",
+     "legendary"
+    ],
+    [
+     "1x Legendary Crate Key",
+     "2.99",
+     "legendary"
+    ],
+    [
+     "10x Mega Crate Key (+2 bonus)",
+     "12.99",
+     "mega"
+    ],
+    [
+     "5x Mega Crate Key",
+     "7.99",
+     "mega"
+    ],
+    [
+     "3x Mega Crate Key",
+     "4.99",
+     "mega"
+    ],
+    [
+     "1x Mega Crate Key",
+     "1.99",
+     "mega"
+    ]
+   ]
+  },
+  {
+   "server": "Anarchy",
+   "type": "reset",
+   "items": [
+    [
+     "Grant Reset",
+     "24.99"
+    ]
+   ]
+  },
+  {
+   "server": "OPSurvival",
+   "type": "rank",
+   "items": [
+    [
+     "Vip",
+     "1.99"
+    ],
+    [
+     "Premium",
+     "2.99"
+    ],
+    [
+     "Creative",
+     "3.99"
+    ],
+    [
+     "Legend",
+     "5.99"
+    ],
+    [
+     "Lord",
+     "6.99"
+    ],
+    [
+     "Baron",
+     "10.99"
+    ],
+    [
+     "Hero",
+     "12.99"
+    ],
+    [
+     "Enigma",
+     "15.99"
+    ],
+    [
+     "Imperator",
+     "17.99"
+    ],
+    [
+     "Deluxe",
+     "19.99"
+    ],
+    [
+     "Elite",
+     "22.99"
+    ],
+    [
+     "Titan",
+     "25.99"
+    ],
+    [
+     "King",
+     "29.99"
+    ],
+    [
+     "Sponsor",
+     "45.99"
+    ],
+    [
+     "Immortal",
+     "79.99"
+    ]
+   ]
+  },
+  {
+   "server": "OPSurvival",
+   "type": "upgrade",
+   "items": [
+    [
+     "Vip>Premium",
+     "1.00"
+    ],
+    [
+     "Premium>Creative",
+     "1.00"
+    ],
+    [
+     "Creative>Legend",
+     "2.00"
+    ],
+    [
+     "Legend>Lord",
+     "1.00"
+    ],
+    [
+     "Lord>Baron",
+     "4.00"
+    ],
+    [
+     "Baron>Hero",
+     "2.00"
+    ],
+    [
+     "Hero>Enigma",
+     "3.00"
+    ],
+    [
+     "Enigma>Imperator",
+     "2.00"
+    ],
+    [
+     "Imperator>Deluxe",
+     "2.00"
+    ],
+    [
+     "Deluxe>Elite",
+     "3.00"
+    ],
+    [
+     "Elite>Titan",
+     "3.00"
+    ],
+    [
+     "Titan>King",
+     "4.00"
+    ],
+    [
+     "King>Sponsor",
+     "16.00"
+    ],
+    [
+     "Sponsor>Immortal",
+     "34.00"
+    ]
+   ]
+  },
+  {
+   "server": "OPSurvival",
+   "type": "key",
+   "items": [
+    [
+     "10x Rank Crate Key (+2 bonus)",
+     "17.99",
+     "rank"
+    ],
+    [
+     "5x Rank Crate Key",
+     "9.99",
+     "rank"
+    ],
+    [
+     "3x Rank Crate Key",
+     "4.99",
+     "rank"
+    ],
+    [
+     "1x Rank Crate Key",
+     "2.99",
+     "rank"
+    ]
+   ]
+  },
+  {
+   "server": "OPSurvival",
+   "type": "key",
+   "items": [
+    [
+     "20x Tag Crate Key (+2 bonus)",
+     "15.99",
+     "tag"
+    ],
+    [
+     "15x Tag Crate Key",
+     "8.99",
+     "tag"
+    ],
+    [
+     "10x Tag Crate Key",
+     "4.99",
+     "tag"
+    ],
+    [
+     "5x Tag Crate Key",
+     "2.99",
+     "tag"
+    ]
+   ]
+  },
+  {
+   "server": "OPSurvival",
+   "type": "reset",
+   "items": [
+    [
+     "Grant Reset",
+     "11.99"
+    ]
+   ]
+  },
+  {
+   "server": "Minigames",
+   "type": "rank",
+   "items": [
+    [
+     "Bronze",
+     "3.99"
+    ],
+    [
+     "Iron",
+     "6.99"
+    ],
+    [
+     "Gold",
+     "12.99"
+    ],
+    [
+     "Diamond",
+     "24.99"
+    ]
+   ]
+  },
+  {
+   "server": "Minigames",
+   "type": "upgrade",
+   "items": [
+    [
+     "BRONZE>IRON",
+     "3.00"
+    ],
+    [
+     "IRON>GOLD",
+     "6.00"
+    ],
+    [
+     "GOLD>DIAMOND",
+     "12.00"
+    ]
+   ]
+  }
+ ],
+ "fallbacks": [
+  "Nothing on {topic} in my guide yet, so I can't give you a straight answer. Try me on a rank price, a rule, a punishment or a command. Staff will know more: https://mineberry.org/discord",
+  "That one isn't covered in my guide ({topic}). If it's about a rule break I can tell you the punishment, and if it's about buying something I can find the price. Otherwise the Discord is the best place: https://mineberry.org/discord",
+  "Hmm, I couldn't tie {topic} to anything I know. Try it shorter, like \"legend rank price\", \"punishment for xray\" or \"who is in the council\", and I'll get it."
+ ]
+}

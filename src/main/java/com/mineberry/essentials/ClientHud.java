@@ -75,7 +75,7 @@ public final class ClientHud {
 
     /**
      * The vanilla scoreboard, hidden when its switch is off and scaled around the middle of the right screen edge (where vanilla puts it)
-     * otherwise. The Y key (HUD hidden) deliberately does not touch it: it is not one of our boxes.
+     * otherwise. Hiding the HUD deliberately does not touch it: it is not one of our boxes.
      */
     private static HudElement wrapScoreboard(HudElement vanilla) {
         return (g, tick) -> {
@@ -147,8 +147,7 @@ public final class ClientHud {
         }
         boolean plain = p.size() != null && p.mod().widget().plain();
         if (!plain) {
-            Ui.fill(g, x, y, x + w, y + h, 0x90000000);
-            Ui.fill(g, x, y, x + 1, y + h, Ui.ACCENT);
+            Ui.hudPanel(g, x, y, w, h);
         }
         if (p.size() != null) p.mod().widget().draw(g, mc, font, x + PAD, y + PAD);
         else Ui.txt(g, font, p.text(), x + PAD, y + PAD + 1, 0xFFFFFFFF, true);

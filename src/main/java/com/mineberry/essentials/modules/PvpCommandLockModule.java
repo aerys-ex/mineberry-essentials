@@ -14,7 +14,7 @@ import java.util.Set;
  * your clan chat command). Everything else is blocked until the server says you are out of PvP mode.
  *
  * It follows the same server messages as Safe Logout ("You've entered PvP mode!" ... "You're out of PvP mode!"),
- * and lets go by itself after 5 minutes in case the end message was missed. The allowed list is
+ * and lets go by itself after pvpFailsafeSeconds (180 by default) in case the end message was missed. The allowed list is
  * "pvpAllowedCommands" in the config file.
  */
 public class PvpCommandLockModule extends MineBerryModule {
@@ -32,7 +32,9 @@ public class PvpCommandLockModule extends MineBerryModule {
 
             String root = CommandRules.root(command);
             Set<String> allowed = CommandRules.normalize(Config.pvpAllowedCommands());
-            allowed.add(CommandRules.root(Config.clanCommand()));   // clan chat keeps working even if you renamed it
+            allowed.add(CommandRules.root(Config.clanCommand()));   // the chat modes keep working even if you renamed their commands
+            allowed.add(CommandRules.root(Config.adminChatCommand()));
+            allowed.add(CommandRules.root(Config.partyCommand()));
             if (allowed.contains(root)) return true;
 
             mc.execute(() -> {

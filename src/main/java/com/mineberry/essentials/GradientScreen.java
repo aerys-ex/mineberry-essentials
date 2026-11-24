@@ -102,6 +102,7 @@ public class GradientScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
+        this.addRenderableOnly((g, mx, my, d) -> Ui.ghostAll(this));   // first thing drawn: hides the vanilla buttons before THEY are drawn (no flash on open)
         widgets.clear(); cards.clear(); baseActive.clear();
         java.util.Arrays.fill(hexBoxes, null);
         pick = -1;

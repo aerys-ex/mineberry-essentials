@@ -332,9 +332,11 @@ public class EvidenceModule extends MineBerryModule {
 
         int w = Math.max(font.width(title), Math.max(font.width(line2), font.width(line3))) + 24;
         int x = 6, y = com.mineberry.essentials.StatusStack.leftTop, h = 46;   // below the top-left HUD boxes
-        g.fill(x - 1, y - 1, x + w + 1, y + h + 1, 0x66000000);
-        g.fill(x, y, x + w, y + h, 0xE0200A12);
-        g.fill(x, y, x + 4, y + h, 0xFFE5243B);
+        if (!com.mineberry.essentials.Ui.toast(g, x, y, w, h, 0xFFE5243B, 1f)) {
+            g.fill(x - 1, y - 1, x + w + 1, y + h + 1, 0x66000000);
+            g.fill(x, y, x + w, y + h, 0xE0200A12);
+            g.fill(x, y, x + 4, y + h, 0xFFE5243B);
+        }
         g.text(font, title, x + 12, y + 7, 0xFFFF5566, true);
         g.text(font, line2, x + 12, y + 20, 0xFFFFFFFF, false);
         g.text(font, line3, x + 12, y + 32, 0xFFDDDDDD, false);

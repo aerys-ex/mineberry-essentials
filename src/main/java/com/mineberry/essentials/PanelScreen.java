@@ -16,14 +16,15 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 /**
- * The MineBerry Essentials control panel. A top bar (MODULES / TOOLS tabs, close), and below it one flat panel:
+ * The MineBerry Essentials control panel. A top bar (MODULES / TOOLS / AERION / SCREENSHOTS tabs, close), and below it one flat panel:
  * MODULES shows a category filter, a search box and a scrollable grid of cards (name, icon, Enabled / Disabled);
- * TOOLS holds the coordinate converter, the evidence export and the appearance buttons.
+ * TOOLS holds the coordinate converter, the evidence export and the appearance buttons;
+ * AERION lets you pick MineBerry or MinePeak and opens a chat with that server's info guide.
  */
 public class PanelScreen extends Screen {
 
-    private static final int PANEL_W_MAX = 540, PAD = 10, GAP = 6, SCROLL_W = 4, MIN_CARD_W = 100;
-    private static final int TOP_H = 22, TOP_GAP = 6, FILTER_H = 20, FILTER_GAP = 8, CARD_H = 72, BTN_H = 20;
+    private static final int PANEL_W_MAX = 490, PAD = 10, GAP = 6, SCROLL_W = 4, MIN_CARD_W = 100;
+    private static final int TOP_H = 22, TOP_GAP = 6, FILTER_H = 20, FILTER_GAP = 8, CARD_H = 66, BTN_H = 20;
     /** Everything on the MODULES page except the card grid: padding, filter row, gaps and the hint line. */
     private static final int MODS_OVERHEAD = PAD + FILTER_H + FILTER_GAP + 8 + 8 + PAD;
 
@@ -34,12 +35,20 @@ public class PanelScreen extends Screen {
     private static final int UPD_LABEL_Y = APP_Y + BTN_H + 10, UPD_Y = UPD_LABEL_Y + 14;
     private static final int TOOLS_H = UPD_Y + BTN_H + PAD + 2;
 
+    // AERION page, y values relative to the panel top (it fits inside the TOOLS page height)
+    private static final int AER_LABEL_Y = PAD, AER_SUB_Y = AER_LABEL_Y + 16, AER_CARDS_Y = AER_SUB_Y + 18, AER_CARD_H = 104;
+    private static final String[][] AERION_SERVERS = {   // {guide id, name, what it is}
+            {"mineberry", "MineBerry", "Prices, rules and punishments"},
+            {"minepeak", "MinePeak", "Server guide"}};
+
     private static final int GREEN_FILL = 0xFF1B5E2C, GREEN_EDGE = 0xFF2C7D42, GREEN_TEXT = 0xFF6EE08C;
 
     private static final String[] CATEGORIES = {"All", "Chat", "Safety", "Tools"};
     private static final Map<String, String> CATEGORY_OF = Map.ofEntries(
             Map.entry("clan_chat", "Chat"), Map.entry("admin_chat", "Chat"), Map.entry("party_chat", "Chat"),
+            Map.entry("color_code_chat", "Chat"),
             Map.entry("chat_extras", "Chat"), Map.entry("quick_reply", "Chat"), Map.entry("chat_search", "Chat"),
+            Map.entry("aerion_chat", "Chat"), Map.entry("aerion_mini", "Chat"),
             Map.entry("safe_logout", "Safety"),
             Map.entry("pvp_command_lock", "Safety"), Map.entry("tournament_mode", "Safety"), Map.entry("send_guard", "Safety"),
             Map.entry("evidence", "Tools"), Map.entry("waypoints", "Tools"),
@@ -66,10 +75,11 @@ public class PanelScreen extends Screen {
     private final List<Button> pageTabs = new ArrayList<>();
     private final List<Button> catTabs = new ArrayList<>();
     private final List<Button> plain = new ArrayList<>();     // buttons painted in the normal outlined style
+    private final List<Button> aerionCards = new ArrayList<>(); // the MineBerry / MinePeak cards, same order as AERION_SERVERS
     private Button closeBtn, checkBtn, updateBtn, modrinthBtn;
     private EditBox searchBox, xInput, zInput;
 
-    private int page = 0;                // 0 = MODULES, 1 = TOOLS
+    private int page = 0;                // 0 = MODULES, 1 = TOOLS, 2 = AERION
     private int category = 0;
     private String search = "";
     private int scroll = 0;              // first visible grid row
@@ -92,11 +102,12 @@ public class PanelScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
+        this.addRenderableOnly((g, mx, my, d) -> Ui.ghostAll(this));   // first thing drawn: hides the vanilla buttons before THEY are drawn (no flash on open)
         // keep what was typed when the screen is rebuilt (resize, switching tab)
         if (xInput != null) xText = xInput.getValue();
         if (zInput != null) zText = zInput.getValue();
         if (searchBox != null) search = searchBox.getValue();
-        entries.clear(); shown.clear(); pageTabs.clear(); catTabs.clear(); plain.clear();
+        entries.clear(); shown.clear(); pageTabs.clear(); catTabs.clear(); plain.clear(); aerionCards.clear();
         closeBtn = null; checkBtn = null; updateBtn = null; modrinthBtn = null; searchBox = null; xInput = null; zInput = null;
 
         buildEntries();
@@ -108,7 +119,7 @@ public class PanelScreen extends Screen {
         cardW = (gridW - (cols - 1) * GAP) / cols;
         int totalRows = Math.max(1, (entries.size() + cols - 1) / cols);
         int rowsFit = Math.max(1, (this.height - 12 - TOP_H - TOP_GAP - MODS_OVERHEAD + GAP) / (CARD_H + GAP));
-        int rows = Math.min(totalRows, rowsFit);
+        int rows = Math.min(Math.min(totalRows, rowsFit), 4);   // at most four rows, the rest scrolls
         ph = Math.max(TOOLS_H, MODS_OVERHEAD + rows * CARD_H + (rows - 1) * GAP);
         visibleRows = Math.max(1, Math.min(totalRows, (ph - MODS_OVERHEAD + GAP) / (CARD_H + GAP)));
         topY = Math.max(6, (this.height - (TOP_H + TOP_GAP + ph)) / 2);
@@ -121,7 +132,7 @@ public class PanelScreen extends Screen {
 
         initTopBar();
         UpdateChecker.check();   // no-op if already started or disabled
-        if (page == 0) initModules(); else initTools();
+        if (page == 0) initModules(); else if (page == 1) initTools(); else initAerion();
 
         // painted over the vanilla buttons (added last so it renders on top)
         this.addRenderableOnly((g, mouseX, mouseY, delta) -> paintWidgets(g, mouseX, mouseY));
@@ -152,6 +163,9 @@ public class PanelScreen extends Screen {
             } else if (module.id().equals("screenshot")) {
                 gearHint = "Open your screenshots";
                 gearAction = () -> this.minecraft.gui.setScreen(new ScreenshotScreen(this));
+            } else if (module.id().equals("color_code_chat")) {
+                gearHint = "Set your colour code";
+                gearAction = () -> this.minecraft.gui.setScreen(new ColorCodeScreen(this));
             } else if (module.id().equals("safe_logout")) {
                 gearHint = "Switch mode: warn or block";
                 gearAction = () -> {
@@ -175,12 +189,12 @@ public class PanelScreen extends Screen {
     }
 
     private void initTopBar() {
-        String[] names = {"MODULES", "TOOLS", "SCREENSHOTS"};
+        String[] names = {"MODULES", "TOOLS", "AERION", "SCREENSHOTS"};
         int x = px;
         for (int i = 0; i < names.length; i++) {
             final int target = i;
             int w = this.font.width(names[i]) + 24;
-            pageTabs.add(add(Button.builder(Component.literal(names[i]), button -> { if (target == 2) this.minecraft.gui.setScreen(new ScreenshotScreen(this)); else switchPage(target); })
+            pageTabs.add(add(Button.builder(Component.literal(names[i]), button -> { if (target == 3) this.minecraft.gui.setScreen(new ScreenshotScreen(this)); else switchPage(target); })
                     .bounds(x, topY, w, TOP_H).build()));
             x += w + 4;
         }
@@ -288,6 +302,18 @@ public class PanelScreen extends Screen {
         modrinthBtn.visible = false;
     }
 
+    /** AERION page: one big card per server. A click opens the chat with that server's info guide. */
+    private void initAerion() {
+        int left = px + PAD, inner = pw - 2 * PAD;
+        int cardW = (inner - GAP) / 2;
+        for (int i = 0; i < AERION_SERVERS.length; i++) {
+            final String id = AERION_SERVERS[i][0];
+            aerionCards.add(add(Button.builder(Component.literal(AERION_SERVERS[i][1]),
+                            button -> this.minecraft.gui.setScreen(new AerionScreen(this, id)))
+                    .bounds(left + i * (cardW + GAP), py + AER_CARDS_Y, cardW, AER_CARD_H).build()));
+        }
+    }
+
     // ---------------------------------------------------------------- grid + filter
 
     private void resetFilters() {
@@ -327,7 +353,7 @@ public class PanelScreen extends Screen {
             int x = gridX + (i % cols) * (cardW + GAP), y = gridY + row * (CARD_H + GAP);
             entry.card.setX(x); entry.card.setY(y); entry.card.visible = true;
             if (entry.gear != null) {
-                entry.gear.setX(x + 5); entry.gear.setY(y + CARD_H - 24); entry.gear.visible = true;
+                entry.gear.setX(x + 5); entry.gear.setY(y + CARD_H - 21); entry.gear.visible = true;
             }
         }
     }
@@ -390,7 +416,7 @@ public class PanelScreen extends Screen {
         }
 
         Ui.fill(g, 0, 0, this.width, this.height, Ui.DIM);
-        Ui.rect(g, px, py, pw, ph, Ui.BORDER, Ui.BG);
+        Ui.window(g, px, py, pw, ph);
 
         // brand in the top bar, only when there is room for it
         int textY = topY + (TOP_H - 8) / 2 + 1;
@@ -401,7 +427,27 @@ public class PanelScreen extends Screen {
             Ui.txt(g, this.font, "Essentials", brandX + this.font.width("MineBerry") + 6, textY, Ui.MUTED, false);
         }
 
-        if (page == 0) drawModules(g, mouseX, mouseY); else drawTools(g);
+        if (page == 0) drawModules(g, mouseX, mouseY);
+        else if (page == 1) drawTools(g);
+        else drawAerion(g, mouseX, mouseY);
+    }
+
+    private void drawAerion(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        int left = px + PAD, right = px + pw - PAD;
+        Ui.section(g, this.font, left, right, py + AER_LABEL_Y, "ASK AERION");
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth("Pick a server, then ask Aerion your questions.", right - left),
+                left, py + AER_SUB_Y, Ui.TEXT, false);
+
+        int hintY = py + AER_CARDS_Y + AER_CARD_H + 12;
+        String hint = "Aerion answers from a guide built into the mod. Nothing is sent online.";
+        for (int i = 0; i < aerionCards.size(); i++) {
+            if (over(aerionCards.get(i), mouseX, mouseY)) {
+                hint = AerionBrain.forServer(AERION_SERVERS[i][0]).isReady()
+                        ? "Open the " + AERION_SERVERS[i][1] + " chat"
+                        : "The " + AERION_SERVERS[i][1] + " guide is still empty, it is coming soon";
+            }
+        }
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(hint, right - left), left, hintY, Ui.MUTED, false);
     }
 
     private void drawModules(GuiGraphicsExtractor g, int mouseX, int mouseY) {
@@ -409,7 +455,7 @@ public class PanelScreen extends Screen {
         int fy = py + PAD;
 
         // search box
-        Ui.rect(g, searchX, fy, searchW, FILTER_H, searchBox.isFocused() ? Ui.STRONG : Ui.BORDER, Ui.INSET);
+        Ui.field(g, searchX, fy, searchW, FILTER_H, searchBox.isFocused());
         Icons.draw(g, Icons.SEARCH, searchX + 6, fy + 6, 1, Ui.MUTED);
         if (searchBox.getValue().isEmpty() && !searchBox.isFocused()) {
             Ui.txt(g, this.font, "Search", searchBox.getX(), searchBox.getY() + (searchBox.getHeight() - 8) / 2, Ui.MUTED, false);
@@ -485,8 +531,7 @@ public class PanelScreen extends Screen {
 
     /** Dark square field behind a borderless EditBox. */
     private void drawInput(GuiGraphicsExtractor g, EditBox box) {
-        Ui.rect(g, box.getX() - 4, box.getY() - 6, box.getWidth() + 8, 20,
-                box.isFocused() ? Ui.STRONG : Ui.BORDER, Ui.INSET);
+        Ui.field(g, box.getX() - 4, box.getY() - 6, box.getWidth() + 8, 20, box.isFocused());
     }
 
     // ---------------------------------------------------------------- drawing: widgets (on top of the vanilla buttons)
@@ -498,6 +543,7 @@ public class PanelScreen extends Screen {
 
     private void paintWidgets(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         int solid = Ui.BG | 0xFF000000;
+        for (var child : this.children()) if (child instanceof Button vanilla) Ui.ghost(vanilla);
 
         for (int i = 0; i < pageTabs.size(); i++) paintTab(g, pageTabs.get(i), i == page, mouseX, mouseY, solid);
         if (page != 1 && updateAvailable()) {
@@ -506,6 +552,9 @@ public class PanelScreen extends Screen {
         }
         paintClose(g, closeBtn, mouseX, mouseY, solid);
 
+        if (page == 2) {
+            for (int i = 0; i < aerionCards.size(); i++) paintServerCard(g, aerionCards.get(i), AERION_SERVERS[i], mouseX, mouseY, solid);
+        }
         if (page == 0) {
             for (int i = 0; i < catTabs.size(); i++) paintTab(g, catTabs.get(i), i == category, mouseX, mouseY, solid);
             for (Entry entry : shown) {
@@ -521,15 +570,13 @@ public class PanelScreen extends Screen {
     private void paintTab(GuiGraphicsExtractor g, Button b, boolean active, int mouseX, int mouseY, int solid) {
         int x = b.getX(), y = b.getY(), w = b.getWidth(), h = b.getHeight();
         boolean hover = over(b, mouseX, mouseY);
-        Ui.fill(g, x, y, x + w, y + h, solid);   // hide the vanilla button completely
+        Ui.cover(g, x, y, x + w, y + h, solid);   // hide the vanilla button completely
         int textColor;
         if (active) {
-            Ui.fill(g, x, y, x + w, y + h / 2, Ui.STRONG);
-            Ui.fill(g, x, y + h / 2, x + w, y + h, Ui.lerp(Ui.STRONG, 0xFF000000, 0.18f));
+            Ui.activeTab(g, x, y, w, h);
             textColor = 0xFFFFFFFF;
         } else {
-            Ui.rect(g, x, y, w, h, hover ? Ui.lerp(Ui.BORDER, 0xFFFFFFFF, 0.25f) : Ui.BORDER,
-                    Ui.lerp(solid, 0xFFFFFFFF, hover ? 0.09f : 0.04f));
+            Ui.surface(g, x, y, w, h, hover, 0.09f, 0.04f);
             textColor = hover ? Ui.TEXT : Ui.lerp(Ui.MUTED, Ui.TEXT, 0.5f);
         }
         String label = b.getMessage().getString();
@@ -540,9 +587,8 @@ public class PanelScreen extends Screen {
     private void paintButton(GuiGraphicsExtractor g, Button b, int mouseX, int mouseY, int solid) {
         int x = b.getX(), y = b.getY(), w = b.getWidth(), h = b.getHeight();
         boolean hover = b.active && over(b, mouseX, mouseY);
-        Ui.fill(g, x, y, x + w, y + h, solid);
-        Ui.rect(g, x, y, w, h, hover ? Ui.lerp(Ui.BORDER, 0xFFFFFFFF, 0.25f) : Ui.BORDER,
-                Ui.lerp(solid, 0xFFFFFFFF, hover ? 0.09f : 0.04f));
+        Ui.cover(g, x, y, x + w, y + h, solid);
+        Ui.surface(g, x, y, w, h, hover, 0.09f, 0.04f);
         String label = b.getMessage().getString();
         Ui.txt(g, this.font, label, x + (w - this.font.width(label)) / 2, y + (h - 8) / 2 + 1, b.active ? Ui.TEXT : Ui.MUTED, false);
     }
@@ -550,9 +596,8 @@ public class PanelScreen extends Screen {
     private void paintClose(GuiGraphicsExtractor g, Button b, int mouseX, int mouseY, int solid) {
         int x = b.getX(), y = b.getY(), w = b.getWidth(), h = b.getHeight();
         boolean hover = over(b, mouseX, mouseY);
-        Ui.fill(g, x, y, x + w, y + h, solid);
-        Ui.rect(g, x, y, w, h, hover ? Ui.lerp(Ui.BORDER, 0xFFFFFFFF, 0.25f) : Ui.BORDER,
-                Ui.lerp(solid, 0xFFFFFFFF, hover ? 0.09f : 0.04f));
+        Ui.cover(g, x, y, x + w, y + h, solid);
+        Ui.surface(g, x, y, w, h, hover, 0.09f, 0.04f);
         int cx = x + w / 2 - 3, cy = y + h / 2 - 3, color = hover ? Ui.TEXT : Ui.MUTED;
         for (int i = 0; i < 7; i++) {
             Ui.fill(g, cx + i, cy + i, cx + i + 1, cy + i + 1, color);
@@ -566,10 +611,9 @@ public class PanelScreen extends Screen {
         boolean on = entry.on.getAsBoolean();
         boolean hover = over(entry.card, mouseX, mouseY);
 
-        Ui.fill(g, x, y, x + w, y + h, solid);   // hide the vanilla button completely
-        Ui.rect(g, x, y, w, h, hover ? Ui.lerp(Ui.BORDER, 0xFFFFFFFF, 0.25f) : Ui.BORDER,
-                Ui.lerp(solid, 0xFFFFFFFF, hover ? 0.06f : 0.025f));
-        if (on) Ui.fill(g, x, y, x + w, y + 2, Ui.STRONG);   // accent line on top of enabled cards
+        Ui.cover(g, x, y, x + w, y + h, solid);   // hide the vanilla button completely
+        Ui.surface(g, x, y, w, h, hover, 0.06f, 0.025f);
+        if (on) Ui.accentLine(g, x, y, w);   // accent line on top of enabled cards
 
         int dim = Ui.lerp(Ui.MUTED, Ui.TEXT, 0.6f);
         Ui.txt(g, this.font, this.font.plainSubstrByWidth(entry.name, w - 14), x + 7, y + 8, on ? Ui.TEXT : dim, false);
@@ -579,13 +623,40 @@ public class PanelScreen extends Screen {
 
         if (entry.gear != null) {
             boolean gearHover = over(entry.gear, mouseX, mouseY);
-            Icons.draw(g, Icons.GEAR, x + 8, y + h - 20, 1, gearHover ? Ui.TEXT : Ui.MUTED);
+            Icons.draw(g, Icons.GEAR, x + 8, y + h - 17, 1, gearHover ? Ui.TEXT : Ui.MUTED);
         }
 
-        int sx = x + 26, sy = y + h - 24, sw = w - 26 - 6, sh = 18;
-        String label = on ? "Enabled" : "Disabled";
-        if (on) Ui.rect(g, sx, sy, sw, sh, GREEN_EDGE, GREEN_FILL);
-        Ui.txt(g, this.font, label, sx + (sw - this.font.width(label)) / 2, sy + (sh - 8) / 2 + 1, on ? GREEN_TEXT : Ui.MUTED, false);
+        // the badge fills the bottom of the card; it leaves room for the gear only when the card has one
+        int sx = entry.gear != null ? x + 26 : x + 7, sy = y + h - 20, sh = 16;
+        int sw = x + w - 7 - sx;
+        Ui.statusPill(g, this.font, sx, sy, sw, sh, on, GREEN_EDGE, GREEN_FILL, GREEN_TEXT);
+    }
+
+    /** Aerion server card: name, a line about it, a chat icon and a "Start chat" pill (or "Coming soon" while the guide is empty). */
+    private void paintServerCard(GuiGraphicsExtractor g, Button b, String[] server, int mouseX, int mouseY, int solid) {
+        int x = b.getX(), y = b.getY(), w = b.getWidth(), h = b.getHeight();
+        boolean hover = over(b, mouseX, mouseY);
+        boolean ready = AerionBrain.forServer(server[0]).isReady();
+
+        Ui.cover(g, x, y, x + w, y + h, solid);   // hide the vanilla button completely
+        Ui.surface(g, x, y, w, h, hover, 0.06f, 0.025f);
+        if (ready) Ui.accentLine(g, x, y, w);   // accent line, like an enabled module card
+
+        int dim = Ui.lerp(Ui.MUTED, Ui.TEXT, 0.6f);
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(server[1], w - 14), x + 8, y + 10, ready ? Ui.TEXT : dim, false);
+        if (Config.aerionDefault().equals(server[0])) {   // the Aerion that answers !aerion and the mini chat
+            String tag = "\u2605 Default";
+            Ui.txt(g, this.font, tag, x + w - this.font.width(tag) - 8, y + 10, Ui.STRONG, false);
+        }
+        Ui.txt(g, this.font, this.font.plainSubstrByWidth(server[2], w - 14), x + 8, y + 22, Ui.MUTED, false);
+
+        String[] icon = Icons.forId("chat_extras");
+        Icons.draw(g, icon, x + (w - Icons.width(icon, 3)) / 2, y + 36, 3, ready ? Ui.TEXT : dim);
+
+        int sx = x + 8, sy = y + h - 26, sw = w - 16, sh = 18;
+        String label = ready ? "Start chat" : "Coming soon";
+        if (ready) Ui.pill(g, sx, sy, sw, sh, GREEN_EDGE, GREEN_FILL);
+        Ui.txt(g, this.font, label, sx + (sw - this.font.width(label)) / 2, sy + (sh - 8) / 2 + 1, ready ? GREEN_TEXT : Ui.MUTED, false);
     }
 
     // ---------------------------------------------------------------- closing (instant)

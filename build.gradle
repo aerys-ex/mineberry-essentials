@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 
-// version and group come from gradle.properties (version=1.2.0)
+// version and group come from gradle.properties (see version in gradle.properties)
 base {
 	archivesName = "mineberry-essentials"
 }

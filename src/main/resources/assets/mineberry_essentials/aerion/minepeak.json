@@ -1,0 +1,25 @@
+{
+ "server": "MinePeak",
+ "greeting": "Hey, I'm Aerion. My MinePeak guide is still empty, it's coming soon. We can chat in the meantime.",
+ "fallback": "I don't have MinePeak information yet. It is coming soon.",
+ "clarify": "Which game mode do you mean?",
+ "suggestions": [],
+ "entries": [
+  {
+   "keywords": [
+    "hi",
+    "hello",
+    "hey",
+    "yo",
+    "sup"
+   ],
+   "answer": "Hi! I'm Aerion. My MinePeak guide is still empty, so I can't answer much yet."
+  }
+ ],
+ "punishments": [],
+ "store": [],
+ "fallbacks": [
+  "Nothing on MinePeak in my guide yet, it's coming soon.",
+  "I don't have that yet, the MinePeak guide isn't written. Soon."
+ ]
+}

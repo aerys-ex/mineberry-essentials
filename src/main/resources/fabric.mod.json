@@ -24,6 +24,7 @@
 			"com.mineberry.essentials.ModMenuIntegration"
 		]
 	},
+	"mixins": [{"config": "mineberry-essentials.mixins.json", "environment": "client"}],
 	"accessWidener": "mineberry-essentials.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.20.1",

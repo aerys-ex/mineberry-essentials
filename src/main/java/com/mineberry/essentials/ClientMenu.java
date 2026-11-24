@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class ClientMenu extends Screen {
 
-    private static final int HEADER_H = 22, PAD = 8, SIDE_W = 100, COLS = 3, GAP = 6, CARD_H = 91, ROWS = 2, BTN = 16;
+    private static final int HEADER_H = 22, PAD = 8, SIDE_W = 92, COLS = 3, GAP = 6, CARD_H = 84, ROWS = 2, BTN = 16;
     private static final int GREEN = 0xFF2E9E4F, GREEN_EDGE = 0xFF45C76B;
 
     private static final int PER_PAGE = COLS * ROWS;
@@ -47,10 +47,11 @@ public class ClientMenu extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
+        this.addRenderableOnly((g, mx, my, d) -> Ui.ghostAll(this));   // first thing drawn: hides the vanilla buttons before THEY are drawn (no flash on open)
         ClientHud.ensureProfiles();
         widgets.clear(); fancy.clear(); flag.clear(); shown.clear(); pageMods.clear();
 
-        pw = Math.min(440, this.width - 20);
+        pw = Math.min(404, this.width - 20);
         ph = HEADER_H + PAD + 20 + PAD + ROWS * CARD_H + (ROWS - 1) * GAP + PAD;
         px = (this.width - pw) / 2;
         py = Math.max(6, (this.height - ph) / 2);
@@ -199,20 +200,9 @@ public class ClientMenu extends Screen {
                 .bounds(x, y, w, 20).build());
     }
 
-    /** The name of the "toggle HUD" key as the player has it bound (Y by default), or null when it is unbound. */
-    private static String hudKeyName() {
-        try {
-            var key = MineBerryEssentials.toggleHudKey();
-            if (key == null || key.isUnbound()) return null;
-            return key.getTranslatedKeyMessage().getString().toUpperCase(Locale.ROOT);
-        } catch (RuntimeException e) {
-            return "Y";
-        }
-    }
-
+    /** The HUD can only be hidden or shown from this button (there is no key for it). */
     private static String hudLabel() {
-        String key = hudKeyName();
-        return "HUD: " + (Config.hudHidden() ? "Hidden" : "Shown") + (key == null ? "" : "  (" + key + ")");
+        return "HUD: " + (Config.hudHidden() ? "Hidden" : "Shown");
     }
 
     private void changePage(int delta) {
@@ -245,26 +235,9 @@ public class ClientMenu extends Screen {
         Ui.txt(g, this.font, "CLIENT", px + PAD + 2 + this.font.width("MINEBERRY ") , py + 1 + (HEADER_H - 8) / 2, Ui.TEXT, false);
         int sel = tab;
         Ui.fill(g, tabX[sel], py + 19, tabX[sel] + tabW[sel], py + 21, Ui.ACCENT);
-        // always-visible reminder of the key that hides / shows the whole HUD (the long form when it fits)
-        String key = hudKeyName();
-        if (key != null) {
-            int free = px + pw - 22 - 6 - (tabX[2] + tabW[2] + 8);
-            String hint = "[" + key + "] Hide / show HUD";
-            if (this.font.width(hint) > free) hint = "[" + key + "] HUD";
-            if (this.font.width(hint) <= free) {
-                int hx = px + pw - 22 - 6 - this.font.width(hint);
-                Ui.txt(g, this.font, hint, hx, py + 1 + (HEADER_H - 8) / 2, Ui.MUTED, false);
-            }
-        }
         // sidebar panel
         Ui.box(g, px + PAD - 2, bodyY - 2, SIDE_W + 4, py + ph - PAD - bodyY + 4, Ui.BTN_BORDER, Ui.INSET, 0, 0);
-        if (tab != 0) {
-            String k = hudKeyName();
-            if (k != null) {
-                Ui.txt(g, this.font, "Press " + k + " in game to hide or show the whole HUD.", mainX, py + ph - PAD - 10, Ui.MUTED, false);
-            }
-            return;
-        }
+        if (tab != 0) return;
         Ui.inputBox(g, box);
         Ui.txt(g, this.font, "/", box.getX() - 10, bodyY + 6, Ui.MUTED, false);
         if (pageCount > 1) {
@@ -277,9 +250,9 @@ public class ClientMenu extends Screen {
             int cx = mainX + (i % COLS) * (cardW + GAP), cy = gridY + (i / COLS) * (CARD_H + GAP);
             Ui.box(g, cx, cy, cardW, CARD_H, Ui.BTN_BORDER, Ui.BTN, 0, 0);
             int col = mod.enabled() ? Ui.TEXT : Ui.MUTED;
-            icon(g, mod.id(), cx + cardW / 2, cy + 6, col);
+            icon(g, mod.id(), cx + cardW / 2, cy + 4, col);
             String n = this.font.plainSubstrByWidth(mod.name(), cardW - 8);
-            Ui.txt(g, this.font, n, cx + (cardW - this.font.width(n)) / 2, cy + 40, col, false);
+            Ui.txt(g, this.font, n, cx + (cardW - this.font.width(n)) / 2, cy + 36, col, false);
         }
         if (shown.isEmpty()) Ui.txt(g, this.font, "No mods found", mainX, gridY + 4, Ui.MUTED, false);
     }
@@ -321,20 +294,21 @@ public class ClientMenu extends Screen {
     /** Draws chips, ENABLED buttons, profile rows and the blue layout button over the vanilla widgets, then the rest. */
     private void overlay(GuiGraphicsExtractor g, int mx, int my) {
         Ui.buttons(g, this.font, widgets.stream().filter(w -> !fancy.containsKey(w)).toList(), new HashMap<>(), mx, my);
+        for (var child : this.children()) if (child instanceof Button vanilla) Ui.ghost(vanilla);
         int solid = Ui.BG | 0xFF000000;
         for (Map.Entry<AbstractWidget, Integer> e : fancy.entrySet()) {
             AbstractWidget w = e.getKey();
             int x = w.getX(), y = w.getY(), bw = w.getWidth(), bh = w.getHeight();
             boolean hover = mx >= x && mx < x + bw && my >= y && my < y + bh, on = flag.getOrDefault(w, false);
             String label = w.getMessage().getString();
-            Ui.fill(g, x, y, x + bw, y + bh, solid);
+            Ui.cover(g, x, y, x + bw, y + bh, solid);
             switch (e.getValue()) {
-                case 0 -> { Ui.box(g, x, y, bw, bh, on ? Ui.ACCENT : Ui.BTN_BORDER, on ? Ui.BORDER : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
+                case 0 -> { Ui.box(g, x, y, bw, bh, on ? Ui.ACCENT : Ui.BTN_BORDER, on ? Ui.chipOn() : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
                     Ui.txt(g, this.font, label, x + (bw - this.font.width(label)) / 2, y + (bh - 8) / 2 + 1, on ? 0xFFFFFFFF : Ui.MUTED, false); }
                 case 1 -> { String t = on ? "ENABLED" : "DISABLED";
-                    Ui.box(g, x, y, bw, bh, on ? GREEN_EDGE : Ui.BTN_BORDER, on ? GREEN : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
+                    Ui.box(g, x, y, bw, bh, on ? (Ui.GLASS ? 0xB045C76B : GREEN_EDGE) : Ui.BTN_BORDER, on ? (Ui.GLASS ? 0x702E9E4F : GREEN) : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
                     Ui.txt(g, this.font, t, x + (bw - this.font.width(t)) / 2, y + (bh - 8) / 2 + 1, on ? 0xFFFFFFFF : Ui.MUTED, false); }
-                case 2 -> { Ui.box(g, x, y, bw, bh, Ui.ACCENT, hover ? Ui.ACCENT : Ui.BORDER, 0, 0);
+                case 2 -> { Ui.box(g, x, y, bw, bh, Ui.ACCENT, Ui.primary(hover), 0, 0);
                     Ui.txt(g, this.font, label, x + (bw - this.font.width(label)) / 2, y + (bh - 8) / 2 + 1, 0xFFFFFFFF, false); }
                 default -> { Ui.box(g, x, y, bw, bh, on ? Ui.BTN_BORDER_HOVER : Ui.BTN_BORDER, on ? Ui.BTN_HOVER : (hover ? Ui.BTN_HOVER : Ui.BTN), 0, 0);
                     Ui.txt(g, this.font, label, x + 8, y + (bh - 8) / 2 + 1, on ? Ui.TEXT : Ui.MUTED, false); }

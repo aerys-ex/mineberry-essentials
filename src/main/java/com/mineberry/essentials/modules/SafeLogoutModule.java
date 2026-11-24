@@ -104,12 +104,41 @@ public class SafeLogoutModule extends MineBerryModule {
         java.util.regex.Matcher m = pattern.matcher(text);
         while (m.find()) {
             String prefix = text.substring(0, m.start());
-            if (CHAT_SEPARATOR.matcher(prefix).find()) continue;
             if (mentionsPlayerBefore(prefix, names)) continue;
-            if (!isServerPrefix(prefix)) continue;
+            if (!isServerPrefix(afterLastSeparator(prefix))) continue;
+            if (!separatorsLookLikeServerLabels(prefix)) continue;
             return true;
         }
         return false;
+    }
+
+    /** Words a server puts in front of its own notices (\"[PvP] » ...\", \"Warning: ...\"). Anything else before a separator is a player name. */
+    private static final java.util.Set<String> SERVER_LABELS = java.util.Set.of(
+            "server", "pvp", "combat", "tag", "tagged", "warning", "warn", "info", "notice", "alert", "system", "important",
+            "mineberry", "minepeak", "minebery", "mine", "berry", "peak", "essentials");
+
+    /** The part of the prefix after its last chat separator (the whole prefix when it has none). */
+    private static String afterLastSeparator(String prefix) {
+        java.util.regex.Matcher s = CHAT_SEPARATOR.matcher(prefix);
+        int last = -1;
+        while (s.find()) last = s.start();
+        return last < 0 ? prefix : prefix.substring(last + 1);
+    }
+
+    /**
+     * A separator is fine when everything in front of it is empty, a [Tag], or a known server label (\"PvP » \", \"Warning: \").
+     * Something else in front of a separator (\"<Steve> \", \"Steve: \") is a player talking.
+     */
+    private static boolean separatorsLookLikeServerLabels(String prefix) {
+        java.util.regex.Matcher s = CHAT_SEPARATOR.matcher(prefix);
+        int last = -1;
+        while (s.find()) last = s.start();
+        if (last < 0) return true;
+        for (String segment : CHAT_SEPARATOR.split(prefix.substring(0, last))) {
+            String letters = segment.replaceAll("\\[[^\\]]*\\]", "").replaceAll("[^A-Za-z]", "").toLowerCase(java.util.Locale.ROOT);
+            if (!letters.isEmpty() && !SERVER_LABELS.contains(letters)) return false;
+        }
+        return true;
     }
 
     private static SafeLogoutModule instance;
@@ -366,9 +395,11 @@ public class SafeLogoutModule extends MineBerryModule {
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;
         int y = com.mineberry.essentials.StatusStack.take(29);
-        g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
-        g.fill(x, y, x + w, y + 29, 0xE0341212);
-        g.fill(x + w - 3, y, x + w, y + 29, 0xFFFF4D4D);
+        if (!com.mineberry.essentials.Ui.toast(g, x, y, w, 29, 0xFFFF4D4D, 1f)) {
+            g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
+            g.fill(x, y, x + w, y + 29, 0xE0341212);
+            g.fill(x + w - 3, y, x + w, y + 29, 0xFFFF4D4D);
+        }
         g.text(font, title, x + 8, y + 5, 0xFFFF7A7A, true);
         g.text(font, subtitle, x + 8, y + 17, 0xFFE0E0E0, false);
     }

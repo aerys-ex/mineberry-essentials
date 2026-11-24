@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "package": "com.mineberry.essentials.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "CameraMixin",
+    "EntityTurnMixin",
+    "LivingEntityRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

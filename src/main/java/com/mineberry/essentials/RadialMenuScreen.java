@@ -157,6 +157,7 @@ public class RadialMenuScreen extends Screen {
         String hint;
         if (n == 0) hint = "No commands set - open the Radial Menu settings";
         else if (hovered < 0) hint = "Move to a slice, then let go of the key";
+        else if (slices.get(hovered).command.startsWith("@")) hint = "Let go to chat with Aerion";
         else hint = (slices.get(hovered).command.contains("<") ? "Let go to type " : "Let go to run ") + shown(slices.get(hovered));
         int hintY = Math.min(this.height - 14, cy + (int) (rOut + grow) + 10);
         Ui.txt(g, this.font, hint, cx - this.font.width(hint) / 2, hintY, alpha(Ui.TEXT, (int) (0xE0 * ease)), true);
@@ -165,6 +166,7 @@ public class RadialMenuScreen extends Screen {
     /** "/home", or "/tpa ..." for a command that still needs an argument. */
     private static String shown(Config.RadialSlice s) {
         String c = Config.cleanCommand(s.command);
+        if (c.startsWith("@")) return "chat";
         int cut = c.indexOf('<');
         return cut >= 0 ? "/" + c.substring(0, cut).trim() + " ..." : "/" + c;
     }

@@ -1,6 +1,7 @@
 package com.mineberry.essentials.modules;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mineberry.essentials.AerionScreen;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.Terms;
@@ -28,7 +29,7 @@ public class RadialMenuModule extends MineBerryModule {
     private KeyMapping radialKey;
 
     public RadialMenuModule() {
-        super("radial_menu", "Radial Menu", "Hold V for a pie menu of quick commands");
+        super("radial_menu", "Radial Menu", "Hold a key (V by default) for a pie menu of quick commands");
     }
 
     @Override
@@ -74,6 +75,11 @@ public class RadialMenuModule extends MineBerryModule {
     public static void run(Minecraft mc, Config.RadialSlice slice) {
         String command = Config.cleanCommand(slice.command);
         if (command.isEmpty() || mc.player == null) return;
+
+        if (command.equalsIgnoreCase("@aerion")) {   // not a command: the Aerion slice opens the main chat of your default Aerion
+            mc.gui.setScreen(new AerionScreen(null, Config.aerionDefault()));
+            return;
+        }
 
         int placeholder = command.indexOf('<');
         if (placeholder >= 0) {

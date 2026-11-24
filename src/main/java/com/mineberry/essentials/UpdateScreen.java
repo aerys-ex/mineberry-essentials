@@ -36,6 +36,7 @@ public class UpdateScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
+        this.addRenderableOnly((g, mx, my, d) -> Ui.ghostAll(this));   // first thing drawn: hides the vanilla buttons before THEY are drawn (no flash on open)
         widgets.clear();
 
         pw = Math.min(PANEL_W, this.width - 20);
@@ -96,7 +97,7 @@ public class UpdateScreen extends Screen {
 
         // "Don't remind me" checkbox
         boolean hover = mouseX >= checkX && mouseX < checkX + checkW && mouseY >= checkY - 1 && mouseY < checkY + BOX + 1;
-        Ui.rect(g, checkX, checkY, BOX, BOX, dontRemind || hover ? Ui.STRONG : Ui.BORDER, Ui.INSET);
+        Ui.field(g, checkX, checkY, BOX, BOX, dontRemind || hover);
         if (dontRemind) drawTick(g, checkX, checkY);
         Ui.txt(g, this.font, checkLabel(), checkX + BOX + 5, checkY + (BOX - 8) / 2 + 1,
                 dontRemind ? Ui.TEXT : Ui.MUTED, false);

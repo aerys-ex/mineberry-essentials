@@ -1,6 +1,65 @@
 {
   "versions": [
     {
+      "version": "1.8.0",
+      "title": "Meet Aerion",
+      "sections": {
+        "New": [
+          "Aerion server stats: ask \"server stats\" (or \"gc\", \"tps\", \"is the server lagging\") and Aerion runs /gc for you and shows uptime, TPS, memory, entities and chunks. /gc needs a rank on the server, so without it Aerion tells you that you need a higher rank in-game.",
+          "Click a command in an Aerion answer to copy it (mini chat and Aerion tab).",
+          "Aerion punishment commands use the username you give (\"mute command eli racism\" gives /mute eli 1w racism) and only add server: when you ask for one (\"on survival\", server:opsurv, server:*).",
+          "The Aerion mini chat scrolls with the mouse wheel and has a scrollbar.",
+          "Color Code Chat: a new module that starts every chat message with your colour code (like &e&l), for ranks that can type colour codes but have no chat colours.",
+          "Aerion knows a few fun facts about the community, like Hardmystery being a Jr. mod and also a mouse.",
+          "Freelook: hold Left Alt and move the mouse to look around your character without turning it, like in Lunar Client. The camera goes to third person while held and snaps back on release. It is only visual, your real rotation never changes. Rebind it in Controls.",
+          "Self Nametag: see your own name above your head in third person, with the same prefix other players see.",
+          "Aerion knows what is going on in your game: \"where am I\", \"how far is home\", \"which way is the airdrop\", \"nearest waypoint\" and \"what's my fps\". It gives the distance, the compass direction and where it is compared with the way you are looking. It also takes several commands at once: \"turn off compass, fps and ping\", and \"undo\" takes them all back.",
+          "Questions Aerion cannot answer are saved to config/mineberry_essentials_aerion_unanswered.txt on your own computer (nothing is sent anywhere), so the guide can be improved. Delete the file any time.",
+          "Default Aerion: pick which Aerion answers !aerion and the mini chat, MineBerry (the default on first launch) or MinePeak. Press \"Make default\" in the Aerion chat, or tell Aerion \"make minepeak my default\". The Aerion tab marks the default with a star.",
+          "Aerion converts coordinates between the Overworld and the Nether: \"convert 800 64 -1600 to nether\", \"convert 100 200 from nether\", \"convert my coords to nether\". Add \"and add it to waypoints\" or say \"add that to waypoints\" afterwards and the converted spot becomes a waypoint in the right dimension.",
+          "Aerion can change things, not only answer: say \"turn off compass\", \"enable keystrokes\", \"remove the airdrop waypoint\", \"hide waypoint home\" or \"list my waypoints\". Unclear names get a \"which one?\", deleting every waypoint asks first, and \"undo\" takes the last change back. Questions like \"how do I turn off the compass?\" still get a normal answer.",
+          "Aerion Alerts: a new module. Aerion shows short notices at the top of your screen when something important happens (a new update, arriving at a waypoint). Switch it off in the Control Center or tell Aerion \"turn off alerts\", and say \"test alert\" to see one.",
+          "New Liquid Glass theme: frosted translucent panels with rounded corners, a bright rim light, a soft wavy highlight, glossy buttons and ice-blue switches. It also covers the Control Center, the client menu, the HUD boxes, the keystrokes and the notices (airdrop, evidence, safe logout, screenshot, Aerion). Pick it with the Theme button in the Tools tab. The default look stays the dark grey with orange.",
+          "Aerion everywhere: press ` to open a mini chat with Aerion on the HUD, type !aerion <message> in normal chat, or pick the new Aerion slice in the radial menu (hold V). It is the same conversation everywhere.",
+          "Airdrop Helper: when the server announces an airdrop, Aerion tells you in her mini chat (the message on the left of your HUD, and in the conversation) with the level, a live countdown and the coords, and asks if you want a waypoint. Press [ for yes, ] for no, or type yes / no in the mini chat. Ask Aerion \"airdrop info\" and it runs /airdrop for you and tells you what the server says.",
+          "Aerion: a new tab in the Control Center with an info guide you can chat with. Pick MineBerry and ask about store prices (ranks, rank upgrades, crate keys, coins, Grant Reset in every game mode), the server rules and the punishment for something, like punishment for tp killing. It works fully offline, nothing is sent online. MinePeak shows Coming soon until its guide is written.",
+          "Small talk: say hi, ask how it is doing, ask for a joke or who made it. Aerion answers in short, plain words and does not repeat the same line twice in a row. It is honest about being a bot: no AI model, only the guide the mod team wrote.",
+          "It follows the conversation: after a price question, and on anarchy? or what about crate keys? just works. If Aerion asks which game mode or which rules, you can answer with one word.",
+          "Cheapest and most expensive: ask cheapest rank on survival or most expensive crate key on anarchy.",
+          "Aerion shows ... for a moment before it answers, like someone typing.",
+          "Aerion knows who made it (Aerys and Nice_EX), and can point you to Aerys' Discord, his YouTube channel (Aerys Minecraft, @AerysMC) and his MinePeak and MineBerry tutorials.",
+          "Ask two or three things in one message and Aerion answers each. Say call me and a name and it remembers it until you close the game. Say repeat or say that again to hear the last answer once more."
+        ],
+        "Improved": [
+          "The HUD can now only be hidden from the HUD: Shown / Hidden button in the MineBerry Client settings. The Y key is gone (and its key bind), and so is Aerion's \"hide the hud\" command.",
+          "Liquid Glass looks better: windows get depth (the glass darkens towards the bottom, with a light line under the header and a softer shadow), buttons, cards, chips and text fields now have the same round corners as the window, a lit top edge and an ice-blue glow on hover, switches have a solid glass knob, and enabled module cards are tinted blue.",
+          "Typewriter: Aerion now writes its answers out letter by letter with a blinking cursor, in the Aerion tab and in the mini chat.",
+          "Small typos are fixed before Aerion answers (lengend rank, punishmnet for xray), and words can be in another order or spread out (killing at spawn finds spawn killing).",
+          "When Aerion is not sure, it offers the closest topic. Say yes and it answers that. A short message that needs more, like price or survival, gets a question back instead of I don't know.",
+          "Smarter answers: legend vs hero compares two ranks (perks and prices), legend + avenger adds prices up and shows the cheaper upgrade, how many ranks are there counts from the store, and what is 12 * 7 or what time is it work too.",
+          "Aerion understands more of what you mean: a real question is no longer taken for small talk (is it ok if I use a minimap), my friend scammed me gets help from staff, one clear word like ip is enough, and an old price is forgotten once you ask about something else. For a game mode it says honestly that it only knows the store.",
+          "Questions like can I use xray? get a straight no first. Being scammed, hacked or banned, and ban appeals, point you to staff on the Discord."
+        ],
+        "Fixed": [
+          "Liquid Glass flicker: the menus flashed for one frame when they opened (and when you changed page or tab) because the normal buttons were drawn at full strength once before the glass hid them. They are now hidden before they are drawn.",
+          "The settings file could fail to save once at every launch on Windows (an Access is denied warning in the game log). It is now saved after the file has been closed, and it also copes when another program has the file open for a moment.",
+          "Screenshot copy: when another program is using the clipboard, the mod now tries up to four times over a few seconds before giving up. If it still fails, the message says the clipboard is busy instead of saying the file path was copied.",
+          "Safe Logout and PvP Command Lock now recognise server PvP notices that start with a label or arrow (for example \"[PvP] » You've entered PvP mode!\" or \"Warning: ...\"). Lines from players still never count.",
+          "The Aerion mini chat no longer closes while you type if you bound its key to a letter or digit. It then closes with Esc.",
+          "Aerion no longer removes or hides the wrong waypoint when you answer \"which one?\" after your waypoint list changed.",
+          "Asking for server stats twice no longer leaves the first question hanging, and other players' chat can no longer be mistaken for the server's answer to /gc.",
+          "Screenshot copy on Linux now says when xclip or wl-clipboard is missing instead of blaming a busy clipboard, and no longer replaces your clipboard with the file path.",
+          "Self Nametag is hidden with F1 and when you are invisible or a spectator.",
+          "Freelook works from the third-person front view too.",
+          "Waypoints are found in the right dimension even if the game changes how it names its dimensions.",
+          "A bad value in one optional setting no longer makes the whole settings file count as broken, which could reset your waypoints and profiles. Invalid gradient colors and HUD positions are repaired when the file loads.",
+          "PvP Command Lock now also lets your Admin and Party chat commands through.",
+          "The default Send Guard word list no longer contains \"niger\", which is also a country. Your own list in the config file is not changed.",
+          "Update check: a later pre-release (beta.2) now counts as newer than an earlier one (beta.1)."
+        ]
+      }
+    },
+    {
       "version": "1.7.3",
       "title": "Send Guard, /rtp and screenshot fixes",
       "sections": {

@@ -115,6 +115,7 @@ public class ScreenshotScreen extends Screen {
     @Override
     protected void init() {
         Ui.applyTheme();
+        this.addRenderableOnly((g, mx, my, d) -> Ui.ghostAll(this));   // first thing drawn: hides the vanilla buttons before THEY are drawn (no flash on open)
         widgets.clear();
         baseActive.clear();
         menuIndex = -1;
@@ -293,7 +294,7 @@ public class ScreenshotScreen extends Screen {
             case COPY -> {
                 setStatus("Copying...");
                 ScreenshotModule.copyAsync(file, ok -> setStatus(ok ? "Copied. Press Ctrl+V to paste it"
-                        : "Couldn't copy the image, file path copied instead"));
+                        : "Couldn't copy the image: the clipboard is busy, try again"));
                 menuIndex = -1;
             }
             case OPEN -> {

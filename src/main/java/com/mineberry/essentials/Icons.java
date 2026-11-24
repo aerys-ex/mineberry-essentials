@@ -207,6 +207,8 @@ final class Icons {
             Map.entry("admin_chat", CROWN),
             Map.entry("party_chat", PERSON),
             Map.entry("chat_extras", CHAT),
+            Map.entry("aerion_chat", CHAT),
+            Map.entry("aerion_mini", CHAT),
             Map.entry("quick_reply", REPLY),
             Map.entry("safe_logout", DOOR),
             Map.entry("pvp_command_lock", SHIELD),

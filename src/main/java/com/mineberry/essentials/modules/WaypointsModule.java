@@ -1,6 +1,7 @@
 package com.mineberry.essentials.modules;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mineberry.essentials.AerionNotifier;
 import com.mineberry.essentials.Config;
 import com.mineberry.essentials.MineBerryEssentials;
 import com.mineberry.essentials.Terms;
@@ -40,7 +41,15 @@ public class WaypointsModule extends MineBerryModule {
     private static final double BEAM_MIN_DIST = 6;
     private static final double BEAM_HEIGHT = 320;
 
+    /** Closer than this counts as "arrived" (Aerion Alerts). */
+    private static final double ARRIVE_DIST = 6;
+
+    private static final java.util.regex.Pattern DIMENSION_ID = java.util.regex.Pattern.compile("([a-z0-9_.\\-]+:[a-z0-9_./\\-]+)\\W*$");
+
     private KeyMapping addKey, menuKey;
+    /** Waypoints seen from far away, so reaching one raises an alert. A waypoint you set at your feet, or already stand at, never does. */
+    private final java.util.Set<Config.Waypoint> armed = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+    private int arriveTick;
 
     public WaypointsModule() {
         super("waypoints", "Waypoints", "Saved coordinates with in-world markers + HUD");
@@ -57,6 +66,7 @@ public class WaypointsModule extends MineBerryModule {
         LevelRenderEvents.BEFORE_GIZMOS.register(context -> render());
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (++arriveTick >= 10) { arriveTick = 0; checkArrival(client); }
             while (addKey.consumeClick()) {
                 if (enabled() && client.player != null && client.level != null) {
                     Config.Waypoint wp = addHere(client, null);
@@ -69,15 +79,27 @@ public class WaypointsModule extends MineBerryModule {
         });
     }
 
+    /** Tells you (Aerion Alerts) when you get to a waypoint you were away from. Runs twice a second. */
+    private void checkArrival(Minecraft mc) {
+        if (!enabled() || !AerionNotifier.enabled() || mc.player == null || mc.level == null) return;
+        String dim = dimensionId(mc);
+        armed.retainAll(Config.waypoints());
+        for (Config.Waypoint wp : Config.waypoints()) {
+            if (!wp.visible || !dim.equals(wp.dim)) { armed.remove(wp); continue; }
+            double d = distanceTo(mc, wp);
+            if (d > ARRIVE_DIST * 3) armed.add(wp);
+            else if (d <= ARRIVE_DIST && armed.remove(wp)) AerionNotifier.info("You arrived at " + wp.name + ".");
+        }
+    }
+
     // ---------------------------------------------------------------- data helpers (also used by WaypointScreen)
 
     /** Dimension id of the current level, e.g. "minecraft:overworld". */
     public static String dimensionId(Minecraft mc) {
         if (mc.level == null) return "unknown";
         String s = String.valueOf(mc.level.dimension());   // "ResourceKey[minecraft:dimension / minecraft:overworld]"
-        int slash = s.lastIndexOf("/ ");
-        if (slash >= 0 && s.endsWith("]")) return s.substring(slash + 2, s.length() - 1).trim();
-        return s;
+        java.util.regex.Matcher m = DIMENSION_ID.matcher(s);   // the last \"namespace:path\" in the text, whatever the surrounding format
+        return m.find() ? m.group(1) : s;
     }
 
     public static String shortDimension(String id) {
@@ -108,7 +130,7 @@ public class WaypointsModule extends MineBerryModule {
     }
 
     public static String formatDistance(double d) {
-        return d >= 10_000 ? String.format("%.0fk", d / 1000) : d >= 1000 ? String.format("%.1fk", d / 1000) : Math.round(d) + "m";
+        return d >= 10_000 ? String.format(java.util.Locale.ROOT, "%.0fk", d / 1000) : d >= 1000 ? String.format(java.util.Locale.ROOT, "%.1fk", d / 1000) : Math.round(d) + "m";
     }
 
     private static void say(Minecraft mc, String text, ChatFormatting color) {

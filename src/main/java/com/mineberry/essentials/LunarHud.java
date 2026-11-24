@@ -110,8 +110,7 @@ public final class LunarHud {
             int y = corner < 2 ? EDGE + used[corner] : sh - EDGE - h - used[corner];
             used[corner] += h + GAP;
             colW[corner] = Math.max(colW[corner], w);
-            Ui.fill(g, x, y, x + w, y + h, 0x90000000);
-            Ui.fill(g, x, y, x + 1, y + h, Ui.ACCENT);
+            Ui.hudPanel(g, x, y, w, h);
             if (mod.widget() != null) mod.widget().draw(g, mc, font, x + PAD, y + PAD);
             else Ui.txt(g, font, text, x + PAD, y + PAD + 1, 0xFFFFFFFF, true);
         }

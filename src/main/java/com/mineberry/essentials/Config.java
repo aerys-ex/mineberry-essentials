@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +37,8 @@ public final class Config {
         boolean checkForUpdates = true;
         String skippedUpdateVersion = "";   // "Don't remind me" in the update popup: stay quiet up to this version
         String panelTheme = "default";
+        String aerionDefault = "mineberry";   // which Aerion answers !aerion and the mini chat
+        String colorCode = "&e";   // Color Code Chat: put in front of every chat message you send
         List<String> gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
         int gradientFormat = 0;
         int gradientStyles = 0;
@@ -50,7 +53,6 @@ public final class Config {
         boolean showChangelog = true;
         int termsAcceptedVersion = 0;     // the Terms version the player agreed to (0 = never agreed)
         int termsPromptedVersion = 0;     // the Terms version that was already shown automatically on the title screen
-        int combatSeconds = 30;
         String safeLogoutMode = "warn";
         String combatEndPattern = DEFAULT_COMBAT_END;
         int pvpFailsafeSeconds = 180;
@@ -104,7 +106,8 @@ public final class Config {
                 new RadialSlice("Spawn", "spawn"),
                 new RadialSlice("TPA", "tpa <player>"),
                 new RadialSlice("Accept", "tpaccept"),
-                new RadialSlice("RTP", "rtp")));
+                new RadialSlice("RTP", "rtp"),
+                new RadialSlice("Aerion", "@aerion")));   // opens the Aerion mini chat
     }
 
     /** A saved coordinate. dim is the dimension id, e.g. "minecraft:overworld". color is ARGB. */
@@ -133,7 +136,7 @@ public final class Config {
     /** Send Guard: commands that need to be sent twice. */
     public static final List<String> DEFAULT_GUARDED_COMMANDS = List.of("suicide");
     /** Send Guard: words that make a message need to be sent twice. Whole words only, any case, plural s/z allowed. */
-    public static final List<String> DEFAULT_GUARDED_WORDS = List.of("nigga", "nigger", "niger", "faggot");
+    public static final List<String> DEFAULT_GUARDED_WORDS = List.of("nigga", "nigger", "faggot");
 
     private static Data data = new Data();
     private static boolean freshInstall = false;
@@ -151,44 +154,17 @@ public final class Config {
             try { Files.copy(old, FILE); } catch (Exception e) { MineBerryEssentials.LOGGER.warn("Could not migrate the old settings file", e); }
         }
         if (!Files.exists(FILE)) { freshInstall = true; writeNow(); return; }
+        boolean rewrite = false;
         try (Reader r = Files.newBufferedReader(FILE, StandardCharsets.UTF_8)) {
             Data loaded = GSON.fromJson(r, Data.class);
             if (loaded != null) data = loaded;
-            if (data.modules == null) data.modules = new HashMap<>();
-            if (data.clanCommand == null || data.clanCommand.isBlank()) data.clanCommand = "cc";
-            if (data.adminChatCommand == null || data.adminChatCommand.isBlank()) data.adminChatCommand = "ac";
-            if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
-            if (data.profiles == null) data.profiles = new java.util.LinkedHashMap<>();
-            if (data.activeProfile == null) data.activeProfile = "Default";
-            if (data.hudCorner == null) data.hudCorner = new HashMap<>();
-            if (data.hudPos == null) data.hudPos = new HashMap<>();
-            data.hudPos.values().removeIf(p -> p == null || p.length != 2);
-            if (data.hudScale == null) data.hudScale = new HashMap<>();
-            data.hudScale.values().removeIf(p -> p == null || p < HUD_SCALE_MIN || p > HUD_SCALE_MAX);
-            if (data.waypoints == null) data.waypoints = new ArrayList<>();
-            if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
-            if (data.pvpModePattern == null || data.pvpModePattern.isBlank()
-                    || data.pvpModePattern.equals(OLD_DEFAULT_PVP_MODE)) data.pvpModePattern = DEFAULT_PVP_MODE;
-            if (data.gradientColors == null || data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
-            if (data.gradientFormat < 0 || data.gradientFormat > 3) data.gradientFormat = 0;
-            if ("lunar".equals(data.panelTheme)) data.panelTheme = "default";   // old id of the default theme
-            if (data.panelTheme == null || !data.panelTheme.matches("default|aurora|ember|midnight")) data.panelTheme = "default";
-            if (data.lastSeenVersion == null) data.lastSeenVersion = "";
-            if (data.skippedUpdateVersion == null) data.skippedUpdateVersion = "";
-            if (data.combatSeconds < 1 || data.combatSeconds > 300) data.combatSeconds = 30;
-            if (data.safeLogoutMode == null || !data.safeLogoutMode.matches("warn|block")) data.safeLogoutMode = "warn";
-            if (data.combatEndPattern == null || data.combatEndPattern.isBlank()) data.combatEndPattern = DEFAULT_COMBAT_END;
-            if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
-            if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
-            if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
-            data.tournamentFriends = cleanFriends(data.tournamentFriends);
-            if (data.tournamentMessageSeconds < 3 || data.tournamentMessageSeconds > 120) data.tournamentMessageSeconds = 15;
-            if (data.tournamentStartPattern == null) data.tournamentStartPattern = DEFAULT_TOURNAMENT_START;
-            if (data.guardedCommands == null) data.guardedCommands = new ArrayList<>(DEFAULT_GUARDED_COMMANDS);
-            if (data.guardedWords == null) data.guardedWords = new ArrayList<>(DEFAULT_GUARDED_WORDS);
-            if (data.guardConfirmSeconds < 2 || data.guardConfirmSeconds > 30) data.guardConfirmSeconds = 5;
-            dropRemovedModules();   // Spawn Escape and TP Danger Escape were removed in 1.7.0
-            writeNow(); // writes any newly added keys so they can be edited
+            try {
+                normalize();
+            } catch (RuntimeException e) {
+                // a bad optional value must not make the whole file count as unreadable (that would reset waypoints and profiles)
+                MineBerryEssentials.LOGGER.warn("Some settings could not be checked; keeping them as they are", e);
+            }
+            rewrite = true;   // write any newly added keys so they can be edited (below, once the file is closed)
         } catch (Exception e) {
             // never overwrite a file we could not read: keep it as a backup so the player's waypoints and profiles are not lost
             Path backup = FILE.resolveSibling("mineberry_essentials.json.broken");
@@ -200,6 +176,59 @@ public final class Config {
             }
             data = new Data();
         }
+        // Not inside the try above: that block keeps the file open for reading, and Windows refuses to replace a file
+        // that is still open (AccessDeniedException on every launch).
+        if (rewrite) writeNow();
+    }
+
+    /** Makes every value usable: fills in what is missing and fixes what is out of range. */
+    private static void normalize() {
+        if (data.modules == null) data.modules = new HashMap<>();
+        if (data.clanCommand == null || data.clanCommand.isBlank()) data.clanCommand = "cc";
+        if (data.adminChatCommand == null || data.adminChatCommand.isBlank()) data.adminChatCommand = "ac";
+        if (data.partyCommand == null || data.partyCommand.isBlank()) data.partyCommand = "pc";
+        if (data.profiles == null) data.profiles = new java.util.LinkedHashMap<>();
+        if (data.activeProfile == null) data.activeProfile = "Default";
+        if (data.hudCorner == null) data.hudCorner = new HashMap<>();
+        if (data.hudPos == null) data.hudPos = new HashMap<>();
+        data.hudPos.values().removeIf(p -> p == null || p.length != 2);
+        if (data.hudScale == null) data.hudScale = new HashMap<>();
+        data.hudScale.values().removeIf(p -> p == null || p < HUD_SCALE_MIN || p > HUD_SCALE_MAX);
+        if (data.waypoints == null) data.waypoints = new ArrayList<>();
+        if (data.mentionNames == null) data.mentionNames = new ArrayList<>();
+        if (data.pvpModePattern == null || data.pvpModePattern.isBlank()
+                || data.pvpModePattern.equals(OLD_DEFAULT_PVP_MODE)) data.pvpModePattern = DEFAULT_PVP_MODE;
+        if (data.gradientColors == null || data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
+        if (data.gradientFormat < 0 || data.gradientFormat > 3) data.gradientFormat = 0;
+        if ("lunar".equals(data.panelTheme) || "classic".equals(data.panelTheme)) data.panelTheme = "default";   // old ids of the default theme
+        if (data.panelTheme == null || !data.panelTheme.matches("default|glass|aurora|ember|midnight")) data.panelTheme = "default";
+        if (data.lastSeenVersion == null) data.lastSeenVersion = "";
+        if (data.skippedUpdateVersion == null) data.skippedUpdateVersion = "";
+        if (!validColorCode(data.colorCode)) data.colorCode = DEFAULT_COLOR_CODE;
+        if (data.safeLogoutMode == null || !data.safeLogoutMode.matches("warn|block")) data.safeLogoutMode = "warn";
+        if (data.combatEndPattern == null || data.combatEndPattern.isBlank()) data.combatEndPattern = DEFAULT_COMBAT_END;
+        if (data.pvpFailsafeSeconds < 10 || data.pvpFailsafeSeconds > 3600) data.pvpFailsafeSeconds = 180;
+        if (data.tournamentAllowedCommands == null) data.tournamentAllowedCommands = new ArrayList<>();
+        if (data.pvpAllowedCommands == null) data.pvpAllowedCommands = new ArrayList<>(DEFAULT_PVP_ALLOWED);
+        data.tournamentFriends = cleanFriends(data.tournamentFriends);
+        if (data.tournamentMessageSeconds < 3 || data.tournamentMessageSeconds > 120) data.tournamentMessageSeconds = 15;
+        if (data.tournamentStartPattern == null) data.tournamentStartPattern = DEFAULT_TOURNAMENT_START;
+        if (data.guardedCommands == null) data.guardedCommands = new ArrayList<>(DEFAULT_GUARDED_COMMANDS);
+        if (data.guardedWords == null) data.guardedWords = new ArrayList<>(DEFAULT_GUARDED_WORDS);
+        if (data.guardConfirmSeconds < 2 || data.guardConfirmSeconds > 30) data.guardConfirmSeconds = 5;
+        data.hudCorner.values().removeIf(java.util.Objects::isNull);
+        data.hudCorner.replaceAll((k, v) -> Math.max(0, Math.min(3, v)));
+        data.profiles.values().removeIf(java.util.Objects::isNull);
+        data.waypoints.removeIf(java.util.Objects::isNull);
+        for (Waypoint w : data.waypoints) {
+            if (w.name == null || w.name.isBlank()) w.name = "Waypoint";
+            if (w.dim == null || w.dim.isBlank()) w.dim = "minecraft:overworld";
+        }
+        data.gradientColors.removeIf(c -> c == null || !c.trim().matches("#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})"));
+        if (data.gradientColors.size() > 6) data.gradientColors = new ArrayList<>(data.gradientColors.subList(0, 6));
+        if (data.gradientColors.size() < 2) data.gradientColors = new ArrayList<>(List.of("#E65B93", "#8A5CF6"));
+        data.gradientStyles &= 15;
+        dropRemovedModules();   // Spawn Escape and TP Danger Escape were removed in 1.7.0
     }
 
     /** Marks the settings as changed. They are written shortly after (see flush), not immediately. */
@@ -230,6 +259,11 @@ public final class Config {
                 Files.move(tmp, FILE, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             } catch (AtomicMoveNotSupportedException e) {
                 Files.move(tmp, FILE, StandardCopyOption.REPLACE_EXISTING);
+            } catch (AccessDeniedException e) {
+                // Windows: something (antivirus, a launcher, a backup tool) has the file open for a moment and it can't be
+                // replaced. Overwrite it in place instead. If that fails too, the outer catch tries again later.
+                Files.write(FILE, Files.readAllBytes(tmp));
+                Files.deleteIfExists(tmp);
             }
         } catch (Exception e) {
             dirty = true;   // try again later
@@ -270,6 +304,29 @@ public final class Config {
         return data.partyCommand.startsWith("/") ? data.partyCommand.substring(1) : data.partyCommand;
     }
 
+    public static final String DEFAULT_COLOR_CODE = "&e";
+    public static final int MAX_COLOR_CODE_LENGTH = 16;
+    private static final java.util.regex.Pattern COLOR_CODE = java.util.regex.Pattern.compile("(?:&[0-9a-fk-or])+", java.util.regex.Pattern.CASE_INSENSITIVE);
+
+    /** True for a usable colour code: one or more &x pairs (colour 0-9 a-f, style k-o, reset r), up to 16 characters. */
+    public static boolean validColorCode(String value) {
+        return value != null && value.length() <= MAX_COLOR_CODE_LENGTH && COLOR_CODE.matcher(value).matches();
+    }
+
+    /** The colour code Color Code Chat puts in front of your messages, for example "&e&l". */
+    public static String colorCode() {
+        return data.colorCode;
+    }
+
+    /** Saves a new colour code. Returns false, and changes nothing, when it is not a valid code. */
+    public static boolean setColorCode(String value) {
+        String trimmed = value == null ? "" : value.trim();
+        if (!validColorCode(trimmed)) return false;
+        data.colorCode = trimmed;
+        save();
+        return true;
+    }
+
     /** 1.7.0 removed Spawn Escape and TP Danger Escape: forget their saved switches and HUD settings so old configs stay clean. */
     private static void dropRemovedModules() {
         for (String id : new String[]{"spawn_escape", "tp_danger_escape"}) {
@@ -300,6 +357,16 @@ public final class Config {
     /** Persists the HUD choice between game sessions. */
     public static void setHudHidden(boolean hidden) {
         data.hudHidden = hidden;
+        save();
+    }
+
+    /** The Aerion guide that answers !aerion and the mini chat: "mineberry" (first launch) or "minepeak". */
+    public static String aerionDefault() {
+        return "minepeak".equals(data.aerionDefault) ? "minepeak" : "mineberry";
+    }
+
+    public static void setAerionDefault(String id) {
+        data.aerionDefault = "minepeak".equals(id) ? "minepeak" : "mineberry";
         save();
     }
 
@@ -349,7 +416,7 @@ public final class Config {
     }
 
     public static void setPanelTheme(String theme) {
-        if (theme.matches("default|aurora|ember|midnight")) {
+        if (theme != null && theme.matches("default|glass|aurora|ember|midnight")) {
             data.panelTheme = theme;
             save();
         }
@@ -384,7 +451,8 @@ public final class Config {
 
     /** Screen corner of a HUD mod: 0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right. */
     public static int hudCorner(String id, int fallback) {
-        return data.hudCorner.getOrDefault(id, fallback);
+        Integer corner = data.hudCorner.get(id);
+        return corner == null ? fallback : corner;
     }
 
     public static void setHudCorner(String id, int corner) {
@@ -411,7 +479,8 @@ public final class Config {
 
     /** Size of a HUD box in percent (100 = normal). Works for every HUD mod id and for the vanilla scoreboard ("scoreboard"). */
     public static int hudScalePct(String id) {
-        return data.hudScale.getOrDefault(id, 100);
+        Integer pct = data.hudScale.get(id);
+        return pct == null ? 100 : pct;
     }
 
     public static void setHudScalePct(String id, int pct) {
@@ -483,11 +552,6 @@ public final class Config {
     public static void setTermsPromptedVersion(int version) {
         data.termsPromptedVersion = version;
         save();
-    }
-
-    /** Seconds after the last hit during which Safe Logout guards quitting. Edit in the config file. */
-    public static int combatSeconds() {
-        return data.combatSeconds;
     }
 
     /** Safe Logout behaviour: "block" (quitting is refused) or "warn" (the first try is refused, a second click quits). */

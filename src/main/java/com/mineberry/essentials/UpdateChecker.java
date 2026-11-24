@@ -213,6 +213,7 @@ public final class UpdateChecker {
         Result r = result;
         if (announced || popupShown || r == null || !r.updateAvailable() || skipped(r) || mc.player == null) return;
         announced = true;
+        AerionNotifier.warn("Update available: v" + r.latest() + " (you have v" + r.current() + "). The links are in your chat.");
         mc.player.sendSystemMessage(Component.literal("[MineBerry] ").withStyle(ChatFormatting.LIGHT_PURPLE)
                 .append(Component.literal("Update available: v" + r.latest() + " (you have v" + r.current() + ") ")
                         .withStyle(ChatFormatting.WHITE))
@@ -261,8 +262,31 @@ public final class UpdateChecker {
             int x = i < a.length ? a[i] : 0, y = i < b.length ? b[i] : 0;
             if (x != y) return x > y;
         }
-        // same numbers: 1.6.0 is newer than 1.6.0-beta
-        return !isPreRelease(latest) && isPreRelease(current);
+        // same numbers: 1.6.0 is newer than 1.6.0-beta, and beta.2 is newer than beta.1
+        boolean latestPre = isPreRelease(latest), currentPre = isPreRelease(current);
+        if (latestPre != currentPre) return !latestPre;
+        return latestPre && comparePreRelease(preTag(latest), preTag(current)) > 0;
+    }
+
+    /** The part after \"-\" and before \"+\" (\"beta.2\"), or an empty string. */
+    private static String preTag(String version) {
+        String v = stripV(version).split("\\+", 2)[0];
+        int dash = v.indexOf('-');
+        return dash < 0 ? "" : v.substring(dash + 1);
+    }
+
+    /** Compares pre-release tags identifier by identifier: numbers numerically, anything else as text. */
+    private static int comparePreRelease(String a, String b) {
+        String[] x = a.split("[.\\-]"), y = b.split("[.\\-]");
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            if (i >= x.length) return -1;
+            if (i >= y.length) return 1;
+            boolean nx = x[i].matches("\\d{1,9}"), ny = y[i].matches("\\d{1,9}");
+            int c = nx && ny ? Integer.compare(Integer.parseInt(x[i]), Integer.parseInt(y[i]))
+                    : nx ? -1 : ny ? 1 : x[i].compareToIgnoreCase(y[i]);
+            if (c != 0) return c;
+        }
+        return 0;
     }
 
     private static boolean isPreRelease(String version) {

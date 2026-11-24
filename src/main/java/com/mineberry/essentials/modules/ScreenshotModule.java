@@ -215,23 +215,26 @@ public class ScreenshotModule extends MineBerryModule {
      * Copies the image to the system clipboard on a background thread. done gets true on success; on failure the file
      * path is copied as text and done gets false. done runs on that background thread.
      */
+    private static final long[] RETRY_PAUSES_MS = {500, 1000, 2000};
+
     public static void copyAsync(Path file, Consumer<Boolean> done) {
         Thread t = new Thread(() -> {
+            // Windows lets only one program have the clipboard open at a time, so this fails ("Access is denied") while
+            // another app is using it. That is usually brief, so try a few times with growing pauses before giving up.
+            toolMissing = false;
             boolean ok = copyImage(file);
-            if (!ok) {                                         // the clipboard is sometimes locked by another app for a moment
-                try { Thread.sleep(400); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            for (int i = 0; !ok && !toolMissing && i < RETRY_PAUSES_MS.length; i++) {   // retrying cannot help when the tool is not installed
+                try { Thread.sleep(RETRY_PAUSES_MS[i]); } catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
                 ok = copyImage(file);
-            }
-            if (!ok) {
-                Minecraft mc = Minecraft.getInstance();
-                String path = file.toAbsolutePath().toString();
-                mc.execute(() -> mc.keyboardHandler.setClipboard(path));
             }
             if (done != null) done.accept(ok);
         }, "mineberry-screenshot-clipboard");
         t.setDaemon(true);
         t.start();
     }
+
+    /** Set by copyImage when the clipboard program itself could not be started (xclip / wl-copy / powershell missing). */
+    private static volatile boolean toolMissing;
 
     private static boolean copyImage(Path file) {
         String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
@@ -264,6 +267,14 @@ public class ScreenshotModule extends MineBerryModule {
                 return false;
             }
             return p.exitValue() == 0;
+        } catch (java.io.IOException e) {
+            toolMissing = true;
+            MineBerryEssentials.LOGGER.warn("Could not start the clipboard program ({}): {}", e.getMessage(),
+                    "install xclip (X11) or wl-clipboard (Wayland) to copy screenshots");
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
         } catch (Exception e) {
             MineBerryEssentials.LOGGER.warn("Could not copy the screenshot to the clipboard", e);
             return false;
@@ -310,7 +321,9 @@ public class ScreenshotModule extends MineBerryModule {
     private static void notifyCopied(Minecraft mc, boolean ok) {
         popupOk = ok;
         popupUntil = System.currentTimeMillis() + POPUP_MS;
-        if (!ok) say(mc, "Screenshot saved, but the image couldn't be copied. File path copied instead", ChatFormatting.YELLOW);
+        if (!ok) say(mc, toolMissing
+                ? "Screenshot saved, but no clipboard program was found (Linux needs xclip or wl-clipboard), so it wasn't copied"
+                : "Screenshot saved, but the clipboard is busy (another app is using it), so the image couldn't be copied. Try again", ChatFormatting.YELLOW);
     }
 
     private static void drawPopup(GuiGraphicsExtractor g) {
@@ -320,16 +333,18 @@ public class ScreenshotModule extends MineBerryModule {
         boolean ok = popupOk;
         var font = mc.font;
         String title = ok ? "COPIED TO CLIPBOARD" : "COPY FAILED";
-        String subtitle = ok ? "Press Ctrl+V to paste it" : "File path copied instead";
+        String subtitle = ok ? "Press Ctrl+V to paste it" : toolMissing ? "No clipboard program found" : "Clipboard is busy, try again";
         int accent = ok ? 0xFF55FF8A : 0xFFFFD24D;
         int bg = ok ? 0xE0122A1A : 0xE0332A10;
         int titleColor = ok ? 0xFF7DFFA6 : 0xFFFFE08A;
         int w = Math.max(font.width(title), font.width(subtitle)) + 18;
         int x = mc.getWindow().getGuiScaledWidth() - w - 6;
         int y = com.mineberry.essentials.StatusStack.take(29);
-        g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
-        g.fill(x, y, x + w, y + 29, bg);
-        g.fill(x + w - 3, y, x + w, y + 29, accent);
+        if (!com.mineberry.essentials.Ui.toast(g, x, y, w, 29, accent, 1f)) {
+            g.fill(x - 1, y - 1, x + w + 1, y + 30, 0x66000000);
+            g.fill(x, y, x + w, y + 29, bg);
+            g.fill(x + w - 3, y, x + w, y + 29, accent);
+        }
         g.text(font, title, x + 8, y + 5, titleColor, true);
         g.text(font, subtitle, x + 8, y + 17, 0xFFE0E0E0, false);
     }
