@@ -57,6 +57,10 @@ Chat shortcuts, safety tools, tournament mode, evidence reports, waypoints, a gr
 
 **Meet Aerion.** A new tab in the Control Center with a guide you can chat with, fully offline. Ask about MineBerry store prices, rules and punishments, or tell it to `turn off compass`.
 
+<div align="center">
+<img src="https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/aerion-mini-chat.png" alt="Aerion mini chat answering Where am I" width="520">
+</div>
+
 | | |
 |---|---|
 | **Aerion everywhere**<br>Mini chat on `` ` ``, `!aerion` in normal chat, or the new slice in the radial menu. | **Aerion does things**<br>Toggle modules, manage waypoints, convert coords, show server stats with `/gc`. |
@@ -118,11 +122,23 @@ Chat shortcuts, safety tools, tournament mode, evidence reports, waypoints, a gr
 
 ## Screenshots
 
+![In-game HUD](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/hud-gameplay.png)
+
 **Control Center**
 
 | Modules | Tools |
 |---|---|
 | ![Modules tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/s1.png) | ![Tools tab](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/tools.png) |
+
+**Aerion and Radial Menu**
+
+| Aerion mini chat | Radial Menu |
+|---|---|
+| ![Aerion mini chat](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/aerion-mini-chat.png) | ![Radial Menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-menu.png) |
+
+**Self Nametag**
+
+![Self Nametag](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/self-nametag.png)
 
 **Gradient Generator and Waypoints**
 
@@ -136,17 +152,13 @@ Chat shortcuts, safety tools, tournament mode, evidence reports, waypoints, a gr
 |---|---|
 | ![Screenshots](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/screenshots-screen.png) | ![Chat Search](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/chat-search.png) |
 
-**Radial Menu**
+**MineBerry Client (HUD menu)**
 
-![Radial Menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/radial-menu.png)
+![MineBerry Client HUD menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/hud.png)
 
 **What's New popup**
 
-![What's New popup](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/whats-new.png)
-
-**MineBerry Client (HUD)**
-
-![MineBerry Client HUD menu](https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/hud.png)
+<img src="https://raw.githubusercontent.com/aerys-ex/mineberry-essentials/main/screenshots/whats-new.png" alt="What's New popup" width="420">
 
 ---
 
